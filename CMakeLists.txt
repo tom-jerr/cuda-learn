@@ -1,0 +1,80 @@
+cmake_minimum_required(VERSION 3.22)
+project(cuda_learn LANGUAGES CXX CUDA)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+# 生成编译数据库供 clangd 等工具使用（build/compile_commands.json）
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# RTX 4060 Laptop (sm_89)
+set(CMAKE_CUDA_ARCHITECTURES 89)
+find_package(CUDAToolkit REQUIRED)
+
+# ---- 定位 tvm_ffi（随 apache-tvm 一起安装，提供 FFI 头文件与 libtvm_ffi.so）----
+find_package(Python COMPONENTS Interpreter REQUIRED)
+execute_process(
+  COMMAND "${Python_EXECUTABLE}" -m tvm_ffi.config --cmakedir
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  OUTPUT_VARIABLE TVM_FFI_CMAKE_DIR
+  RESULT_VARIABLE TVM_FFI_CONFIG_RC)
+if(NOT TVM_FFI_CONFIG_RC EQUAL 0)
+  message(FATAL_ERROR
+    "tvm_ffi not found for ${Python_EXECUTABLE}; install it with: pip install apache-tvm")
+endif()
+find_package(tvm_ffi CONFIG REQUIRED
+  PATHS "${TVM_FFI_CMAKE_DIR}" NO_DEFAULT_PATH)
+execute_process(
+  COMMAND "${Python_EXECUTABLE}" -m tvm_ffi.config --libfiles
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  OUTPUT_VARIABLE TVM_FFI_LIB_FILE)
+get_filename_component(TVM_FFI_LIB_DIR "${TVM_FFI_LIB_FILE}" DIRECTORY)
+
+# ---- 定位 cuDNN（优先使用当前 Python/torch 环境附带的 nvidia-cudnn）----
+execute_process(
+  COMMAND "${Python_EXECUTABLE}" -c
+          "print(__import__('sysconfig').get_path('purelib') + '/nvidia/cudnn', end='')"
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  OUTPUT_VARIABLE PYTHON_CUDNN_ROOT)
+find_path(CUDNN_INCLUDE_DIR cudnn.h
+  HINTS "${PYTHON_CUDNN_ROOT}/include" "/usr/local/cuda/include")
+if(EXISTS "${PYTHON_CUDNN_ROOT}/lib/libcudnn.so.9")
+  set(CUDNN_LIBRARY "${PYTHON_CUDNN_ROOT}/lib/libcudnn.so.9")
+elseif(EXISTS "${PYTHON_CUDNN_ROOT}/lib/libcudnn.so.8")
+  set(CUDNN_LIBRARY "${PYTHON_CUDNN_ROOT}/lib/libcudnn.so.8")
+else()
+  find_library(CUDNN_LIBRARY cudnn
+    HINTS "${PYTHON_CUDNN_ROOT}/lib" "/usr/local/cuda/lib64")
+endif()
+if(NOT CUDNN_INCLUDE_DIR OR NOT CUDNN_LIBRARY)
+  message(FATAL_ERROR
+    "cuDNN headers/library not found; install nvidia-cudnn in ${Python_EXECUTABLE}'s environment")
+endif()
+get_filename_component(CUDNN_LIB_DIR "${CUDNN_LIBRARY}" DIRECTORY)
+
+include_directories("include")
+
+# ---- 算子库：所有 kernel + FFI 注册 → libcuda_learn.so ----
+file(GLOB_RECURSE CUDA_LEARN_SOURCES
+    CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cu"
+)
+
+add_library(cuda_learn SHARED ${CUDA_LEARN_SOURCES})
+target_include_directories(cuda_learn PRIVATE
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/include"
+  "${CUDNN_INCLUDE_DIR}")
+set_target_properties(cuda_learn PROPERTIES
+  OUTPUT_NAME "cuda_learn"
+  # nvcc emits includes inherited from imported targets as -isystem=<path>.
+  # clangd's CUDA driver treats the '=' as part of the directory name, so it
+  # cannot find dlpack/dlpack.h and reports cascading errors for all TVM types.
+  # Regular -I<path> flags are understood by both nvcc and clangd.
+  NO_SYSTEM_FROM_IMPORTED ON
+  # libtvm_ffi.so 通常在 import tvm 时已被 RTLD_GLOBAL 加载，
+  # RUNPATH 只作为兜底（先 dlopen 插件后 import tvm 的顺序）；
+  # /usr/local/cuda/lib64 提供 nvcc 13 依赖的 libcudart.so.13。
+  BUILD_RPATH "${TVM_FFI_LIB_DIR};${CUDNN_LIB_DIR};/usr/local/cuda/lib64")
+target_link_libraries(cuda_learn PRIVATE
+  tvm_ffi::shared CUDA::cudart CUDA::cublas "${CUDNN_LIBRARY}")

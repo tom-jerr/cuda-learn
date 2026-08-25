@@ -1,0 +1,15 @@
+# clangd 配置：让 clangd 能消费 CMake 产出的 nvcc 编译命令（build/compile_commands.json）。
+# clangd 可识别 CUDA 源文件，但三个 nvcc 专有 flag 不认识，且
+# --generate-code 被忽略后会选择不合适的默认架构，故显式指定架构。
+CompileFlags:
+  # 用 clang++ 驱动解析命令；配合编译数据库中的 -x cu 仍进入 CUDA 模式。
+  # CMake 的 NO_SYSTEM_FROM_IMPORTED 让继承的依赖头文件使用 -I<path>，避免
+  # clangd 把 nvcc 的 -isystem=<path> 中的等号误当成目录名的一部分。
+  Compiler: clang++
+  Add:
+    - --cuda-path=/usr/local/cuda
+    - --cuda-gpu-arch=sm_89
+  Remove:
+    - -forward-unknown-to-host-compiler
+    - -Xcompiler=*
+    - --generate-code=*
