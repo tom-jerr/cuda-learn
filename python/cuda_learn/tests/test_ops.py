@@ -199,6 +199,51 @@ def test_flash_attn_swizzled_causal(q, k, v):
     return ops.flash_attn_swizzled(q, k, v, causal=True)
 
 
+# ---------- RoPE (FP16 NeoX split-half, in-place Q/K) ----------
+
+
+def _make_rope_neox():
+    tokens, q_heads, kv_heads, head_dim, rotary_dim = 2048, 32, 8, 128, 128
+    q = torch.randn(tokens, q_heads, head_dim, device=DEVICE,
+                    dtype=torch.float16)
+    k = torch.randn(tokens, kv_heads, head_dim, device=DEVICE,
+                    dtype=torch.float16)
+    positions = torch.arange(tokens, device=DEVICE, dtype=torch.int32)
+    inv_freq = 1.0 / (10000 ** (torch.arange(
+        0, rotary_dim, 2, device=DEVICE, dtype=torch.float32) / rotary_dim))
+    angles = positions.float().unsqueeze(1) * inv_freq.unsqueeze(0)
+    return q, k, angles.cos().half(), angles.sin().half(), positions
+
+
+def _rope_neox_ref(q, k, cos_cache, sin_cache, position_ids):
+    rotary_half = cos_cache.shape[1]
+    cos = cos_cache[position_ids.long()].float().unsqueeze(1)
+    sin = sin_cache[position_ids.long()].float().unsqueeze(1)
+
+    def rotate(x):
+        out = x.clone()
+        x0 = x[..., :rotary_half].float()
+        x1 = x[..., rotary_half:2 * rotary_half].float()
+        out[..., :rotary_half] = (x0 * cos - x1 * sin).to(x.dtype)
+        out[..., rotary_half:2 * rotary_half] = (
+            x0 * sin + x1 * cos).to(x.dtype)
+        return out
+
+    return rotate(q), rotate(k)
+
+
+@bench(
+    make_inputs=_make_rope_neox,
+    ref=_rope_neox_ref,
+    flops=lambda q, k, c, s, p: 3 * (2 * c.shape[1]) * q.shape[0]
+    * (q.shape[1] + k.shape[1]),
+    rtol=3e-3,
+    atol=3e-3,
+)
+def test_rope_neox(q, k, cos_cache, sin_cache, position_ids):
+    return ops.rope_neox(q, k, cos_cache, sin_cache, position_ids)
+
+
 # ---------- fusion ----------
 
 
@@ -235,6 +280,71 @@ def _rms_ref(x, residual, weight, eps=1e-5):
 @bench(make_inputs=_make_rms, ref=_rms_ref, flops=lambda x, r, w: x.numel() * 5)
 def test_rmsnorm_and_add(x, residual, weight):
     return ops.rmsnorm_and_add(x, residual, weight, 1e-5)
+
+
+# ---------- rmsnorm ----------
+
+
+def _rmsnorm_ref(x, eps=1e-5):
+    return x * torch.rsqrt((x * x).mean(dim=-1, keepdim=True) + eps)
+
+
+def _make_rmsnorm():
+    # A common LLM hidden size and enough rows to make memory throughput visible.
+    return (torch.randn(4096, 4096, device=DEVICE),)
+
+
+@bench(
+    make_inputs=_make_rmsnorm,
+    ref=_rmsnorm_ref,
+    flops=lambda x: x.numel() * 4,
+    rtol=1e-5,
+    atol=1e-6,
+    baselines={"scalar baseline": ops.rmsnorm_baseline},
+)
+def test_rmsnorm(x):
+    return ops.rmsnorm(x)
+
+
+def _make_rmsnorm_small_hidden():
+    return (torch.randn(8192, 128, device=DEVICE),)
+
+
+@bench(
+    make_inputs=_make_rmsnorm_small_hidden,
+    ref=_rmsnorm_ref,
+    flops=lambda x: x.numel() * 4,
+    rtol=1e-5,
+    atol=1e-6,
+    baselines={"256-thread base": ops.rmsnorm_baseline},
+)
+def test_rmsnorm_small_hidden(x):
+    return ops.rmsnorm(x)
+
+
+def _make_rmsnorm_edge_cases():
+    torch.manual_seed(123)
+    return (
+        torch.randn(7, 17, device=DEVICE),       # one warp, scalar tail
+        torch.randn(37, 1003, device=DEVICE),   # non-power-of-two scalar path
+        torch.randn(9, 1024, device=DEVICE),    # common power-of-two width
+        torch.randn(3, 4097, device=DEVICE),    # large scalar tail
+        torch.randn(5, 256, device=DEVICE) * 1e3,
+        torch.zeros(11, 128, device=DEVICE),
+    )
+
+
+@bench(
+    make_inputs=_make_rmsnorm_edge_cases,
+    ref=lambda *xs: tuple(_rmsnorm_ref(x) for x in xs),
+    flops=lambda *xs: sum(x.numel() for x in xs) * 4,
+    rtol=1e-5,
+    atol=1e-6,
+    warmup=3,
+    iters=20,
+)
+def test_rmsnorm_edge_cases(*xs):
+    return tuple(ops.rmsnorm(x) for x in xs)
 
 
 # ---------- softmax ----------

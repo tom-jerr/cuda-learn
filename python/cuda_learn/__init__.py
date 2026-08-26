@@ -22,6 +22,8 @@ from .ops import (  # noqa: F401
     flash_attn_optimized,
     flash_attn_swizzled,
     gemm,
+    rope_neox,
+    rmsnorm,
     rmsnorm_and_add,
     silu_and_mul,
     softmax,
@@ -48,6 +50,8 @@ __all__ = [
     "flash_attn_optimized",
     "flash_attn_swizzled",
     "silu_and_mul",
+    "rope_neox",
+    "rmsnorm",
     "rmsnorm_and_add",
     "softmax",
 ]

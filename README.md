@@ -79,10 +79,10 @@ GEMM/softmax 库基线都直接调用 NVIDIA API，而不是用 PyTorch 算子�
 flash-attention 基线首次运行时会把官方 D64 forward specialization 编译到 torch
 extension cache；只裁剪无关 dtype/head-dim/反向编译单元，被测 kernel 源码不变。
 
-当前测试（16 个）：vector_add ×3、transpose ×2、dot_product、gemm（tiled sgemm）、
+当前 benchmark（19 个）：vector_add ×3、transpose ×2、dot_product、gemm（tiled sgemm）、
 gemm_mma（BF16 Tensor Core）、flash_attn ×5（shared-memory 教学版、PAD=8 8-warp 和
 XOR-swizzled 4-warp 的 non-causal/causal，FP16 [B,H,N,64]）、
-silu_and_mul、rmsnorm_and_add、softmax。
+silu_and_mul、rmsnorm（宽行、小 hidden、边界形状）、rmsnorm_and_add、softmax。
 
 ## 直接用 ops（pytorch binding 形式）
 
@@ -111,7 +111,8 @@ d = cuda_learn.vector_add(a, b)
 
 ## 目录
 
-- `docs/` — [Flash Attention 完整学习文档](docs/flash_attention.md)（背景、初始版、优化版、causal 与性能对比）
+- `docs/` — [Flash Attention 完整学习文档](docs/flash_attention.md)（背景、初始版、优化版、causal 与性能对比），
+  [RMSNorm 学习文档](docs/rmsnorm.md)（与 LayerNorm 的差异、small hidden size 优化与 profiler）
 - `src/` — kernels + FFI 注册（`ffi_common.h` 公共设施）
 - `python/cuda_learn/` — Python 包：`ops.py`（binding）、`bench.py`（@bench + 运行器）、`tests/`
 - `examples/` — 原始 standalone 演示（含 Makefile 一键重编）
