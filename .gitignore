@@ -15,13 +15,8 @@ cmake_install.cmake
 /examples/cuda_allocator/import_export_pool
 /examples/cuda_allocator/minimal_allocator
 /examples/cuda_graph/fork_join
-/examples/cuda_graph/simple
-/examples/dotproduct/simple
 /examples/fusion/silu_and_mul
-/examples/gemm/simple
-/examples/softmax/simple
-/examples/transpose/simple
-/examples/vector_add/simple
+/examples/*/simple
 
 # Python-generated files
 __pycache__/

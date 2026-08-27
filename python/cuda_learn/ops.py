@@ -119,6 +119,16 @@ def gemm_mma(a, b):
     return c
 
 
+def gemm_mma_l2(a, b, swizzle_n=8):
+    """BF16 MMA GEMM with an N-cohort CTA raster for L2 locality."""
+    if swizzle_n not in (2, 4, 8):
+        raise ValueError(f"swizzle_n must be 2, 4, or 8, got {swizzle_n}")
+    a, b = _contig_bf16(a), _contig_bf16(b)
+    c = torch.empty(a.shape[0], b.shape[1], device=a.device, dtype=a.dtype)
+    call("cuda_learn.gemm_mma_l2", a, b, c, swizzle_n)
+    return c
+
+
 def flash_attn(q, k, v):
     """FP16 non-causal forward; Q/K/V layout is [B, H, N, 64]."""
     q, k, v = _contig_fp16(q), _contig_fp16(k), _contig_fp16(v)

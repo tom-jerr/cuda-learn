@@ -40,3 +40,15 @@ def test_gemm(a, b):
 )
 def test_gemm_mma(a, b):
     return ops.gemm_mma(a, b)
+
+
+@bench(
+    make_inputs=_make_gemm_mma,
+    ref=lambda a, b: a @ b,
+    flops=lambda a, b: 2 * a.shape[0] * a.shape[1] * b.shape[1],
+    rtol=1e-2,
+    atol=1e-2,
+    baselines={"ordinary MMA": ops.gemm_mma},
+)
+def test_gemm_mma_l2(a, b):
+    return ops.gemm_mma_l2(a, b, swizzle_n=8)

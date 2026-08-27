@@ -10,6 +10,9 @@ BINS := vector_add/simple \
         gemm/simple \
         fusion/silu_and_mul \
         softmax/simple \
+        sgemv_k32/simple \
+        topk/simple \
+        prefix_sum/simple \
         cuda_allocator/minimal_allocator \
         cuda_allocator/import_export_pool \
         cuda_graph/simple \

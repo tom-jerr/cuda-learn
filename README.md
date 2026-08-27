@@ -111,11 +111,16 @@ d = cuda_learn.vector_add(a, b)
 
 ## 目录
 
-- `docs/` — [Flash Attention 完整学习文档](docs/flash_attention.md)（背景、初始版、优化版、causal 与性能对比），
-  [RMSNorm 学习文档](docs/rmsnorm.md)（与 LayerNorm 的差异、small hidden size 优化与 profiler）
+- `docs/` — [GEMM 优化记录](docs/gemm.md)（FP32 tiled、BF16 MMA、L2 CTA swizzle、
+  double buffering 路线与性能对比），[Flash Attention 完整学习文档](docs/flash_attention.md)
+  （背景、初始版、优化版、causal 与性能对比），[RMSNorm 学习文档](docs/rmsnorm.md)
+  （与 LayerNorm 的差异、small hidden size 优化与 profiler）
 - `src/` — kernels + FFI 注册（`ffi_common.h` 公共设施）
 - `python/cuda_learn/` — Python 包：`ops.py`（binding）、`bench.py`（@bench + 运行器）、`tests/`
 - `examples/` — 原始 standalone 演示（含 Makefile 一键重编）
+  - `sgemv_k32/simple.cu`：A[M,K] × x[K]（K%32=0），一行一个 warp 的 SGEMV 面试版；
+  - `topk/simple.cu`：row-wise Top-K 单线程 baseline 与 warp argmax 面试版；
+  - `prefix_sum/simple.cu`：inclusive scan 串行 baseline 与 warp/block 分层面试版；
 - `scripts/env.sh` — 运行前 source（cudart13 搜索路径）
 - `ampere_kernels/` — Ampere GEMM/GEMV/FA2 源码地图（只读学习材料）
 - `third_party/` — LeetCUDA、flash-attention 稀疏检出（不动）
