@@ -7,6 +7,7 @@ CLUSTER_NVCCFLAGS ?= -std=c++17 -O2 -arch=sm_90
 
 BINS := vector_add/simple \
         embedding/simple \
+        kv_cache/simple \
         transpose/simple \
         dotproduct/simple \
         gemm/simple \
