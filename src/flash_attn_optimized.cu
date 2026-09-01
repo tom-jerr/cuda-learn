@@ -187,7 +187,17 @@ __global__ void flash_attention2_fwd_d64_registers(const half *__restrict__ q,
     // --------------------- warp-cooperative softmax ---------------------
     // A lane has 32 scores for row0 and 32 for row1. Four adjacent lanes
     // together cover all 128 columns of each row.
-    // 16 * 128
+    /**
+     * @brief 每次 MMA 的 N 维输出宽度是 8，而当前 KV tile 宽度
+     * BC=128：所以要执行 16 个不同的 N fragment：
+      g = lane / 4;
+      t = lane % 4;
+
+      s_frag[nj][0] = S[g    ][nj * 8 + t * 2    ];
+      s_frag[nj][1] = S[g    ][nj * 8 + t * 2 + 1];
+      s_frag[nj][2] = S[g + 8][nj * 8 + t * 2    ];
+      s_frag[nj][3] = S[g + 8][nj * 8 + t * 2 + 1];
+     */
     float local_max0 = -INFINITY;
     float local_max1 = -INFINITY;
 #pragma unroll
@@ -220,15 +230,24 @@ __global__ void flash_attention2_fwd_d64_registers(const half *__restrict__ q,
         }
       }
       /**
-        s_frag[nj][0] = S[lane4/4    ][nj * 8 + lane4 * 2    ];
-        s_frag[nj][1] = S[lane4/4    ][nj * 8 + lane4 * 2 + 1];
-
-        s_frag[nj][2] = S[lane4/4 + 8][nj * 8 + lane4 * 2    ];
-        s_frag[nj][3] = S[lane4/4 + 8][nj * 8 + lane4 * 2 + 1];
+       固定一个 lane，它跨 16 个 nj，每个 nj 对 row0
+       持有两个值：16*2=32，因此local_max0是当前 lane 持有的 row0 的 32 个 score
+       的最大值；local_max1 同理。
        */
       local_max0 = fmaxf(local_max0, fmaxf(s_frag[nj][0], s_frag[nj][1]));
       local_max1 = fmaxf(local_max1, fmaxf(s_frag[nj][2], s_frag[nj][3]));
     }
+    /**
+     * @brief 四个相邻 lane 分别覆盖每个 8-column fragment 的：
+      lane t=0: 0,1
+      lane t=1: 2,3
+      lane t=2: 4,5
+      lane t=3: 6,7
+      结合全部 16 个 nj：
+      \[
+      4\text{ lanes}\times32\text{ columns/lane}=128\text{ columns}
+      \]所以四 lane reduction 后，得到的才是一整行 128 个 score 的最大值：
+     */
     const float tile_max0 = subgroup4_max(local_max0);
     const float tile_max1 = subgroup4_max(local_max1);
     const float new_m0 = fmaxf(row_m0, tile_max0);

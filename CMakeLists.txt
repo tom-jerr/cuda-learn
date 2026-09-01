@@ -10,6 +10,8 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # RTX 4060 Laptop (sm_89)
 set(CMAKE_CUDA_ARCHITECTURES 89)
+option(CUDA_LEARN_ENABLE_HOPPER_FA3
+       "Build the raw-PTX FlashAttention-3 reproduction for sm_90a" OFF)
 find_package(CUDAToolkit REQUIRED)
 
 # ---- 定位 tvm_ffi（随 apache-tvm 一起安装，提供 FFI 头文件与 libtvm_ffi.so）----
@@ -78,3 +80,15 @@ set_target_properties(cuda_learn PROPERTIES
   BUILD_RPATH "${TVM_FFI_LIB_DIR};${CUDNN_LIB_DIR};/usr/local/cuda/lib64")
 target_link_libraries(cuda_learn PRIVATE
   tvm_ffi::shared CUDA::cudart CUDA::cublas "${CUDNN_LIBRARY}")
+
+# CMake 3.22 does not understand the architecture suffix in "90a".  Keep the
+# normal sm_89 build untouched and use nvcc's native flag for a separate Hopper
+# build directory.  WGMMA requires the architecture-specific sm_90a target,
+# not the forward-compatible sm_90 target.
+if(CUDA_LEARN_ENABLE_HOPPER_FA3)
+  set_target_properties(cuda_learn PROPERTIES CUDA_ARCHITECTURES OFF)
+  target_compile_options(cuda_learn PRIVATE
+    $<$<COMPILE_LANGUAGE:CUDA>:--generate-code=arch=compute_90a,code=sm_90a>)
+  target_compile_definitions(cuda_learn PRIVATE CUDA_LEARN_HAS_SM90A=1)
+  target_link_libraries(cuda_learn PRIVATE CUDA::cuda_driver)
+endif()

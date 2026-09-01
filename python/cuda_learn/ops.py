@@ -177,6 +177,24 @@ def flash_attn_swizzled(q, k, v, causal=False):
     return out
 
 
+def flash_attn3_hopper(q, k, v, causal=False):
+    """Raw-PTX Hopper FA3 reproduction (BF16, forward, [B,H,N,64])."""
+    q, k, v = _contig_bf16(q), _contig_bf16(k), _contig_bf16(v)
+    if q.ndim != 4 or q.shape[-1] != 64:
+        raise ValueError(
+            f"flash_attn3_hopper expects q shaped [B,H,N,64], got {q.shape}")
+    if k.shape != q.shape or v.shape != q.shape:
+        raise ValueError(
+            "flash_attn3_hopper expects q, k and v to have identical shapes")
+    if q.shape[2] == 0 or q.shape[2] % 128:
+        raise ValueError(
+            "flash_attn3_hopper sequence length must be a positive multiple "
+            "of 128")
+    out = torch.empty_like(q)
+    call("cuda_learn.flash_attn3_hopper", q, k, v, out, int(bool(causal)))
+    return out
+
+
 def rope_neox(q, k, cos_cache, sin_cache, position_ids):
     """Apply in-place split-half FP16 RoPE and return ``(q, k)``.
 

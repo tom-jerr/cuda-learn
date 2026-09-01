@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="850" viewBox="0 0 1500 850" role="img" aria-labelledby="title desc">
+<title id="title">Two-consumer intra-WGMMA and softmax pipeline</title>
+<desc id="desc">Paper-style timing diagram showing deterministic turn-token WGMMA commits, softmax overlap with an in-flight PV group, and equal causal barrier participation.</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#111111"/></marker>
+  <marker id="blue-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2456A6"/></marker>
+  <style>
+    .serif { font-family: "Times New Roman", Times, "Droid Sans Fallback", "Noto Sans CJK SC", serif; }
+    .sans { font-family: Arial, Helvetica, "Droid Sans Fallback", "Noto Sans CJK SC", sans-serif; }
+    text { text-rendering: geometricPrecision; }
+  </style>
+</defs>
+<rect x="0" y="0" width="1500" height="850" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="18" y="42" font-size="23" font-weight="500" fill="#111111" text-anchor="start" class="sans">(a) Two-consumer steady state</text>
+<text x="42" y="103" font-size="18" font-weight="500" fill="#111111" text-anchor="start" class="sans">consumer 0</text>
+<text x="42" y="221" font-size="18" font-weight="500" fill="#111111" text-anchor="start" class="sans">consumer 1</text>
+<line x1="220" y1="154" x2="1430" y2="154" stroke="#111111" stroke-width="1.25" marker-end="url(#arrow)"/>
+<text x="1440" y="159" font-size="16" font-weight="400" fill="#111111" text-anchor="start" class="serif" font-style="italic">time</text>
+<line x1="220" y1="272" x2="1430" y2="272" stroke="#111111" stroke-width="1.25" marker-end="url(#arrow)"/>
+<text x="1440" y="277" font-size="16" font-weight="400" fill="#111111" text-anchor="start" class="serif" font-style="italic">time</text>
+<rect x="220" y="70" width="145" height="46" fill="#F3D8A6" stroke="#111111" stroke-width="1.5"/>
+<text x="292.5" y="88.4" font-size="18" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">QK(n+1)</text>
+<text x="292.5" y="103.58" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">commit group</text>
+<rect x="365" y="188" width="145" height="46" fill="#F3D8A6" stroke="#111111" stroke-width="1.5"/>
+<text x="437.5" y="206.4" font-size="18" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">QK(n+1)</text>
+<text x="437.5" y="221.57999999999998" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">commit group</text>
+<rect x="510" y="70" width="145" height="46" fill="#CBC4DB" stroke="#111111" stroke-width="1.5"/>
+<text x="582.5" y="88.4" font-size="18" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">PV(n)</text>
+<text x="582.5" y="103.58" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">commit group</text>
+<rect x="655" y="188" width="145" height="46" fill="#CBC4DB" stroke="#111111" stroke-width="1.5"/>
+<text x="727.5" y="206.4" font-size="18" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">PV(n)</text>
+<text x="727.5" y="221.57999999999998" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">commit group</text>
+<rect x="655" y="70" width="58" height="46" fill="#F3F3F3" stroke="#111111" stroke-width="1.5"/>
+<text x="684.0" y="88.4" font-size="15" font-weight="600" fill="#111111" text-anchor="middle" class="serif" dominant-baseline="middle">wait</text>
+<text x="684.0" y="103.58" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">&lt;1&gt;</text>
+<rect x="713" y="70" width="175" height="46" fill="#E6EEF9" stroke="#111111" stroke-width="1.5"/>
+<text x="800.5" y="88.4" font-size="17" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">softmax(n+1)</text>
+<text x="800.5" y="103.58" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">CUDA / SFU</text>
+<rect x="888" y="70" width="62" height="46" fill="#F3F3F3" stroke="#111111" stroke-width="1.5"/>
+<text x="919.0" y="88.4" font-size="15" font-weight="600" fill="#111111" text-anchor="middle" class="serif" dominant-baseline="middle">wait</text>
+<text x="919.0" y="103.58" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">&lt;0&gt;</text>
+<rect x="950" y="70" width="70" height="46" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+<text x="985.0" y="88.4" font-size="15" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">scale O</text>
+<text x="985.0" y="103.58" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">× α</text>
+<rect x="800" y="188" width="58" height="46" fill="#F3F3F3" stroke="#111111" stroke-width="1.5"/>
+<text x="829.0" y="206.4" font-size="15" font-weight="600" fill="#111111" text-anchor="middle" class="serif" dominant-baseline="middle">wait</text>
+<text x="829.0" y="221.57999999999998" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">&lt;1&gt;</text>
+<rect x="858" y="188" width="192" height="46" fill="#E6EEF9" stroke="#111111" stroke-width="1.5"/>
+<text x="954.0" y="206.4" font-size="17" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">softmax(n+1)</text>
+<text x="954.0" y="221.57999999999998" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">CUDA / SFU</text>
+<rect x="1050" y="188" width="62" height="46" fill="#F3F3F3" stroke="#111111" stroke-width="1.5"/>
+<text x="1081.0" y="206.4" font-size="15" font-weight="600" fill="#111111" text-anchor="middle" class="serif" dominant-baseline="middle">wait</text>
+<text x="1081.0" y="221.57999999999998" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">&lt;0&gt;</text>
+<rect x="1112" y="188" width="70" height="46" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+<text x="1147.0" y="206.4" font-size="15" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">scale O</text>
+<text x="1147.0" y="221.57999999999998" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">× α</text>
+<rect x="1020" y="70" width="145" height="46" fill="#F3D8A6" stroke="#111111" stroke-width="1.5"/>
+<text x="1092.5" y="88.4" font-size="18" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">QK(n+2)</text>
+<text x="1092.5" y="103.58" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">next transition</text>
+<rect x="1182" y="188" width="145" height="46" fill="#F3D8A6" stroke="#111111" stroke-width="1.5"/>
+<text x="1254.5" y="206.4" font-size="18" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">QK(n+2)</text>
+<text x="1254.5" y="221.57999999999998" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">next transition</text>
+<rect x="510" y="116" width="440" height="31" fill="#656565" stroke="#656565" stroke-width="0"/>
+<text x="730" y="132" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">PV(n) in flight</text>
+<rect x="655" y="234" width="457" height="31" fill="#656565" stroke="#656565" stroke-width="0"/>
+<text x="883" y="250" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">PV(n) in flight</text>
+<line x1="365" y1="56" x2="365" y2="285" stroke="#111111" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="510" y1="56" x2="510" y2="285" stroke="#111111" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="655" y1="56" x2="655" y2="285" stroke="#111111" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="800" y1="56" x2="800" y2="285" stroke="#111111" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="1020" y1="56" x2="1020" y2="285" stroke="#111111" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="1182" y1="56" x2="1182" y2="285" stroke="#111111" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="228" y1="55" x2="792" y2="55" stroke="#2456A6" stroke-width="1.4"/>
+<path d="M 228 55 L 237 50 M 228 55 L 237 60" fill="none" stroke="#2456A6" stroke-width="1.4"/>
+<path d="M 792 55 L 783 50 M 792 55 L 783 60" fill="none" stroke="#2456A6" stroke-width="1.4"/>
+<text x="510.0" y="46" font-size="16" font-weight="600" fill="#2456A6" text-anchor="middle" class="serif" font-style="italic">turn[2] token:  C0.QK → C1.QK → C0.PV → C1.PV</text>
+<text x="1370" y="109" font-size="14" font-weight="600" fill="#2456A6" text-anchor="end" class="serif" font-style="italic">C0 resumes</text>
+<text x="1370" y="129" font-size="14" font-weight="600" fill="#2456A6" text-anchor="end" class="serif" font-style="italic">during C1 softmax</text>
+<path d="M 1360 134 L 1195 146 L 1030 126" fill="none" stroke="#2456A6" stroke-width="1.3" marker-end="url(#blue-arrow)"/>
+<text x="18" y="348" font-size="23" font-weight="500" fill="#111111" text-anchor="start" class="sans">(b) Two-level pipeline inside each consumer</text>
+<line x1="220" y1="465" x2="1430" y2="465" stroke="#111111" stroke-width="1.25" marker-end="url(#arrow)"/>
+<text x="1440" y="470" font-size="16" font-weight="400" fill="#111111" text-anchor="start" class="serif" font-style="italic">time</text>
+<rect x="220" y="388" width="190" height="50" fill="#F3D8A6" stroke="#111111" stroke-width="1.5"/>
+<text x="315.0" y="408.0" font-size="18" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">QK(next)</text>
+<text x="315.0" y="424.5" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">older WGMMA group</text>
+<rect x="410" y="388" width="190" height="50" fill="#CBC4DB" stroke="#111111" stroke-width="1.5"/>
+<text x="505.0" y="408.0" font-size="18" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">PV(cur)</text>
+<text x="505.0" y="424.5" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">younger WGMMA group</text>
+<rect x="600" y="388" width="105" height="50" fill="#F3F3F3" stroke="#111111" stroke-width="1.5"/>
+<text x="652.5" y="408.0" font-size="16" font-weight="600" fill="#111111" text-anchor="middle" class="serif" dominant-baseline="middle">wait_group</text>
+<text x="652.5" y="424.5" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">&lt;1&gt;</text>
+<rect x="705" y="388" width="275" height="50" fill="#E6EEF9" stroke="#111111" stroke-width="1.5"/>
+<text x="842.5" y="408.0" font-size="18" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">softmax(next)</text>
+<text x="842.5" y="424.5" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">scores ready · exp2</text>
+<rect x="980" y="388" width="105" height="50" fill="#F3F3F3" stroke="#111111" stroke-width="1.5"/>
+<text x="1032.5" y="408.0" font-size="16" font-weight="600" fill="#111111" text-anchor="middle" class="serif" dominant-baseline="middle">wait_group</text>
+<text x="1032.5" y="424.5" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">&lt;0&gt;</text>
+<rect x="1085" y="388" width="150" height="50" fill="#DDE9FA" stroke="#2456A6" stroke-width="1.5"/>
+<text x="1160.0" y="408.0" font-size="16" font-weight="600" fill="#111111" text-anchor="middle" class="serif" dominant-baseline="middle">stage_empty</text>
+<text x="1160.0" y="424.5" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">arrive</text>
+<rect x="1235" y="388" width="150" height="50" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+<text x="1310.0" y="408.0" font-size="17" font-weight="600" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">rescale O</text>
+<text x="1310.0" y="424.5" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">× alpha(next)</text>
+<rect x="410" y="438" width="675" height="32" fill="#656565" stroke="#656565" stroke-width="0"/>
+<text x="747" y="455" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">PV(cur) may remain in flight</text>
+<line x1="600" y1="373" x2="600" y2="491" stroke="#111111" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="1085" y1="373" x2="1085" y2="491" stroke="#111111" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="608" y1="372" x2="1077" y2="372" stroke="#2456A6" stroke-width="1.4"/>
+<path d="M 608 372 L 617 367 M 608 372 L 617 377" fill="none" stroke="#2456A6" stroke-width="1.4"/>
+<path d="M 1077 372 L 1068 367 M 1077 372 L 1068 377" fill="none" stroke="#2456A6" stroke-width="1.4"/>
+<text x="842.5" y="363" font-size="16" font-weight="600" fill="#2456A6" text-anchor="middle" class="serif" font-style="italic">CUDA / SFU overlaps the younger PV group</text>
+<text x="18" y="596" font-size="23" font-weight="500" fill="#111111" text-anchor="start" class="sans">(c) Causal mode keeps equal barrier participation</text>
+<text x="42" y="648" font-size="18" font-weight="500" fill="#111111" text-anchor="start" class="sans">consumer 0</text>
+<text x="42" y="711" font-size="18" font-weight="500" fill="#111111" text-anchor="start" class="sans">consumer 1</text>
+<line x1="220" y1="764" x2="1430" y2="764" stroke="#111111" stroke-width="1.25" marker-end="url(#arrow)"/>
+<text x="1440" y="769" font-size="16" font-weight="400" fill="#111111" text-anchor="start" class="serif" font-style="italic">time</text>
+<rect x="220" y="640" width="150" height="38" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+<text x="295.0" y="659.0" font-size="16" font-weight="500" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">KV tile 0</text>
+<rect x="220" y="703" width="150" height="38" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+<text x="295.0" y="722.0" font-size="16" font-weight="500" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">KV tile 0</text>
+<rect x="370" y="640" width="150" height="38" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+<text x="445.0" y="659.0" font-size="16" font-weight="500" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">KV tile 1</text>
+<rect x="370" y="703" width="150" height="38" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+<text x="445.0" y="722.0" font-size="16" font-weight="500" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">KV tile 1</text>
+<rect x="520" y="640" width="150" height="38" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+<text x="595.0" y="659.0" font-size="16" font-weight="500" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">KV tile 2</text>
+<rect x="520" y="703" width="150" height="38" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+<text x="595.0" y="722.0" font-size="16" font-weight="500" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">KV tile 2</text>
+<rect x="670" y="640" width="150" height="38" fill="#D9D9D9" stroke="#111111" stroke-width="1.5"/>
+<text x="745.0" y="659.0" font-size="16" font-weight="500" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">future tile</text>
+<rect x="670" y="703" width="150" height="38" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
+<text x="745.0" y="722.0" font-size="16" font-weight="500" fill="#111111" text-anchor="middle" class="serif" font-style="italic" dominant-baseline="middle">KV tile 3</text>
+<text x="745.0" y="669" font-size="12" font-weight="600" fill="#111111" text-anchor="middle" class="sans">mask = −∞</text>
+<line x1="820" y1="626" x2="820" y2="785" stroke="#111111" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="228" y1="625" x2="812" y2="625" stroke="#2456A6" stroke-width="1.4"/>
+<path d="M 228 625 L 237 620 M 228 625 L 237 630" fill="none" stroke="#2456A6" stroke-width="1.4"/>
+<path d="M 812 625 L 803 620 M 812 625 L 803 630" fill="none" stroke="#2456A6" stroke-width="1.4"/>
+<text x="520.0" y="616" font-size="16" font-weight="600" fill="#2456A6" text-anchor="middle" class="serif" font-style="italic">same number of KV tiles</text>
+<rect x="890" y="666" width="245" height="48" fill="#DDE9FA" stroke="#2456A6" stroke-width="1.5"/>
+<text x="1012.5" y="685.2" font-size="17" font-weight="600" fill="#111111" text-anchor="middle" class="serif" dominant-baseline="middle">stage_empty[stage]</text>
+<text x="1012.5" y="701.04" font-size="13" font-weight="400" fill="#111111" text-anchor="middle" class="sans" dominant-baseline="middle">2 arrivals → phase flips</text>
+<path d="M 820 659.0 L 862 659.0 L 862 690 L 890 690" fill="none" stroke="#2456A6" stroke-width="1.5" marker-end="url(#blue-arrow)"/>
+<path d="M 820 722.0 L 862 722.0 L 862 690" fill="none" stroke="#2456A6" stroke-width="1.5"/>
+<rect x="220" y="813" width="28" height="14" fill="#F3D8A6" stroke="#111111" stroke-width="1"/>
+<text x="258" y="825" font-size="14" font-weight="400" fill="#111111" text-anchor="start" class="sans">WGMMA QK</text>
+<rect x="420" y="813" width="28" height="14" fill="#CBC4DB" stroke="#111111" stroke-width="1"/>
+<text x="458" y="825" font-size="14" font-weight="400" fill="#111111" text-anchor="start" class="sans">WGMMA PV</text>
+<rect x="620" y="813" width="28" height="14" fill="#E6EEF9" stroke="#111111" stroke-width="1"/>
+<text x="658" y="825" font-size="14" font-weight="400" fill="#111111" text-anchor="start" class="sans">softmax / SFU</text>
+<rect x="850" y="813" width="28" height="14" fill="#656565" stroke="#111111" stroke-width="1"/>
+<text x="888" y="825" font-size="14" font-weight="400" fill="#111111" text-anchor="start" class="sans">WGMMA in flight</text>
+<rect x="1100" y="813" width="28" height="14" fill="#DDE9FA" stroke="#2456A6" stroke-width="1"/>
+<text x="1138" y="825" font-size="14" font-weight="400" fill="#111111" text-anchor="start" class="sans">mbarrier event</text>
+</svg>

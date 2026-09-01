@@ -1,3 +1,4 @@
+#include <__clang_cuda_builtin_vars.h>
 #include <cstdio>
 #include <cuda_runtime.h>
 
@@ -5,17 +6,14 @@
 constexpr int BM = 32;
 constexpr int BN = 32;
 constexpr int BK = 16;
-
 constexpr int TM = 4;
 constexpr int TN = 4;
-
 constexpr int BLOCK_X = BN / TN;
 constexpr int BLOCK_Y = BM / TM;
 constexpr int THREADS_PER_BLOCK = BLOCK_X * BLOCK_Y;
 
-__global__ void tiled_gemm(const float *A, const float *B, float *C, int M,
+__global__ void tiled_gemm(const float *a, const float *b, float *c, int M,
                            int N, int K) {
-  // C[M,N] = A[M,K] * B[K,N]，矩阵均为 row-major。
   __shared__ float As[BM][BK];
   __shared__ float Bs[BK][BN];
   // current block [block_row, block_col] 对应 C 的左上角。
@@ -28,35 +26,33 @@ __global__ void tiled_gemm(const float *A, const float *B, float *C, int M,
   int tid = threadIdx.y * blockDim.x + threadIdx.x;
   float acc[TM][TN] = {};
 
-  // K tile
   for (int k = 0; k < K; k += BK) {
-    // g2s load A tile
+    // h2s, a tile 每次加载 bm * bk
     for (int idx = tid; idx < BM * BK; idx += THREADS_PER_BLOCK) {
-      int a_shrad_row = idx / BK;
-      int a_shrad_col = idx % BK;
-      int a_global_row = block_row + a_shrad_row;
-      int a_global_col = k + a_shrad_col;
-      if (a_global_row < M && a_global_col < K) {
-        As[a_shrad_row][a_shrad_col] = A[a_global_row * K + a_global_col];
+      int a_smem_row = idx / BK;
+      int a_smem_col = idx % BK;
+      int a_global_row = block_row + a_smem_row;
+      int a_gloabl_col = k + a_smem_col;
+      if (a_global_row < M && a_gloabl_col < N) {
+        As[a_smem_row][a_smem_col] = a[a_global_row * K + a_gloabl_col];
       } else {
-        As[a_shrad_row][a_shrad_col] = 0.0f;
+        As[a_smem_row][a_smem_col] = 0.0f;
       }
     }
-    // g2s load B tile
+
     for (int idx = tid; idx < BK * BN; idx += THREADS_PER_BLOCK) {
-      int b_shrad_row = idx / BN;
-      int b_shrad_col = idx % BN;
-      int b_global_row = k + b_shrad_row;
-      int b_global_col = block_col + b_shrad_col;
+      int b_smem_row = idx / BN;
+      int b_smem_col = idx % BN;
+      int b_global_row = k + b_smem_row;
+      int b_global_col = block_col + b_smem_col;
       if (b_global_row < K && b_global_col < N) {
-        Bs[b_shrad_row][b_shrad_col] = B[b_global_row * N + b_global_col];
+        Bs[b_smem_row][b_smem_col] = b[b_global_row * N + b_global_col];
       } else {
-        Bs[b_shrad_row][b_shrad_col] = 0.0f;
+        Bs[b_smem_row][b_smem_col] = 0.0f;
       }
     }
     __syncthreads();
 
-    // s2r + compute
     for (int bk = 0; bk < BK; ++bk) {
       float a_reg[TM];
       float b_reg[TN];
@@ -74,18 +70,18 @@ __global__ void tiled_gemm(const float *A, const float *B, float *C, int M,
     }
     __syncthreads();
   }
-  // write back to global memory
+
+  // write to global
   for (int tm = 0; tm < TM; ++tm) {
     for (int tn = 0; tn < TN; ++tn) {
       int c_global_row = block_row + thread_row + tm;
-      int c_global_col = block_col + thread_col + tn;
+      int c_global_col = block_row + thread_col + tn;
       if (c_global_row < M && c_global_col < N) {
-        C[c_global_row * N + c_global_col] = acc[tm][tn];
+        c[c_global_row * N + c_global_col] = acc[tm][tn];
       }
     }
   }
 }
-
 int main() {
   float *A, *B, *C;
   int M = 128, N = 128, K = 128;

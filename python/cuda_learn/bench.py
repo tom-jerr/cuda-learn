@@ -23,7 +23,7 @@ BENCH_CASES = {}
 
 class Case:
     def __init__(self, fn, make_inputs, ref, flops, rtol, atol, warmup, iters,
-                 baselines):
+                 baselines, requires):
         self.fn = fn
         self.name = fn.__name__
         self.make_inputs = make_inputs
@@ -34,21 +34,23 @@ class Case:
         self.warmup = warmup
         self.iters = iters
         self.baselines = baselines
+        self.requires = requires
 
 
 def bench(make_inputs, ref=None, flops=None, rtol=1e-4, atol=1e-4,
-          warmup=10, iters=100, baselines=None):
+          warmup=10, iters=100, baselines=None, requires=None):
     """装饰 test_<op>() 并注册 benchmark 元数据。
 
     make_inputs: () -> tuple[torch.Tensor]，每次调用生成输入；
     ref: (*inputs) -> 参考输出（torch 实现），形状/结构与 op 输出一致；
     flops: (*inputs) -> float，每次调用的浮点运算数（报 TFLOPS 用）；
     baselines: {显示名: callable}，用相同输入和计时参数运行的库基线。
+    requires: 可选的 ``() -> bool``，硬件不满足时整项显示为 SKIP。
     """
     def deco(fn):
         BENCH_CASES[fn.__name__] = Case(
             fn, make_inputs, ref, flops, rtol, atol, warmup, iters,
-            dict(baselines or {}))
+            dict(baselines or {}), requires)
         return fn
     return deco
 
@@ -150,6 +152,9 @@ def _format_stats(label, stats, speedup=None):
 
 def run_case(name, args):
     case = BENCH_CASES[name]
+    if case.requires is not None and not case.requires():
+        print(f"{name:32s} correctness: SKIP (hardware requirement)")
+        return
     try:
         verdict = check_case(case)
     except (AssertionError, RuntimeError) as e:

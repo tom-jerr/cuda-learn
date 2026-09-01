@@ -1,5 +1,6 @@
 # CMake / CUDA build outputs
 /build/
+/build-*/
 /compile_commands.json
 CMakeFiles/
 CMakeCache.txt

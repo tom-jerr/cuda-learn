@@ -199,6 +199,42 @@ def test_flash_attn_swizzled_causal(q, k, v):
     return ops.flash_attn_swizzled(q, k, v, causal=True)
 
 
+# ---------- flash_attn3_hopper（BF16 SM90a，N 需为 128 的倍数）----------
+
+
+def _make_fa3_hopper():
+    shape = (2, 8, 2048, 64)
+    return tuple(torch.randn(shape, device=DEVICE, dtype=torch.bfloat16)
+                 for _ in range(3))
+
+
+@bench(
+    make_inputs=_make_fa3_hopper,
+    ref=lambda q, k, v: F.scaled_dot_product_attention(q, k, v),
+    flops=lambda q, k, v: 4 * q.shape[0] * q.shape[1] * q.shape[2] ** 2
+    * q.shape[3],
+    rtol=4e-2,
+    atol=4e-2,
+    requires=lambda: torch.cuda.get_device_capability()[0] == 9,
+)
+def test_flash_attn3_hopper(q, k, v):
+    return ops.flash_attn3_hopper(q, k, v)
+
+
+@bench(
+    make_inputs=_make_fa3_hopper,
+    ref=lambda q, k, v: F.scaled_dot_product_attention(
+        q, k, v, is_causal=True),
+    flops=lambda q, k, v: 2 * q.shape[0] * q.shape[1] * q.shape[2]
+    * (q.shape[2] + 1) * q.shape[3],
+    rtol=4e-2,
+    atol=4e-2,
+    requires=lambda: torch.cuda.get_device_capability()[0] == 9,
+)
+def test_flash_attn3_hopper_causal(q, k, v):
+    return ops.flash_attn3_hopper(q, k, v, causal=True)
+
+
 # ---------- RoPE (FP16 NeoX split-half, in-place Q/K) ----------
 
 
