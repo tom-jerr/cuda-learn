@@ -8,199 +8,183 @@
 
 #define CUDA_CHECK(call)                                                       \
   do {                                                                         \
-    cudaError_t err = (call);                                                   \
-    if (err != cudaSuccess) {                                                   \
+    cudaError_t err = (call);                                                  \
+    if (err != cudaSuccess) {                                                  \
       std::fprintf(stderr, "CUDA error %s:%d: %s\n", __FILE__, __LINE__,       \
-                   cudaGetErrorString(err));                                    \
-      std::exit(EXIT_FAILURE);                                                  \
+                   cudaGetErrorString(err));                                   \
+      std::exit(EXIT_FAILURE);                                                 \
     }                                                                          \
   } while (0)
 
-// 面试版约束：每行独立做 Top-K，输入为有限 float，1 <= k <= 32。
-// 相同 value 时选择更小的 index，因此 baseline/warp 版结果完全一致。
-constexpr int kMaxK = 32;
-constexpr int kWarpSize = 32;
+// 面试极简版只面向 small-K：一个 block 处理至多 8192 个元素，256 个线程
+// 各自维护局部 Top-K，然后线程 0 合并出 block Top-K。
+// 一个 block 的工作：
+//   1. 负责 input[blockIdx.x * 8192 : min(..., n)]；
+//   2. 256 个线程 stride 扫描，每线程在 shared memory 中维护一个 Top-K；
+//   3. 同步后由线程 0 合并 256 份线程 Top-K；
+//   4. 向 partial 写出这一块的 k 个候选。
+//
+// 正确性依据：若元素没进入自己分组的 Top-K，则仅在该分组内就已有至少 k
+// 个元素不小于它，因此它也不可能进入全局 Top-K。于是：
+// TopK(所有元素) == TopK(各分组 Top-K 的并集)。
+constexpr int kBlockThreads = 256;
+constexpr int kMaxK = 4;
+constexpr int kItemsPerBlock = 8192;
 
-__device__ __forceinline__ bool better(float lhs_value, int lhs_index,
-                                       float rhs_value, int rhs_index) {
-  return lhs_index >= 0 &&
-         (rhs_index < 0 || lhs_value > rhs_value ||
-          (lhs_value == rhs_value && lhs_index < rhs_index));
+// top[0:k] 始终按降序排列。插入一个新值并只保留最大的 k 个，最坏 O(k)。
+__device__ __forceinline__ void insert_topk(float *top, int k, float value) {
+  if (value <= top[k - 1])
+    return;
+  int pos = k - 1;
+
+  while (pos > 0 && value > top[pos - 1]) {
+    top[pos] = top[pos - 1];
+    --pos;
+  }
+  top[pos] = value;
 }
 
-// Baseline：一行一个线程，在寄存器数组中维护有序 Top-K。
-// 复杂度 O(cols * k)，并行度只有 rows。
-__global__ void topk_baseline_kernel(const float* input, float* values,
-                                     int* indices, int rows, int cols, int k) {
-  const int row = blockIdx.x * blockDim.x + threadIdx.x;
-  if (row >= rows) return;
+__global__ void topk_kernel(const float *input, float *partial, int N, int k) {
+  const int bid = blockIdx.x;
+  const int b_begin = bid * kItemsPerBlock;
+  const int b_end = min(b_begin + kItemsPerBlock, N);
+  __shared__ float thread_top[kBlockThreads][kMaxK];
 
-  float best_values[kMaxK];
-  int best_indices[kMaxK];
-#pragma unroll
-  for (int j = 0; j < kMaxK; ++j) {
-    best_values[j] = -FLT_MAX;
-    best_indices[j] = -1;
+  for (int i = 0; i < k; ++i)
+    thread_top[threadIdx.x][i] = -FLT_MAX;
+  for (int idx = b_begin + threadIdx.x; idx < b_end; idx += kBlockThreads) {
+    insert_topk(thread_top[threadIdx.x], k, input[idx]);
   }
+  __syncthreads();
 
-  const float* row_input = input + row * cols;
-  for (int col = 0; col < cols; ++col) {
-    const float candidate = row_input[col];
-    if (!better(candidate, col, best_values[k - 1], best_indices[k - 1])) {
-      continue;
-    }
+  if (threadIdx.x == 0) {
+    float block_top[kMaxK];
+    for (int i = 0; i < k; ++i)
+      block_top[i] = -FLT_MAX;
 
-    int pos = k - 1;
-    while (pos > 0 && better(candidate, col, best_values[pos - 1],
-                             best_indices[pos - 1])) {
-      best_values[pos] = best_values[pos - 1];
-      best_indices[pos] = best_indices[pos - 1];
-      --pos;
-    }
-    best_values[pos] = candidate;
-    best_indices[pos] = col;
-  }
-
-  for (int j = 0; j < k; ++j) {
-    values[row * k + j] = best_values[j];
-    indices[row * k + j] = best_indices[j];
-  }
-}
-
-// Warp argmax：value 大者胜；相等时 index 小者胜。
-__device__ __forceinline__ void warp_argmax(float& value, int& index) {
-#pragma unroll
-  for (int offset = kWarpSize / 2; offset > 0; offset >>= 1) {
-    const float other_value =
-        __shfl_down_sync(0xffffffffu, value, offset);
-    const int other_index = __shfl_down_sync(0xffffffffu, index, offset);
-    if (better(other_value, other_index, value, index)) {
-      value = other_value;
-      index = other_index;
-    }
-  }
-}
-
-// 优化版：一个 warp 处理一行。第 t 轮 32 lanes 并行扫描未选元素，
-// shuffle 做 argmax；lane 0 记录 winner。复杂度 O(k * cols / 32)。
-// 这是适合面试手写的 small-k 版本；大规模通用 Top-K 通常用 radix-select、
-// 分块候选 + merge 或 CUB/Thrust，而不是反复扫描 k 次。
-__global__ void topk_warp_kernel(const float* input, float* values,
-                                 int* indices, int rows, int cols, int k) {
-  const int warp_in_block = threadIdx.x / kWarpSize;
-  const int lane = threadIdx.x % kWarpSize;
-  const int warps_per_block = blockDim.x / kWarpSize;
-  const int row = blockIdx.x * warps_per_block + warp_in_block;
-  if (row >= rows) return;
-
-  // 每个 warp 有 kMaxK 个槽，保存已经选过的原始下标。
-  extern __shared__ int selected[];
-  int* warp_selected = selected + warp_in_block * kMaxK;
-  const float* row_input = input + row * cols;
-
-  for (int rank = 0; rank < k; ++rank) {
-    float local_value = -FLT_MAX;
-    int local_index = -1;
-
-    for (int col = lane; col < cols; col += kWarpSize) {
-      bool already_selected = false;
-      for (int j = 0; j < rank; ++j) {
-        already_selected |= (warp_selected[j] == col);
-      }
-      if (!already_selected &&
-          better(row_input[col], col, local_value, local_index)) {
-        local_value = row_input[col];
-        local_index = col;
+    for (int i = 0; i < kBlockThreads; ++i) {
+      for (int j = 0; j < k; ++j) {
+        insert_topk(block_top, k, thread_top[i][j]);
       }
     }
-
-    warp_argmax(local_value, local_index);
-    if (lane == 0) {
-      warp_selected[rank] = local_index;
-      values[row * k + rank] = local_value;
-      indices[row * k + rank] = local_index;
-    }
-    // 下一轮所有 lane 都会读 lane 0 刚写入的 selected[rank]。
-    __syncwarp();
+    for (int i = 0; i < k; ++i)
+      partial[bid * k + i] = block_top[i];
   }
 }
 
-void topk_baseline(const float* input, float* values, int* indices, int rows,
-                   int cols, int k) {
-  constexpr int threads = 128;
-  topk_baseline_kernel<<<(rows + threads - 1) / threads, threads>>>(
-      input, values, indices, rows, cols, k);
-}
-
-void topk_warp(const float* input, float* values, int* indices, int rows,
-               int cols, int k) {
-  constexpr int threads = 128;  // 4 rows/block
-  constexpr int warps_per_block = threads / kWarpSize;
-  const int blocks = (rows + warps_per_block - 1) / warps_per_block;
-  const size_t shared_bytes = warps_per_block * kMaxK * sizeof(int);
-  topk_warp_kernel<<<blocks, threads, shared_bytes>>>(input, values, indices,
-                                                      rows, cols, k);
-}
-
-int main() {
-  constexpr int rows = 7;
-  constexpr int cols = 1003;  // 故意不是 32 的倍数
-  constexpr int k = 8;
-  static_assert(k <= kMaxK);
-
-  std::vector<float> input(rows * cols);
-  for (int i = 0; i < rows * cols; ++i) {
-    // 含重复值，用来检查 tie-break。
-    input[i] = static_cast<float>((i * 17 + i / 11) % 101 - 50);
+extern "C" void solve(const float *input, float *output, int n, int k) {
+  // 该面试接口没有错误返回值，非法参数直接打印并返回。
+  if (input == nullptr || output == nullptr || n <= 0 || k <= 0 || k > kMaxK ||
+      k > n) {
+    std::fprintf(stderr, "topk: require n > 0 and 1 <= k <= min(%d, n)\n",
+                 kMaxK);
+    return;
   }
 
-  float *d_input = nullptr, *d_baseline_values = nullptr,
-        *d_warp_values = nullptr;
-  int *d_baseline_indices = nullptr, *d_warp_indices = nullptr;
-  CUDA_CHECK(cudaMalloc(&d_input, input.size() * sizeof(float)));
-  CUDA_CHECK(cudaMalloc(&d_baseline_values, rows * k * sizeof(float)));
-  CUDA_CHECK(cudaMalloc(&d_warp_values, rows * k * sizeof(float)));
-  CUDA_CHECK(cudaMalloc(&d_baseline_indices, rows * k * sizeof(int)));
-  CUDA_CHECK(cudaMalloc(&d_warp_indices, rows * k * sizeof(int)));
-  CUDA_CHECK(cudaMemcpy(d_input, input.data(), input.size() * sizeof(float),
-                        cudaMemcpyHostToDevice));
+  int num_blocks = (n + kItemsPerBlock - 1) / kItemsPerBlock;
+  float *current = nullptr;
+  CUDA_CHECK(cudaMalloc(&current,
+                        static_cast<size_t>(num_blocks) * k * sizeof(float)));
 
-  topk_baseline(d_input, d_baseline_values, d_baseline_indices, rows, cols, k);
-  topk_warp(d_input, d_warp_values, d_warp_indices, rows, cols, k);
+  // 第一层：n 个输入 -> num_blocks * k 个候选。
+  topk_kernel<<<num_blocks, kBlockThreads>>>(input, current, n, k);
   CUDA_CHECK(cudaGetLastError());
 
-  std::vector<float> baseline_values(rows * k), warp_values(rows * k);
-  std::vector<int> baseline_indices(rows * k), warp_indices(rows * k);
-  CUDA_CHECK(cudaMemcpy(baseline_values.data(), d_baseline_values,
-                        rows * k * sizeof(float), cudaMemcpyDeviceToHost));
-  CUDA_CHECK(cudaMemcpy(warp_values.data(), d_warp_values,
-                        rows * k * sizeof(float), cudaMemcpyDeviceToHost));
-  CUDA_CHECK(cudaMemcpy(baseline_indices.data(), d_baseline_indices,
-                        rows * k * sizeof(int), cudaMemcpyDeviceToHost));
-  CUDA_CHECK(cudaMemcpy(warp_indices.data(), d_warp_indices,
-                        rows * k * sizeof(int), cudaMemcpyDeviceToHost));
+  // 保留各层 allocation 到所有 kernel 完成后再统一释放，避免在循环中
+  // cudaFree 引入逐层同步。候选每层至少缩小约 8192 / k 倍，所以额外空间小。
+  std::vector<float *> allocations{current};
+  int current_n = num_blocks * k;
+  bool output_written = false;
 
-  for (int i = 0; i < rows * k; ++i) {
-    if (baseline_values[i] != warp_values[i] ||
-        baseline_indices[i] != warp_indices[i]) {
-      std::fprintf(stderr,
-                   "mismatch at %d: baseline=(%g,%d), warp=(%g,%d)\n", i,
-                   baseline_values[i], baseline_indices[i], warp_values[i],
-                   warp_indices[i]);
+  while (current_n > k) {
+    const int next_blocks = (current_n + kItemsPerBlock - 1) / kItemsPerBlock;
+
+    if (next_blocks == 1) {
+      // 最后一层直接写 output，避免再分配一个只有 k 个元素的 buffer。
+      topk_kernel<<<1, kBlockThreads>>>(current, output, current_n, k);
+      CUDA_CHECK(cudaGetLastError());
+      output_written = true;
+      break;
+    }
+
+    float *next = nullptr;
+    CUDA_CHECK(cudaMalloc(&next, static_cast<size_t>(next_blocks) * k *
+                                     sizeof(float)));
+    allocations.push_back(next);
+    topk_kernel<<<next_blocks, kBlockThreads>>>(current, next, current_n, k);
+    CUDA_CHECK(cudaGetLastError());
+
+    current = next;
+    current_n = next_blocks * k;
+  }
+
+  // n 本来就由一个 block 处理时，第一层结果仍在 current 中。
+  if (!output_written) {
+    CUDA_CHECK(cudaMemcpy(output, current,
+                          static_cast<size_t>(k) * sizeof(float),
+                          cudaMemcpyDeviceToDevice));
+  }
+
+  CUDA_CHECK(cudaDeviceSynchronize());
+  for (float *ptr : allocations)
+    CUDA_CHECK(cudaFree(ptr));
+}
+
+// ---------------------------------------------------------------------------
+// 适用情况：大 N、非常小的 k（这里限制 k <= 4）、只需要值、不要求完整排序。
+// 相比 bitonic 全排序，它无需把 n 补到 2 的幂，通常只读一遍原输入，并把每块
+// 8192 个数压缩成 k 个候选；递归层数很少。
+//
+// 仍有的问题（面试时应主动说明）：
+//   1. 每线程 Top-K 放在 shared memory，插入时会有 bank conflict；生产版应使用
+//      编译期固定 K 的寄存器数组。
+//   2. block 合并完全由线程 0 串行完成；生产版应使用 warp shuffle/bitonic
+//      merge，再分层合并各 warp 的结果。
+//   3. 插入复杂度 O(k)，整个算法只适合 small-K；大 K 应考虑 radix-select、
+//      CUB DeviceTopK 或更完整的分块选择算法。
+//   4. 只返回 value，不返回原始 index；相等元素也没有稳定下标语义。
+//   5. 假设输入为有限 float；NaN 会破坏这里的普通大小比较。
+//   6. solve 使用默认 stream、cudaMalloc 和最终全设备同步，不适合作为异步库
+//      接口；生产版应传入 stream 并复用 workspace/cudaMallocAsync。
+// ---------------------------------------------------------------------------
+
+int main() {
+  constexpr int n = 20003; // 跨越多个 8192-element block
+  constexpr int k = 4;
+
+  std::vector<float> input(n);
+  for (int i = 0; i < n; ++i) {
+    input[i] = static_cast<float>((i * 17 + i / 7) % 997 - 498);
+  }
+
+  float *device_input = nullptr, *device_output = nullptr;
+  CUDA_CHECK(cudaMalloc(&device_input, input.size() * sizeof(float)));
+  CUDA_CHECK(cudaMalloc(&device_output, k * sizeof(float)));
+  CUDA_CHECK(cudaMemcpy(device_input, input.data(),
+                        input.size() * sizeof(float), cudaMemcpyHostToDevice));
+
+  solve(device_input, device_output, n, k);
+
+  std::vector<float> output(k);
+  CUDA_CHECK(cudaMemcpy(output.data(), device_output, k * sizeof(float),
+                        cudaMemcpyDeviceToHost));
+
+  std::partial_sort(input.begin(), input.begin() + k, input.end(),
+                    std::greater<float>());
+  for (int rank = 0; rank < k; ++rank) {
+    if (output[rank] != input[rank]) {
+      std::fprintf(stderr, "mismatch at %d: gpu=%g cpu=%g\n", rank,
+                   output[rank], input[rank]);
       return EXIT_FAILURE;
     }
   }
 
-  std::printf("Top-K baseline == warp: PASS\nrow 0: ");
-  for (int j = 0; j < k; ++j) {
-    std::printf("(%g, %d)%s", warp_values[j], warp_indices[j],
-                j + 1 == k ? "\n" : " ");
+  std::printf("hierarchical Top-K: PASS\nresult: ");
+  for (int rank = 0; rank < k; ++rank) {
+    std::printf("%g%s", output[rank], rank + 1 == k ? "\n" : " ");
   }
 
-  CUDA_CHECK(cudaFree(d_input));
-  CUDA_CHECK(cudaFree(d_baseline_values));
-  CUDA_CHECK(cudaFree(d_warp_values));
-  CUDA_CHECK(cudaFree(d_baseline_indices));
-  CUDA_CHECK(cudaFree(d_warp_indices));
+  CUDA_CHECK(cudaFree(device_input));
+  CUDA_CHECK(cudaFree(device_output));
   return 0;
 }

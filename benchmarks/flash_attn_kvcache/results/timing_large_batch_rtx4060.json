@@ -1,0 +1,90 @@
+{
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "torch": "2.10.0+cu128",
+  "config": {
+    "q_len": 1,
+    "q_heads": 8,
+    "kv_heads": 8,
+    "head_dim": 64,
+    "dtype": "float16",
+    "page_size": 256,
+    "fragmentation": 2,
+    "warmup": 30,
+    "iters": 200,
+    "timing": "paired, alternating launch order"
+  },
+  "rows": [
+    {
+      "batch": 8,
+      "kv_len": 4096,
+      "paged_contiguous_median_us": 324.6079981327057,
+      "paged_random_median_us": 324.6079981327057,
+      "random_over_contiguous": 1.0,
+      "contiguous_useful_gbps": 206.73817153625606,
+      "random_useful_gbps": 206.73817153625606
+    },
+    {
+      "batch": 8,
+      "kv_len": 8192,
+      "paged_contiguous_median_us": 573.4400153160095,
+      "paged_random_median_us": 573.4400153160095,
+      "random_over_contiguous": 1.0,
+      "contiguous_useful_gbps": 234.0571366057106,
+      "random_useful_gbps": 234.0571366057106
+    },
+    {
+      "batch": 16,
+      "kv_len": 4096,
+      "paged_contiguous_median_us": 593.9199924468994,
+      "paged_random_median_us": 593.9199924468994,
+      "random_over_contiguous": 1.0,
+      "contiguous_useful_gbps": 225.9862097705021,
+      "random_useful_gbps": 225.9862097705021
+    },
+    {
+      "batch": 16,
+      "kv_len": 8192,
+      "paged_contiguous_median_us": 1204.2239904403687,
+      "paged_random_median_us": 1204.2239904403687,
+      "random_over_contiguous": 1.0,
+      "contiguous_useful_gbps": 222.91156639541515,
+      "random_useful_gbps": 222.91156639541515
+    },
+    {
+      "batch": 32,
+      "kv_len": 4096,
+      "paged_contiguous_median_us": 1157.1199893951416,
+      "paged_random_median_us": 1155.0719738006592,
+      "random_over_contiguous": 0.9982300750023747,
+      "contiguous_useful_gbps": 231.9858428340855,
+      "random_useful_gbps": 232.3971683917995
+    },
+    {
+      "batch": 32,
+      "kv_len": 8192,
+      "paged_contiguous_median_us": 2259.968042373657,
+      "paged_random_median_us": 2257.920026779175,
+      "random_over_contiguous": 0.9990937855951576,
+      "contiguous_useful_gbps": 237.5568600678625,
+      "random_useful_gbps": 237.77233278090148
+    },
+    {
+      "batch": 64,
+      "kv_len": 4096,
+      "paged_contiguous_median_us": 2221.0559844970703,
+      "paged_random_median_us": 2214.911937713623,
+      "random_over_contiguous": 0.9972337271881787,
+      "contiguous_useful_gbps": 241.7187660947536,
+      "random_useful_gbps": 242.389280972585
+    },
+    {
+      "batch": 64,
+      "kv_len": 8192,
+      "paged_contiguous_median_us": 4398.079872131348,
+      "paged_random_median_us": 4399.616003036499,
+      "random_over_contiguous": 1.0003492730804835,
+      "contiguous_useful_gbps": 244.1387731050131,
+      "random_useful_gbps": 244.05353177616678
+    }
+  ]
+}

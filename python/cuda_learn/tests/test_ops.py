@@ -125,7 +125,7 @@ def _fa_ref(q, k, v):
     * q.shape[3],
     rtol=2e-2,
     atol=2e-2,
-    baselines={"flash-attn 2.8.4": flash_attn_2},
+    baselines={"flash-attn 2.8.3": flash_attn_2},
 )
 def test_flash_attn(q, k, v):
     return ops.flash_attn(q, k, v)
@@ -140,7 +140,7 @@ def test_flash_attn(q, k, v):
     atol=2e-2,
     baselines={
         "original": ops.flash_attn,
-        "flash-attn 2.8.4": flash_attn_2,
+        "flash-attn 2.8.3": flash_attn_2,
     },
 )
 def test_flash_attn_optimized(q, k, v):
@@ -156,7 +156,7 @@ def test_flash_attn_optimized(q, k, v):
     rtol=2e-2,
     atol=2e-2,
     baselines={
-        "flash-attn 2.8.4": lambda q, k, v: flash_attn_2(
+        "flash-attn 2.8.3": lambda q, k, v: flash_attn_2(
             q, k, v, causal=True),
     },
 )
@@ -173,7 +173,7 @@ def test_flash_attn_optimized_causal(q, k, v):
     atol=2e-2,
     baselines={
         "PAD=8 8-warp": ops.flash_attn_optimized,
-        "flash-attn 2.8.4": flash_attn_2,
+        "flash-attn 2.8.3": flash_attn_2,
     },
 )
 def test_flash_attn_swizzled(q, k, v):
@@ -191,12 +191,47 @@ def test_flash_attn_swizzled(q, k, v):
     baselines={
         "PAD=8 8-warp": lambda q, k, v: ops.flash_attn_optimized(
             q, k, v, causal=True),
-        "flash-attn 2.8.4": lambda q, k, v: flash_attn_2(
+        "flash-attn 2.8.3": lambda q, k, v: flash_attn_2(
             q, k, v, causal=True),
     },
 )
 def test_flash_attn_swizzled_causal(q, k, v):
     return ops.flash_attn_swizzled(q, k, v, causal=True)
+
+
+@bench(
+    make_inputs=_make_fa,
+    ref=_fa_ref,
+    flops=lambda q, k, v: 4 * q.shape[0] * q.shape[1] * q.shape[2] ** 2
+    * q.shape[3],
+    rtol=2e-2,
+    atol=2e-2,
+    baselines={
+        "128x128 swizzle": ops.flash_attn_swizzled,
+        "flash-attn 2.8.3": flash_attn_2,
+    },
+)
+def test_flash_attn_multistage(q, k, v):
+    return ops.flash_attn_multistage(q, k, v)
+
+
+@bench(
+    make_inputs=_make_fa,
+    ref=lambda q, k, v: F.scaled_dot_product_attention(
+        q, k, v, is_causal=True),
+    flops=lambda q, k, v: 2 * q.shape[0] * q.shape[1] * q.shape[2]
+    * (q.shape[2] + 1) * q.shape[3],
+    rtol=2e-2,
+    atol=2e-2,
+    baselines={
+        "128x128 swizzle": lambda q, k, v: ops.flash_attn_swizzled(
+            q, k, v, causal=True),
+        "flash-attn 2.8.3": lambda q, k, v: flash_attn_2(
+            q, k, v, causal=True),
+    },
+)
+def test_flash_attn_multistage_causal(q, k, v):
+    return ops.flash_attn_multistage(q, k, v, causal=True)
 
 
 # ---------- flash_attn3_hopper（BF16 SM90a，N 需为 128 的倍数）----------

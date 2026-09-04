@@ -96,6 +96,31 @@ def gemm(a, b):
     return c
 
 
+def sgemv(weight, x):
+    """FP32 row-major SGEMV optimized for batch-1/token decoding."""
+    weight, x = _contig(weight), _contig(x)
+    if weight.ndim != 2 or x.ndim != 1:
+        raise ValueError("sgemv expects weight[rows, cols] and x[cols]")
+    if weight.shape[1] != x.shape[0]:
+        raise ValueError("sgemv weight and x reduction dimensions must match")
+    out = torch.empty(weight.shape[0], device=weight.device, dtype=weight.dtype)
+    call("cuda_learn.sgemv", weight, x, out)
+    return out
+
+
+def sgemv_async(weight, x):
+    """Teaching variant that stages x through shared memory with cp.async."""
+    weight, x = _contig(weight), _contig(x)
+    if weight.ndim != 2 or x.ndim != 1:
+        raise ValueError("sgemv_async expects weight[rows, cols] and x[cols]")
+    if weight.shape[1] != x.shape[0]:
+        raise ValueError(
+            "sgemv_async weight and x reduction dimensions must match")
+    out = torch.empty(weight.shape[0], device=weight.device, dtype=weight.dtype)
+    call("cuda_learn.sgemv_async", weight, x, out)
+    return out
+
+
 def cublas_gemm(a, b):
     """FP32 cuBLAS SGEMM benchmark baseline."""
     a, b = _contig(a), _contig(b)
@@ -174,6 +199,24 @@ def flash_attn_swizzled(q, k, v, causal=False):
             "flash_attn_swizzled sequence length must be a positive multiple of 64")
     out = torch.empty_like(q)
     call("cuda_learn.flash_attn_swizzled", q, k, v, out, int(bool(causal)))
+    return out
+
+
+def flash_attn_multistage(q, k, v, causal=False):
+    """64x64, 4-warp FP16 attention with two XOR-swizzled K/V stages."""
+    q, k, v = _contig_fp16(q), _contig_fp16(k), _contig_fp16(v)
+    if q.ndim != 4 or q.shape[-1] != 64:
+        raise ValueError(
+            f"flash_attn_multistage expects q shaped [B,H,N,64], got {q.shape}")
+    if k.shape != q.shape or v.shape != q.shape:
+        raise ValueError(
+            "flash_attn_multistage expects q, k and v to have identical shapes")
+    if q.shape[2] == 0 or q.shape[2] % 64:
+        raise ValueError(
+            "flash_attn_multistage sequence length must be a positive multiple of 64")
+    out = torch.empty_like(q)
+    call("cuda_learn.flash_attn_multistage", q, k, v, out,
+         int(bool(causal)))
     return out
 
 

@@ -1,10 +1,11 @@
+#include <__clang_cuda_runtime_wrapper.h>
 #include <cuda_runtime.h>
 
 constexpr int d = 128;
-constexpr int B_r = 8;
-constexpr int B_c = 32;
-constexpr int block_dim_x = 128;
-constexpr int block_dim_y = 8;
+constexpr int B_r = 8;  // qtile[8,128]
+constexpr int B_c = 32; // kvtile [32, 128]
+constexpr int block_dim_x = 128; // 主要对应特征维度，每个线程负责一个输出特征
+constexpr int block_dim_y = 8; // 对应 Q tile 中的 8 行
 constexpr int d_over_bdx = d / block_dim_x;
 constexpr int B_r_over_bdy = B_r / block_dim_y;
 

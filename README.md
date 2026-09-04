@@ -36,6 +36,7 @@ tests/test_<op>() + @bench 装饰器 ──► python -m cuda_learn.bench test_g
 ## 环境准备
 
 - GPU：RTX 4060 Laptop (sm_89)；nvcc 13.0；cmake ≥ 3.22
+- 初始化 CUTLASS/CuTe submodule：`git submodule update --init --recursive`
 - venv（本项目用 `~/.python/miniinfer`，已有 torch 2.10+cu128）：
 
 ```bash
@@ -73,16 +74,18 @@ flops=..., rtol=..., atol=...)` 注册元数据；测试函数体只做 op 调�
 （warmup + iters，与 kernel 同流、一次 sync），输出 min/median/mean 与 GFLOPS/TFLOPS。
 GEMM 会在相同输入下对比 FP32 `cublasSgemm`，BF16 MMA 会对比
 `cublasGemmEx`，softmax 会对比 FP32
-`cudnnSoftmaxForward`，flash_attn 会对比稀疏检出的 flash-attention 2.8.4
+`cudnnSoftmaxForward`，flash_attn 会对比稀疏检出的 flash-attention 2.8.3
 FP16/D64 forward kernel，并输出 `cuda_learn speedup`（大于 1 表示手写 kernel 更快）。
 GEMM/softmax 库基线都直接调用 NVIDIA API，而不是用 PyTorch 算子名称推断后端。
 flash-attention 基线首次运行时会把官方 D64 forward specialization 编译到 torch
 extension cache；只裁剪无关 dtype/head-dim/反向编译单元，被测 kernel 源码不变。
 
-当前 benchmark（19 个）：vector_add ×3、transpose ×2、dot_product、gemm（tiled sgemm）、
-gemm_mma（BF16 Tensor Core）、flash_attn ×5（shared-memory 教学版、PAD=8 8-warp 和
-XOR-swizzled 4-warp 的 non-causal/causal，FP16 [B,H,N,64]）、
-silu_and_mul、rmsnorm（宽行、小 hidden、边界形状）、rmsnorm_and_add、softmax。
+当前 benchmark（25 个）：vector_add ×3、transpose ×2、dot_product、gemm（tiled sgemm）、
+gemm_mma / L2 swizzle（BF16 Tensor Core）、flash_attn ×5（shared-memory 教学版、PAD=8 8-warp 和
+XOR-swizzled 4-warp 的 non-causal/causal，FP16 [B,H,N,64]），以及 multi-stage
+`x4` / `x4.trans` 的 non-causal/causal、
+silu_and_mul、RoPE、rmsnorm（宽行、小 hidden、边界形状）、rmsnorm_and_add、softmax，
+以及 Hopper FA3 non-causal/causal。
 
 ## 直接用 ops（pytorch binding 形式）
 
@@ -115,13 +118,17 @@ d = cuda_learn.vector_add(a, b)
   double buffering 路线与性能对比），[Flash Attention 完整学习文档](docs/flash_attention.md)
   （背景、初始版、优化版、causal 与性能对比），[RMSNorm 学习文档](docs/rmsnorm.md)
   （与 LayerNorm 的差异、small hidden size 优化与 profiler），
+  [CuTe C++ 分层教程](docs/cute.md)（Layout、Tensor、TiledCopy、TiledMMA、流水线与
+  epilogue），
   [CUDA Memory Pool IPC](docs/cuda_memory_pool_ipc.md)（stream-ordered allocator、
   exporter/importer 完整时序、适用范围与生命周期规则）
 - `src/` — kernels + FFI 注册（`ffi_common.h` 公共设施）
 - `python/cuda_learn/` — Python 包：`ops.py`（binding）、`bench.py`（@bench + 运行器）、`tests/`
 - `examples/` — 原始 standalone 演示（含 Makefile 一键重编）
+  - `cute_gemm/simple.cu`：可选 CUTLASS/CuTe 依赖的 sm_80+ FP16 TN GEMM，展示
+    swizzled layout、`cp.async` TiledCopy、`ldmatrix` 与 TiledMMA；
   - `sgemv_k32/simple.cu`：A[M,K] × x[K]（K%32=0），一行一个 warp 的 SGEMV 面试版；
-  - `topk/simple.cu`：row-wise Top-K 单线程 baseline 与 warp argmax 面试版；
+  - `topk/simple.cu`：small-K 分块局部 Top-K + 递归候选归约面试版；
   - `prefix_sum/simple.cu`：inclusive scan 串行 baseline 与 warp/block 分层面试版；
   - `quant/reference.py`：对称/非对称 INT8 的 per-tensor、per-token、per-channel 误差比较；
   - `quant/awq_gptq_gemm.cu`：AWQ/GPTQ checkpoint pack、加载期重排与极简 W4A16 GEMM；
@@ -137,6 +144,8 @@ d = cuda_learn.vector_add(a, b)
   tile skip/mask；输出复用 Q shared tile 做 layout conversion，并使用 128-bit global store；
 - `flash_attn_swizzled` 使用 4 warp × 32 rows/warp 和 48 KiB XOR-swizzled Q/K/V layout，
   在 sm_89 上目标为 2 CTA/SM；
+- `flash_attn_multistage` 使用 64×64、4 warp、40 KiB 双 stage XOR-swizzled K/V，
+  K 使用相邻 `x2 -> x4`，V 使用 `x4.trans`，并将 causal 拆为编译期 specialization；
 - 计时为端到端（含 launch 开销）；FFI env stream 是线程局部的，bench 单线程；
 - cuda_allocator / cuda_graph 为运行时机制演示，非 tensor-op 形态，暂留在
   `examples/`（未纳入绑定系统）；

@@ -1,0 +1,21 @@
+{
+  "dense_split": {
+    "calls": 20,
+    "cuda_total_us": 12587.173,
+    "cuda_mean_us": 629.35865
+  },
+  "paged_contiguous": {
+    "calls": 20,
+    "cuda_total_us": 12722.387000000004,
+    "cuda_mean_us": 636.1193500000002
+  },
+  "paged_random": {
+    "calls": 20,
+    "cuda_total_us": 12689.369999999997,
+    "cuda_mean_us": 634.4684999999998
+  },
+  "ratios": {
+    "random_over_contiguous": 0.9974048109053744,
+    "paged_over_dense_split": 1.0107422055770587
+  }
+}

@@ -1,6 +1,9 @@
 #include <cuda_runtime.h>
 #include <iostream>
 
+constexpr int kWarpSize = 32;
+constexpr int kBlockThreads = 256;
+
 __device__ __forceinline__ float warp_reduce_sum(float value) {
   for (int offset = 16; offset > 0; offset >>= 1) {
     value += __shfl_down_sync(0xffffffffu, value, offset);
@@ -9,24 +12,26 @@ __device__ __forceinline__ float warp_reduce_sum(float value) {
 }
 
 __device__ __forceinline__ float block_reduce_sum(float value) {
-  static __shared__ float shared[32]; // 32 warps per block
-  const int lane = threadIdx.x % 32;
-  const int warp_id = threadIdx.x / 32;
-
-  value = warp_reduce_sum(value);
-
-  if (lane == 0)
-    shared[warp_id] = value;
-  __syncthreads();
-
-  value = (threadIdx.x < blockDim.x / 32) ? shared[lane] : 0;
-  if (warp_id == 0) {
-    shared[0] = warp_reduce_sum(value);
+  static __shared__ float warp_sums[kWarpSize];
+  const int kNumWarps = kBlockThreads / kWarpSize;
+  const int tid = threadIdx.x;
+  const int warp = tid / kWarpSize;
+  const int lane = tid % kWarpSize;
+  float sum = 0.0f;
+  sum = warp_reduce_sum(value);
+  if (lane == 0) {
+    warp_sums[lane] = sum;
   }
   __syncthreads();
-  float res = shared[0];
-  // __syncthreads();
-  return res;
+  if (warp == 0) {
+    sum = lane < kNumWarps ? warp_sums[lane] : 0.0f;
+    sum = warp_reduce_sum(sum);
+    if (lane == 0)
+      warp_sums[0] = sum;
+  }
+  __syncthreads();
+  float result = warp_sums[0];
+  return result;
 }
 
 __global__ void reduce_2dim_kernel(const float *input, float *output, int rows,

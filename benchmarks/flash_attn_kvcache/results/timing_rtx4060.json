@@ -1,0 +1,120 @@
+{
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "torch": "2.10.0+cu128",
+  "flash_attn": "vendored 2.8.3 official FP16/D64 specializations",
+  "args": {
+    "batch": 8,
+    "q_len": 1,
+    "kv_lens": [
+      2048,
+      4096,
+      8192
+    ],
+    "q_heads": 8,
+    "kv_heads": 8,
+    "page_size": 256,
+    "fragmentation": 2,
+    "warmup": 30,
+    "iters": 200,
+    "seed": 0,
+    "output": "benchmarks/flash_attn_kvcache/results/timing_rtx4060.json"
+  },
+  "rows": [
+    {
+      "kv_len": 2048,
+      "case": "dense",
+      "median_us": 242.68800020217896,
+      "mean_us": 242.65840284526348,
+      "min_us": 240.63999950885773,
+      "random_over_case": 0.5569620292025624
+    },
+    {
+      "kv_len": 2048,
+      "case": "dense_split",
+      "median_us": 130.048006772995,
+      "mean_us": 130.8016037940979,
+      "min_us": 130.048006772995,
+      "random_over_case": 1.039370032726912
+    },
+    {
+      "kv_len": 2048,
+      "case": "paged_contiguous",
+      "median_us": 135.16800105571747,
+      "mean_us": 136.8377596884966,
+      "min_us": 134.14399325847626,
+      "random_over_case": 1.0
+    },
+    {
+      "kv_len": 2048,
+      "case": "paged_random",
+      "median_us": 135.16800105571747,
+      "mean_us": 135.7265590876341,
+      "min_us": 135.16800105571747,
+      "random_over_case": 1.0
+    },
+    {
+      "kv_len": 4096,
+      "case": "dense",
+      "median_us": 476.1599898338318,
+      "mean_us": 474.2358401417732,
+      "min_us": 456.7039906978607,
+      "random_over_case": 0.6258064734180628
+    },
+    {
+      "kv_len": 4096,
+      "case": "dense_split",
+      "median_us": 288.7679934501648,
+      "mean_us": 289.4244718551636,
+      "min_us": 286.72000765800476,
+      "random_over_case": 1.0319149309465165
+    },
+    {
+      "kv_len": 4096,
+      "case": "paged_contiguous",
+      "median_us": 296.9599962234497,
+      "mean_us": 297.0471979677677,
+      "min_us": 293.88800263404846,
+      "random_over_case": 1.003448302162796
+    },
+    {
+      "kv_len": 4096,
+      "case": "paged_random",
+      "median_us": 297.9840040206909,
+      "mean_us": 298.0715225636959,
+      "min_us": 295.9359884262085,
+      "random_over_case": 1.0
+    },
+    {
+      "kv_len": 8192,
+      "case": "dense",
+      "median_us": 925.6960153579712,
+      "mean_us": 926.4348900318146,
+      "min_us": 923.6479997634888,
+      "random_over_case": 0.6476769541837464
+    },
+    {
+      "kv_len": 8192,
+      "case": "dense_split",
+      "median_us": 589.8240208625793,
+      "mean_us": 584.4281548261642,
+      "min_us": 569.3439841270447,
+      "random_over_case": 1.0164929784485133
+    },
+    {
+      "kv_len": 8192,
+      "case": "paged_contiguous",
+      "median_us": 601.0879874229431,
+      "mean_us": 601.4670303463936,
+      "min_us": 598.0160236358643,
+      "random_over_case": 0.9974446142195468
+    },
+    {
+      "kv_len": 8192,
+      "case": "paged_random",
+      "median_us": 599.5519757270813,
+      "mean_us": 602.751040160656,
+      "min_us": 593.9199924468994,
+      "random_over_case": 1.0
+    }
+  ]
+}

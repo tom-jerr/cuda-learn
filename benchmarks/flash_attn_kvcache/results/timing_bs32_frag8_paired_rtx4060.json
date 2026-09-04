@@ -1,0 +1,27 @@
+{
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "torch": "2.10.0+cu128",
+  "config": {
+    "q_len": 1,
+    "q_heads": 8,
+    "kv_heads": 8,
+    "head_dim": 64,
+    "dtype": "float16",
+    "page_size": 256,
+    "fragmentation": 8,
+    "warmup": 50,
+    "iters": 500,
+    "timing": "paired, alternating launch order"
+  },
+  "rows": [
+    {
+      "batch": 32,
+      "kv_len": 4096,
+      "paged_contiguous_median_us": 1157.1199893951416,
+      "paged_random_median_us": 1157.1199893951416,
+      "random_over_contiguous": 1.0,
+      "contiguous_useful_gbps": 231.9858428340855,
+      "random_useful_gbps": 231.9858428340855
+    }
+  ]
+}

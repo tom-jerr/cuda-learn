@@ -1,0 +1,4 @@
+*.nsys-rep
+*.sqlite
+ncu_*.csv
+nsys_*.csv

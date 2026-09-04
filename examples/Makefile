@@ -4,14 +4,18 @@
 NVCC ?= nvcc
 NVCCFLAGS ?= -std=c++17 -O2 -arch=sm_89
 CLUSTER_NVCCFLAGS ?= -std=c++17 -O2 -arch=sm_90
+CUTLASS_DIR ?= $(abspath ../third_party/cutlass)
 
 BINS := vector_add/simple \
         embedding/simple \
+        rope/simple \
         kv_cache/simple \
         transpose/simple \
         dotproduct/simple \
         gemm/simple \
         fusion/silu_and_mul \
+        flash_attn/ldmatrix_x4_mapping \
+        flash_attn/multistage_swizzle \
         softmax/simple \
         sgemv_k32/simple \
         topk/simple \
@@ -46,9 +50,27 @@ custom_all_reduce/pdl_staged_pull: custom_all_reduce/pdl_staged_pull.cu
 custom_all_reduce/vmm_multicast_reduce: custom_all_reduce/vmm_multicast_reduce.cu
 	$(NVCC) $(CLUSTER_NVCCFLAGS) $< -lcuda -o $@
 
+# CuTe ships as headers under CUTLASS/include.  This target stays out of `all`
+# because the rest of the standalone examples do not require CUTLASS.
+cute_gemm/simple: cute_gemm/simple.cu
+	@test -f "$(CUTLASS_DIR)/include/cute/tensor.hpp" || \
+	  { echo "set CUTLASS_DIR=/path/to/NVIDIA/cutlass"; exit 1; }
+	$(NVCC) $(NVCCFLAGS) -I$(CUTLASS_DIR)/include $< -o $@
+
+cute_fa2/simple: cute_fa2/simple.cu
+	@test -f "$(CUTLASS_DIR)/include/cute/tensor.hpp" || \
+	  { echo "set CUTLASS_DIR=/path/to/NVIDIA/cutlass"; exit 1; }
+	$(NVCC) $(NVCCFLAGS) -I$(CUTLASS_DIR)/include $< -o $@
+
+cute_fa2/fa2_4096: cute_fa2/fa2_4096.cu
+	@test -f "$(CUTLASS_DIR)/include/cute/tensor.hpp" || \
+	  { echo "set CUTLASS_DIR=/path/to/NVIDIA/cutlass"; exit 1; }
+	$(NVCC) $(NVCCFLAGS) -I$(CUTLASS_DIR)/include $< -o $@
+
 clean:
 	rm -f $(BINS) histogram/cluster cuda_stream/non_blocking \
 		custom_all_reduce/pdl_staged_pull \
-		custom_all_reduce/vmm_multicast_reduce
+		custom_all_reduce/vmm_multicast_reduce cute_gemm/simple
+	rm -f cute_fa2/simple cute_fa2/fa2_4096
 
 .PHONY: all clean

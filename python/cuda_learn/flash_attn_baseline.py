@@ -65,7 +65,7 @@ def _load_module():
 
 
 def flash_attn_2(q, k, v, causal=False):
-    """Run vendored flash-attention 2.8.4 on physical [B,H,N,64] tensors."""
+    """Run vendored flash-attention 2.8.3 on physical [B,H,N,64] tensors."""
     out = torch.empty_like(q)
     softmax_lse = torch.empty(q.shape[:3], device=q.device, dtype=torch.float32)
     _load_module().forward(q, k, v, out, softmax_lse, bool(causal))
