@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1060" viewBox="0 0 1200 1060" role="img" aria-labelledby="title desc">
+<title id="title">S2R：x4 按四块8×8加载，retile 按原槽位接收</title><desc id="desc">源侧每个lane提供一行地址；目的侧每个lane接收8个half。源地址提供者与接收者的分工不同。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1060" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">S2R：x4 按四块8×8加载，retile 按原槽位接收</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">源侧每个lane提供一行地址；目的侧每个lane接收8个half。源地址提供者与接收者的分工不同。</text>
+<text x="40" y="131" font-size="23" fill="#172033" font-weight="700" text-anchor="start">A：一个16×16子块</text>
+<text x="640" y="131" font-size="23" fill="#172033" font-weight="700" text-anchor="start">B：同一warp的两个8×16子块</text>
+<rect x="40" y="158" width="250" height="105" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="186" font-size="21" fill="#174EA6" font-weight="700" text-anchor="start">矩阵0 → word0</text>
+<text x="56" y="216" font-size="18" fill="#172033" font-weight="400" text-anchor="start" class="mono">M0..7, K0..7</text>
+<text x="56" y="245" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行首来自 lanes 0..7</text>
+<rect x="40" y="273" width="250" height="105" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="301" font-size="21" fill="#174EA6" font-weight="700" text-anchor="start">矩阵1 → word1</text>
+<text x="56" y="331" font-size="18" fill="#172033" font-weight="400" text-anchor="start" class="mono">M8..15, K0..7</text>
+<text x="56" y="360" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行首来自 lanes 8..15</text>
+<rect x="300" y="158" width="250" height="105" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="316" y="186" font-size="21" fill="#174EA6" font-weight="700" text-anchor="start">矩阵2 → word2</text>
+<text x="316" y="216" font-size="18" fill="#172033" font-weight="400" text-anchor="start" class="mono">M0..7, K8..15</text>
+<text x="316" y="245" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行首来自 lanes 16..23</text>
+<rect x="300" y="273" width="250" height="105" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="316" y="301" font-size="21" fill="#174EA6" font-weight="700" text-anchor="start">矩阵3 → word3</text>
+<text x="316" y="331" font-size="18" fill="#172033" font-weight="400" text-anchor="start" class="mono">M8..15, K8..15</text>
+<text x="316" y="360" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行首来自 lanes 24..31</text>
+<rect x="640" y="158" width="250" height="105" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="656" y="186" font-size="21" fill="#995600" font-weight="700" text-anchor="start">矩阵0 → word0</text>
+<text x="656" y="216" font-size="18" fill="#172033" font-weight="400" text-anchor="start" class="mono">N0..7, K0..7</text>
+<text x="656" y="245" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行首来自 lanes 0..7</text>
+<rect x="900" y="158" width="250" height="105" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="916" y="186" font-size="21" fill="#995600" font-weight="700" text-anchor="start">矩阵1 → word1</text>
+<text x="916" y="216" font-size="18" fill="#172033" font-weight="400" text-anchor="start" class="mono">N0..7, K8..15</text>
+<text x="916" y="245" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行首来自 lanes 8..15</text>
+<rect x="640" y="273" width="250" height="105" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="656" y="301" font-size="21" fill="#995600" font-weight="700" text-anchor="start">矩阵2 → word2</text>
+<text x="656" y="331" font-size="18" fill="#172033" font-weight="400" text-anchor="start" class="mono">N16..23, K0..7</text>
+<text x="656" y="360" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行首来自 lanes 16..23</text>
+<rect x="900" y="273" width="250" height="105" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="916" y="301" font-size="21" fill="#995600" font-weight="700" text-anchor="start">矩阵3 → word3</text>
+<text x="916" y="331" font-size="18" fill="#172033" font-weight="400" text-anchor="start" class="mono">N16..23, K8..15</text>
+<text x="916" y="360" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行首来自 lanes 24..31</text>
+<text x="40" y="410" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每lane：4个word =8half，匹配一个A atom fragment。</text>
+<text x="640" y="410" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每lane：前4half属于一个N子块，后4half属于另一个。</text>
+<text x="40" y="466" font-size="23" fill="#174EA6" font-weight="700" text-anchor="start">A：原(8,4,2) → copy(8,4,2)</text>
+<text x="640" y="466" font-size="23" fill="#995600" font-weight="700" text-anchor="start">B：原(4,8,2) → copy(8,4,2)</text>
+<rect x="40" y="491" width="170" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="520.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">A 的k16</text>
+<rect x="210" y="491" width="170" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="222" y="520.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">前4个值的槽位</text>
+<rect x="380" y="491" width="170" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="392" y="520.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">后4个值的槽位</text>
+<rect x="40" y="535" width="170" height="44" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="564.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">K0..15</text>
+<rect x="210" y="535" width="170" height="44" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="222" y="564.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0..3</text>
+<rect x="380" y="535" width="170" height="44" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="392" y="564.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4..7</text>
+<rect x="40" y="579" width="170" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="608.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">K16..31</text>
+<rect x="210" y="579" width="170" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="222" y="608.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8..11</text>
+<rect x="380" y="579" width="170" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="392" y="608.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">12..15</text>
+<rect x="640" y="491" width="170" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="652" y="520.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">B 的k16</text>
+<rect x="810" y="491" width="170" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="822" y="520.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">第一个N子块</text>
+<rect x="980" y="491" width="170" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="992" y="520.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">第二个N子块</text>
+<rect x="640" y="535" width="170" height="44" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="652" y="564.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">K0..15</text>
+<rect x="810" y="535" width="170" height="44" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="822" y="564.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0..3</text>
+<rect x="980" y="535" width="170" height="44" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="992" y="564.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8..11</text>
+<rect x="640" y="579" width="170" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="652" y="608.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">K16..31</text>
+<rect x="810" y="579" width="170" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="822" y="608.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4..7</text>
+<rect x="980" y="579" width="170" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="992" y="608.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">12..15</text>
+<text x="40" y="661" font-size="21" fill="#172033" font-weight="400" text-anchor="start">上表固定最前一组。A的8个值连续；B的两组4个值相隔8槽，retile不重新打包。</text>
+<rect x="40" y="704" width="310" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="735.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">copy view 的移动</text>
+<rect x="350" y="704" width="300" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="362" y="735.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">shared 源行首地址差</text>
+<rect x="650" y="704" width="255" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="662" y="735.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">A 寄存器目的槽位差</text>
+<rect x="905" y="704" width="255" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="917" y="735.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">B 寄存器目的槽位差</text>
+<rect x="40" y="752" width="310" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="783.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">下移32行：A沿M / B沿N</text>
+<rect x="350" y="752" width="300" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="362" y="783.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+1024 half</text>
+<rect x="650" y="752" width="255" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="662" y="783.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+16 half</text>
+<rect x="905" y="752" width="255" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="917" y="783.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+16 half</text>
+<rect x="40" y="800" width="310" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="831.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">沿K跨16列</text>
+<rect x="350" y="800" width="300" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="362" y="831.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+16 或 -16（swizzle）</text>
+<rect x="650" y="800" width="255" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="662" y="831.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+8 half</text>
+<rect x="905" y="800" width="255" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="917" y="831.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+4 half</text>
+<rect x="40" y="848" width="310" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="879.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">下一个 shared stage</text>
+<rect x="350" y="848" width="300" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="362" y="879.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+4096 half</text>
+<rect x="650" y="848" width="255" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="662" y="879.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">没有stage维</text>
+<rect x="905" y="848" width="255" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="917" y="879.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">没有stage维</text>
+<text x="40" y="944" font-size="21" fill="#172033" font-weight="400" text-anchor="start">源shape=(8,4,2,3)：8个源描述值、4组、2段k16、3个stage。</text>
+<text x="40" y="983" font-size="21" fill="#172033" font-weight="400" text-anchor="start">目的shape=(8,4,2)：每次x4接收8个half；4组 × 2段k16 = 每warp 8次x4。</text>
+<text x="40" y="1022" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">示意块的坐标以warp0、首组、首段k16为基准；其他warp/分组再加各自起点。</text>
+</svg>

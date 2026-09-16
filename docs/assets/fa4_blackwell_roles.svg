@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1050" viewBox="0 0 1200 1050" role="img" aria-labelledby="title desc">
+<title id="title">FA4：每 CTA 16 warps；2-CTA cluster 共 8 个 WG</title><desc id="desc">固定 ce088ab 的通用 BF16 D128 路径。WG = 连续4个warp = 128线程；不是MMA发射单位。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1050" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">FA4：每 CTA 16 warps；2-CTA cluster 共 8 个 WG</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">固定 ce088ab 的通用 BF16 D128 路径。WG = 连续4个warp = 128线程；不是MMA发射单位。</text>
+<text x="40" y="129" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Forward：q_stage=2；每 CTA 两块 Q，各128行</text>
+<rect x="40" y="150" width="130" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="181.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">分组</text>
+<rect x="170" y="150" width="150" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="181.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">warp ID</text>
+<rect x="320" y="150" width="230" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="181.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">职责</text>
+<rect x="550" y="150" width="610" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="181.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">持有 / 执行</text>
+<rect x="40" y="198" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="229.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG0</text>
+<rect x="170" y="198" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="229.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0–3</text>
+<rect x="320" y="198" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="229.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Softmax 0</text>
+<rect x="550" y="198" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="229.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">S0 → 寄存器 → rowmax / exp / rowsum → P0</text>
+<rect x="40" y="246" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="277.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG1</text>
+<rect x="170" y="246" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="277.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4–7</text>
+<rect x="320" y="246" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="277.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Softmax 1</text>
+<rect x="550" y="246" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="277.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">S1 → 寄存器 → rowmax / exp / rowsum → P1</text>
+<rect x="40" y="294" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="325.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG2</text>
+<rect x="170" y="294" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="325.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8–11</text>
+<rect x="320" y="294" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="325.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Correction</text>
+<rect x="550" y="294" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="325.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">O0 / O1 条件缩放；最终归一化、写 shared</text>
+<rect x="40" y="342" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="373.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG3</text>
+<rect x="170" y="342" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="373.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">12</text>
+<rect x="320" y="342" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="373.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">MMA</text>
+<rect x="550" y="342" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="373.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">仅 leader CTA 的 elected thread 发射 UMMA</text>
+<rect x="40" y="390" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="421.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG3</text>
+<rect x="170" y="390" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="421.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">13</text>
+<rect x="320" y="390" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="421.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Epilogue</text>
+<rect x="550" y="390" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="421.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">shared O → global O：TMA store</text>
+<rect x="40" y="438" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG3</text>
+<rect x="170" y="438" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">14</text>
+<rect x="320" y="438" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Load</text>
+<rect x="550" y="438" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">TMA Q / K / V；等待缓冲槽可以复用</text>
+<rect x="40" y="486" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="517.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG3</text>
+<rect x="170" y="486" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="517.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">15</text>
+<rect x="320" y="486" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="517.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Idle / scheduler</text>
+<rect x="550" y="486" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="517.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">动态持久化调度启用时承担 scheduler</text>
+<text x="40" y="588" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Backward：固定一块 KV，沿 query tiles 循环</text>
+<rect x="40" y="610" width="130" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="641.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">分组</text>
+<rect x="170" y="610" width="150" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="641.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">warp ID</text>
+<rect x="320" y="610" width="230" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="641.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">职责</text>
+<rect x="550" y="610" width="610" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="641.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">持有 / 执行</text>
+<rect x="40" y="658" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="689.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG0</text>
+<rect x="170" y="658" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="689.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0–3</text>
+<rect x="320" y="658" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="689.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">dQ reduce</text>
+<rect x="550" y="658" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="689.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">TMEM dQ → 寄存器 → shared → global reduction</text>
+<rect x="40" y="706" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="737.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG1+WG2</text>
+<rect x="170" y="706" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="737.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4–11</text>
+<rect x="320" y="706" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="737.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Compute</text>
+<rect x="550" y="706" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="737.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">256线程协作：重建 P；计算 dS；准备 DSM 交换</text>
+<rect x="40" y="754" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="785.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG3</text>
+<rect x="170" y="754" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="785.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">12</text>
+<rect x="320" y="754" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="785.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">MMA</text>
+<rect x="550" y="754" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="785.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">leader 发射五类 MMA；等待各结果 / 交换就绪</text>
+<rect x="40" y="802" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="833.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG3</text>
+<rect x="170" y="802" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="833.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">13</text>
+<rect x="320" y="802" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="833.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Load</text>
+<rect x="550" y="802" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="833.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">预取 Q / dO / LSE / D；装入 KV 相关视图</text>
+<rect x="40" y="850" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="881.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG3</text>
+<rect x="170" y="850" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="881.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">14</text>
+<rect x="320" y="850" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="881.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Relay</text>
+<rect x="550" y="850" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="881.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">等本 CTA 收到 peer dS；向 leader 汇报到达</text>
+<rect x="40" y="898" width="130" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="929.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG3</text>
+<rect x="170" y="898" width="150" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="182" y="929.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">15</text>
+<rect x="320" y="898" width="230" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="929.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Idle</text>
+<rect x="550" y="898" width="610" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562" y="929.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">保留线程分组；不是另一个 compute WG</text>
+<text x="40" y="998" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">2-CTA 时两边都有这些线程角色；一个联合 MMA 的发射者仍只有 leader 中的一个线程。</text>
+</svg>

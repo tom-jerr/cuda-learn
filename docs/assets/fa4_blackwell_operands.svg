@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1190" viewBox="0 0 1200 1190" role="img" aria-labelledby="title desc">
+<title id="title">Forward 2-CTA：Q 切行，K 切 token，V 切 feature</title><desc id="desc">一个 Q stage：联合 MMA 为256×128；每 CTA 保存128行 S / O。图为逻辑所有权，不是物理地址。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1190" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Forward 2-CTA：Q 切行，K 切 token，V 切 feature</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">一个 Q stage：联合 MMA 为256×128；每 CTA 保存128行 S / O。图为逻辑所有权，不是物理地址。</text>
+<text x="40" y="132" font-size="23" fill="#172033" font-weight="700" text-anchor="start">QKᵀ：A = Q[256,128]；B = Kᵀ[128,128]；C = S[256,128]</text>
+<rect x="40" y="155" width="185" height="52" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="188.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">逻辑对象</text>
+<rect x="225" y="155" width="455" height="52" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="237" y="188.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">CTA 0 的 SMEM / TMEM</text>
+<rect x="680" y="155" width="480" height="52" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="188.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">CTA 1 的 SMEM / TMEM</text>
+<rect x="40" y="207" width="185" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="240.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Q：A 沿 M 切</text>
+<rect x="225" y="207" width="455" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="237" y="240.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">query rows 0..127 × 全部128 features</text>
+<rect x="680" y="207" width="480" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="240.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">query rows 128..255 × 全部128 features</text>
+<rect x="40" y="259" width="185" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="292.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">K：B 沿 N 切</text>
+<rect x="225" y="259" width="455" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="237" y="292.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">KV tokens 0..63 × 全部128 features</text>
+<rect x="680" y="259" width="480" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="292.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">KV tokens 64..127 × 全部128 features</text>
+<rect x="40" y="311" width="185" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="344.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">S：C 沿 M 切</text>
+<rect x="225" y="311" width="455" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="237" y="344.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">128 query rows × 全部128 KV tokens</text>
+<rect x="680" y="311" width="480" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="344.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">128 query rows × 全部128 KV tokens</text>
+<text x="40" y="409" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">所以每个 softmax 行都拥有完整的128列；不需要跨 CTA 求 rowmax / rowsum。</text>
+<text x="40" y="469" font-size="23" fill="#172033" font-weight="700" text-anchor="start">PV：A = P[256,128]；B = V[128,128]；C = O[256,128]</text>
+<rect x="40" y="492" width="185" height="52" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="525.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">逻辑对象</text>
+<rect x="225" y="492" width="455" height="52" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="237" y="525.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">CTA 0</text>
+<rect x="680" y="492" width="480" height="52" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="525.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">CTA 1</text>
+<rect x="40" y="544" width="185" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="577.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">P：TMEM A</text>
+<rect x="225" y="544" width="455" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="237" y="577.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">query rows 0..127 × 全部128 KV tokens</text>
+<rect x="680" y="544" width="480" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="577.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">query rows 128..255 × 全部128 KV tokens</text>
+<rect x="40" y="596" width="185" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="629.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">V：SMEM B</text>
+<rect x="225" y="596" width="455" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="237" y="629.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">全部128 KV tokens × features 0..63</text>
+<rect x="680" y="596" width="480" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="629.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">全部128 KV tokens × features 64..127</text>
+<rect x="40" y="648" width="185" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="681.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">O：TMEM C</text>
+<rect x="225" y="648" width="455" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="237" y="681.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">128 query rows × 全部128 features</text>
+<rect x="680" y="648" width="480" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="681.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">128 query rows × 全部128 features</text>
+<text x="40" y="747" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">tcgen05.mma.cta_group::2 由硬件组合两侧 operands；无需软件交换完整 K / V。</text>
+<text x="40" y="812" font-size="22" fill="#172033" font-weight="700" text-anchor="start">两个 Q stages 的行归属（一个 cluster work tile 共512行）</text>
+<text x="40" y="878" font-size="20" fill="#172033" font-weight="700" text-anchor="start">stage 0</text>
+<rect x="235" y="840" width="440" height="60" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="455" y="877" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">CTA 0：Q rows 0..127</text>
+<rect x="675" y="840" width="440" height="60" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="895" y="877" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">CTA 1：Q rows 128..255</text>
+<text x="40" y="950" font-size="20" fill="#172033" font-weight="700" text-anchor="start">stage 1</text>
+<rect x="235" y="912" width="440" height="60" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="455" y="949" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">CTA 0：Q rows 256..383</text>
+<rect x="675" y="912" width="440" height="60" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="895" y="949" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">CTA 1：Q rows 384..511</text>
+<text x="40" y="1026" font-size="22" fill="#172033" font-weight="700" text-anchor="start">两个 stage 是两组不同的 Q 行，各有自己的 P、O 和 softmax 状态。</text>
+<text x="40" y="1074" font-size="21" fill="#172033" font-weight="400" text-anchor="start">它们复用同一批 K / V；不是把同一个 softmax 行拆成两半再分别归一化。</text>
+<text x="40" y="1122" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">1-CTA：每 CTA 仍为2×128行；K / V 各存完整128×128，KV ring 从6槽变3槽。</text>
+</svg>

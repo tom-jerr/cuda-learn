@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1190" viewBox="0 0 1800 1190" role="img" aria-labelledby="title desc">
+<title id="title">Forward：两块 Q 的 ping-pong 与独立 correction</title><desc id="desc">满足当前源码依赖的一种时序；非测量、不按比例。Ssj=QsKjᵀ，Osj=PsjVj；j为遍历序号。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1800" height="1190" fill="white" stroke="white" stroke-width="1"/>
+<path d="M1415,360 V682" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M1235,360 V781" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M1145,487 V644" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M965,487 V550" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M605,487 V644" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M515,487 V550" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Forward：两块 Q 的 ping-pong 与独立 correction</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">满足当前源码依赖的一种时序；非测量、不按比例。Ssj=QsKjᵀ，Osj=PsjVj；j为遍历序号。</text>
+<path d="M245,119 L1755,119" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1755,119 1747,114 1747,124" fill="#174EA6"/>
+<text x="1755" y="150" font-size="18" fill="#5D687A" font-weight="400" text-anchor="end">先后关系 →；非测量，不按比例</text>
+<text x="40" y="197" font-size="20" fill="#172033" font-weight="700" text-anchor="start">Load / TMA issue</text>
+<path d="M245,218 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="279" font-size="20" fill="#172033" font-weight="700" text-anchor="start">TMA 在途</text>
+<path d="M245,300 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="387" font-size="20" fill="#172033" font-weight="700" text-anchor="start">MMA issue</text>
+<path d="M245,408 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="476" font-size="20" fill="#172033" font-weight="700" text-anchor="start">Tensor Core 在途</text>
+<path d="M245,497 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="577" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG0 softmax</text>
+<path d="M245,598 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="671" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG1 softmax</text>
+<path d="M245,692 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="770" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG2 correction</text>
+<path d="M245,791 H1755" stroke="#CBD3DE" fill="none"/>
+<path d="M245,166 V212" stroke="#174EA6" stroke-width="2"/>
+<text x="250" y="187" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">K0,Q0,Q1</text>
+<path d="M398.0,166 V212" stroke="#174EA6" stroke-width="2"/>
+<text x="403.0" y="187" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">V0</text>
+<path d="M587.0,166 V212" stroke="#174EA6" stroke-width="2"/>
+<text x="592.0" y="187" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">K1,V1</text>
+<path d="M965,166 V212" stroke="#174EA6" stroke-width="2"/>
+<text x="970" y="187" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">K2,V2</text>
+<rect x="245" y="252" width="180" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="335.0" y="277.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">K0 + Q</text>
+<rect x="425" y="252" width="161.99999999999997" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="506.0" y="277.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">V0</text>
+<rect x="587.0" y="252" width="270.0" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722.0" y="277.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">K1,V1</text>
+<rect x="965" y="252" width="242.99999999999994" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1086.5" y="277.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">K2,V2</text>
+<path d="M425,356 V402" stroke="#174EA6" stroke-width="2"/>
+<text x="430" y="377" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">S00</text>
+<rect x="425" y="449" width="90" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="470.0" y="474.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">S00</text>
+<path d="M515,356 V402" stroke="#174EA6" stroke-width="2"/>
+<text x="520" y="377" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">S10</text>
+<rect x="515" y="449" width="90" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="560.0" y="474.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">S10</text>
+<path d="M785,356 V402" stroke="#174EA6" stroke-width="2"/>
+<text x="790" y="377" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">O00</text>
+<rect x="785" y="449" width="90" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="830.0" y="474.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">O00</text>
+<path d="M875,356 V402" stroke="#174EA6" stroke-width="2"/>
+<text x="880" y="377" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">S01</text>
+<rect x="875" y="449" width="90" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="920.0" y="474.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">S01</text>
+<path d="M965,356 V402" stroke="#174EA6" stroke-width="2"/>
+<text x="970" y="377" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">O10</text>
+<rect x="965" y="449" width="90" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1010.0" y="474.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">O10</text>
+<path d="M1055,356 V402" stroke="#174EA6" stroke-width="2"/>
+<text x="1060" y="377" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">S11</text>
+<rect x="1055" y="449" width="90" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1100.0" y="474.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">S11</text>
+<path d="M1235,356 V402" stroke="#174EA6" stroke-width="2"/>
+<text x="1240" y="377" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">O01</text>
+<rect x="1235" y="449" width="90" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1280.0" y="474.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">O01</text>
+<path d="M1325,356 V402" stroke="#174EA6" stroke-width="2"/>
+<text x="1330" y="377" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">S02</text>
+<rect x="1325" y="449" width="90" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1370.0" y="474.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">S02</text>
+<path d="M1415,356 V402" stroke="#174EA6" stroke-width="2"/>
+<text x="1420" y="377" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">O11</text>
+<rect x="1415" y="449" width="90" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1460.0" y="474.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">O11</text>
+<path d="M1505,356 V402" stroke="#174EA6" stroke-width="2"/>
+<text x="1510" y="377" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">S12</text>
+<rect x="1505" y="449" width="90" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1550.0" y="474.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">S12</text>
+<rect x="515" y="550" width="270" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="650.0" y="575.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM00 → P00</text>
+<rect x="965" y="550" width="270" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1100.0" y="575.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM01 → P01</text>
+<rect x="1415" y="550" width="270" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1550.0" y="575.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM02 → P02</text>
+<rect x="605" y="644" width="270" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="740.0" y="669.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM10 → P10</text>
+<rect x="1145" y="644" width="270" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1280.0" y="669.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM11 → P11</text>
+<rect x="1010.0" y="743" width="135.0" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1077.5" y="768.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">α01 O0</text>
+<rect x="1190.0" y="743" width="135.0" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1257.5" y="768.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">α11 O1</text>
+<text x="40" y="858" font-size="23" fill="#172033" font-weight="700" text-anchor="start">PV 开始条件：V ready ∧ P 前96列 ready ∧ 对应旧 O 已 rescale（两个 CTA 都参与）。</text>
+<text x="40" y="905" font-size="22" fill="#174EA6" font-weight="400" text-anchor="start">展开一个 PV：发射 K=0..95 的6条 k16 MMA → 等 P 尾部 → 再发射 K=96..127 的2条。</text>
+<text x="40" y="952" font-size="21" fill="#172033" font-weight="400" text-anchor="start">当前实现先 exp/convert 整行，再分段写 TMEM；上图省略了每个 P 的96/32细分。</text>
+<text x="40" y="999" font-size="21" fill="#172033" font-weight="400" text-anchor="start">Kj 等两块 Q 的 QK 完成才释放；Vj 等两块 Q 的 PV 完成才释放。异步发射返回不等于完成。</text>
+<text x="40" y="1046" font-size="22" fill="#172033" font-weight="700" text-anchor="start">Prologue：S00 → S10。稳态发射：O0j → S0,j+1 → O1j → S1,j+1。</text>
+<text x="40" y="1093" font-size="21" fill="#172033" font-weight="400" text-anchor="start">Epilogue：最后 PV0 / PV1 → O 完成通知 → correction 除以 l → shared → TMA store。</text>
+<text x="40" y="1140" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">版本差异：ce088ab 的 s0_s1_barrier=False；图中允许两组 softmax 重叠，不画论文中的 exp 互斥锁。</text>
+</svg>

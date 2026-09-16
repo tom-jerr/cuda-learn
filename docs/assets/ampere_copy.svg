@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1010" viewBox="0 0 1200 1010" role="img" aria-labelledby="title desc">
+<title id="title">Block copy：搬运分工与 C 的计算分工</title><desc id="desc">固定一个 bk；以下均为 block 内逻辑坐标。q=0,1 是每个 copy for 循环的两轮。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}</style>
+<rect x="0" y="0" width="1200" height="1010" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="46" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Block copy：搬运分工与 C 的计算分工</text>
+<text x="40" y="80" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">固定一个 bk；以下均为 block 内逻辑坐标。q=0,1 是每个 copy for 循环的两轮。</text>
+<text x="40" y="128" font-size="21" fill="#172033" font-weight="700" text-anchor="start">A：64×32，每条色带 = 8 行 × 32 列</text>
+<text x="440" y="128" font-size="21" fill="#172033" font-weight="700" text-anchor="start">B：32×64，每条色带 = 4 行 × 64 列</text>
+<rect x="40" y="152" width="350" height="37" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="176" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=0  warp 0   rows 0..7</text>
+<rect x="40" y="189" width="350" height="37" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="213" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=0  warp 1   rows 8..15</text>
+<rect x="40" y="226" width="350" height="37" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="250" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=0  warp 2   rows 16..23</text>
+<rect x="40" y="263" width="350" height="37" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="287" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=0  warp 3   rows 24..31</text>
+<rect x="40" y="300" width="350" height="37" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="324" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=1  warp 0   rows 32..39</text>
+<rect x="40" y="337" width="350" height="37" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="361" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=1  warp 1   rows 40..47</text>
+<rect x="40" y="374" width="350" height="37" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="398" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=1  warp 2   rows 48..55</text>
+<rect x="40" y="411" width="350" height="37" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="435" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=1  warp 3   rows 56..63</text>
+<rect x="440" y="152" width="400" height="37" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="176" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=0  warp 0   rows 0..3</text>
+<rect x="440" y="189" width="400" height="37" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="213" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=0  warp 1   rows 4..7</text>
+<rect x="440" y="226" width="400" height="37" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="250" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=0  warp 2   rows 8..11</text>
+<rect x="440" y="263" width="400" height="37" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="287" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=0  warp 3   rows 12..15</text>
+<rect x="440" y="300" width="400" height="37" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="324" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=1  warp 0   rows 16..19</text>
+<rect x="440" y="337" width="400" height="37" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="361" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=1  warp 1   rows 20..23</text>
+<rect x="440" y="374" width="400" height="37" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="398" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=1  warp 2   rows 24..27</text>
+<rect x="440" y="411" width="400" height="37" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="435" font-size="18" fill="#172033" font-weight="400" text-anchor="start">q=1  warp 3   rows 28..31</text>
+<text x="886" y="128" font-size="21" fill="#172033" font-weight="700" text-anchor="start">C：64×64</text>
+<rect x="886" y="152" width="137" height="148" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="954" y="200" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">warp 0</text>
+<text x="954" y="233" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<text x="954" y="264" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">(0,0)</text>
+<rect x="1023" y="152" width="137" height="148" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1091" y="200" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">warp 1</text>
+<text x="1091" y="233" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<text x="1091" y="264" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">(0,1)</text>
+<rect x="886" y="300" width="137" height="148" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="954" y="348" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">warp 2</text>
+<text x="954" y="381" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<text x="954" y="412" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">(1,0)</text>
+<rect x="1023" y="300" width="137" height="148" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1091" y="348" font-size="21" fill="#172033" font-weight="700" text-anchor="middle">warp 3</text>
+<text x="1091" y="381" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<text x="1091" y="412" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">(1,1)</text>
+<text x="40" y="491" font-size="21" fill="#172033" font-weight="700" text-anchor="start">每线程每轮搬 8 个 BF16 = 16 B；一轮全 block 搬 128×8 = 1024 个值。</text>
+<rect x="40" y="515" width="145" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="543.0" font-size="17" fill="#172033" font-weight="700" text-anchor="start">对象</text>
+<rect x="185" y="515" width="395" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="197" y="543.0" font-size="17" fill="#172033" font-weight="700" text-anchor="start">linear = 8×tid + 1024×q</text>
+<rect x="580" y="515" width="325" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="592" y="543.0" font-size="17" fill="#172033" font-weight="700" text-anchor="start">row</text>
+<rect x="905" y="515" width="255" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="917" y="543.0" font-size="17" fill="#172033" font-weight="700" text-anchor="start">col（连续搬8个值）</text>
+<rect x="40" y="559" width="145" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="587.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">A</text>
+<rect x="185" y="559" width="395" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="197" y="587.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">tid = 32×warp + lane</text>
+<rect x="580" y="559" width="325" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="592" y="587.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">8×warp + lane/4 + 32×q</text>
+<rect x="905" y="559" width="255" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="917" y="587.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">8×(lane % 4)</text>
+<rect x="40" y="603" width="145" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="631.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">B</text>
+<rect x="185" y="603" width="395" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="197" y="631.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">整数除法均向下取整</text>
+<rect x="580" y="603" width="325" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="592" y="631.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">4×warp + lane/8 + 16×q</text>
+<rect x="905" y="603" width="255" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="917" y="631.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">8×(lane % 8)</text>
+<text x="40" y="691" font-size="22" fill="#172033" font-weight="700" text-anchor="start">warp 0，q=0：lane 如何铺满第一行？</text>
+<text x="40" y="733" font-size="18" fill="#172033" font-weight="700" text-anchor="start">A row 0</text>
+<rect x="170" y="705" width="120" height="48" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="230" y="726" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 0</text>
+<text x="230" y="746" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">K 0..7</text>
+<rect x="290" y="705" width="120" height="48" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="350" y="726" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 1</text>
+<text x="350" y="746" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">K 8..15</text>
+<rect x="410" y="705" width="120" height="48" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="470" y="726" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 2</text>
+<text x="470" y="746" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">K 16..23</text>
+<rect x="530" y="705" width="120" height="48" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="590" y="726" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 3</text>
+<text x="590" y="746" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">K 24..31</text>
+<text x="685" y="737" font-size="17" fill="#172033" font-weight="400" text-anchor="start">lane 4..7 → row 1；…；lane 28..31 → row 7</text>
+<text x="40" y="799" font-size="18" fill="#172033" font-weight="700" text-anchor="start">B row 0</text>
+<rect x="170" y="771" width="120" height="48" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="230" y="792" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 0</text>
+<text x="230" y="812" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">N 0..7</text>
+<rect x="290" y="771" width="120" height="48" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="350" y="792" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 1</text>
+<text x="350" y="812" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">N 8..15</text>
+<rect x="410" y="771" width="120" height="48" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="470" y="792" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 2</text>
+<text x="470" y="812" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">N 16..23</text>
+<rect x="530" y="771" width="120" height="48" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="590" y="792" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 3</text>
+<text x="590" y="812" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">N 24..31</text>
+<rect x="650" y="771" width="120" height="48" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="710" y="792" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 4</text>
+<text x="710" y="812" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">N 32..39</text>
+<rect x="770" y="771" width="120" height="48" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="830" y="792" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 5</text>
+<text x="830" y="812" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">N 40..47</text>
+<rect x="890" y="771" width="120" height="48" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="950" y="792" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 6</text>
+<text x="950" y="812" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">N 48..55</text>
+<rect x="1010" y="771" width="120" height="48" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1070" y="792" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">lane 7</text>
+<text x="1070" y="812" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">N 56..63</text>
+<text x="40" y="857" font-size="20" fill="#172033" font-weight="400" text-anchor="start">q=1：A 整体下移32行，B 整体下移16行；warp、lane 不变。</text>
+<text x="40" y="898" font-size="18" fill="#172033" font-weight="400" text-anchor="start">物理 shared stride：A=40 个 BF16（80 B），B=72 个 BF16（144 B）。PAD 不参与逻辑 tile。</text>
+<text x="40" y="939" font-size="20" fill="#174EA6" font-weight="700" text-anchor="start">copy 后全 block 同步；warp 0/1 复用同一片 A，warp 0/2 复用同一片 B。</text>
+<text x="40" y="977" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">cp.async 的数据直接进入 shared；copy 的源数据不经过程序可见的 fragment 寄存器。</text>
+</svg>

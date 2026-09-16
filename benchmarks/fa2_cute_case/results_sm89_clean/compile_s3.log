@@ -1,0 +1,11 @@
+ptxas info    : 10 bytes gmem, 80 bytes cmem[4]
+ptxas info    : Compiling entry function '_ZN12cutlass3_fa226flash_attn_cutlass3_kernelILb0ELi3EEEvPKN7cutlass6half_tES4_S4_PS2_ii' for 'sm_89'
+ptxas info    : Function properties for _ZN12cutlass3_fa226flash_attn_cutlass3_kernelILb0ELi3EEEvPKN7cutlass6half_tES4_S4_PS2_ii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 160 registers, used 1 barriers, 392 bytes cmem[0]
+ptxas info    : Compile time = 75.897 ms
+ptxas info    : Compiling entry function '_ZN12cutlass3_fa226flash_attn_cutlass3_kernelILb1ELi3EEEvPKN7cutlass6half_tES4_S4_PS2_ii' for 'sm_89'
+ptxas info    : Function properties for _ZN12cutlass3_fa226flash_attn_cutlass3_kernelILb1ELi3EEEvPKN7cutlass6half_tES4_S4_PS2_ii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 158 registers, used 1 barriers, 392 bytes cmem[0]
+ptxas info    : Compile time = 71.489 ms

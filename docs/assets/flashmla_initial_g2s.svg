@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1080" viewBox="0 0 1200 1080" role="img" aria-labelledby="title desc">
+<title id="title">G2S 平铺：16×64 copy tile → 64×576 shared tile</title><desc id="desc">WG1 的局部线程 u=0..127；每次 cp.async 搬16 bytes=8 BF16。所有 offset 以 BF16 计。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1080" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">G2S 平铺：16×64 copy tile → 64×576 shared tile</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">WG1 的局部线程 u=0..127；每次 cp.async 搬16 bytes=8 BF16。所有 offset 以 BF16 计。</text>
+<rect x="40" y="111" width="545" height="128" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="140" font-size="21" fill="#172033" font-weight="700" text-anchor="start">线程 layout：shape=(16,8), stride=(8,1)</text>
+<text x="55" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="start">u=8r₀+c₀；value shape=(1,8)</text>
+<text x="55" y="199" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每轮128线程×8值 =16行×64列</text>
+<rect x="615" y="111" width="545" height="128" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="630" y="140" font-size="21" fill="#172033" font-weight="700" text-anchor="start">线程 u 的完整搬运坐标</text>
+<text x="630" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="start">r=floor(u/8)+16a，a=0..3</text>
+<text x="630" y="199" font-size="18" fill="#172033" font-weight="400" text-anchor="start">f=8(u mod 8)+v+64j，v=0..7，j=0..8</text>
+<text x="40" y="282" font-size="22" fill="#172033" font-weight="700" text-anchor="start">每格是一个16×64 tile：纵向4份，横向9份。</text>
+<text x="135" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=0</text>
+<text x="245" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=1</text>
+<text x="355" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=2</text>
+<text x="465" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=3</text>
+<text x="575" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=4</text>
+<text x="685" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=5</text>
+<text x="795" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=6</text>
+<text x="905" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=7</text>
+<text x="1015" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=8</text>
+<text x="65" y="381" font-size="18" fill="#172033" font-weight="400" text-anchor="end">a=0</text>
+<rect x="80" y="351" width="110" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135" y="382" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="190" y="351" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="245" y="382" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="300" y="351" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="355" y="382" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="410" y="351" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="465" y="382" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="520" y="351" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="575" y="382" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="630" y="351" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="685" y="382" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="740" y="351" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="795" y="382" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="850" y="351" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="382" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="960" y="351" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1015" y="382" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<text x="65" y="430" font-size="18" fill="#172033" font-weight="400" text-anchor="end">a=1</text>
+<rect x="80" y="400" width="110" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135" y="431" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="190" y="400" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="245" y="431" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="300" y="400" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="355" y="431" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="410" y="400" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="465" y="431" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="520" y="400" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="575" y="431" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="630" y="400" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="685" y="431" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="740" y="400" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="795" y="431" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="850" y="400" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="431" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="960" y="400" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1015" y="431" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<text x="65" y="479" font-size="18" fill="#172033" font-weight="400" text-anchor="end">a=2</text>
+<rect x="80" y="449" width="110" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135" y="480" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="190" y="449" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="245" y="480" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="300" y="449" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="355" y="480" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="410" y="449" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="465" y="480" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="520" y="449" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="575" y="480" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="630" y="449" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="685" y="480" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="740" y="449" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="795" y="480" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="850" y="449" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="480" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="960" y="449" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1015" y="480" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<text x="65" y="528" font-size="18" fill="#172033" font-weight="400" text-anchor="end">a=3</text>
+<rect x="80" y="498" width="110" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135" y="529" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="190" y="498" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="245" y="529" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="300" y="498" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="355" y="529" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="410" y="498" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="465" y="529" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="520" y="498" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="575" y="529" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="630" y="498" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="685" y="529" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="740" y="498" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="795" y="529" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="850" y="498" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="529" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<rect x="960" y="498" width="110" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1015" y="529" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">16×64</text>
+<path d="M1120,354 L1120,540" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1120,540 1115,532 1125,532" fill="#174EA6"/>
+<text x="1110" y="572" font-size="17" fill="#174EA6" font-weight="400" text-anchor="middle">外层 a ↓</text>
+<path d="M88,580 L1058,580" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1058,580 1050,575 1050,585" fill="#174EA6"/>
+<text x="500" y="612" font-size="18" fill="#174EA6" font-weight="400" text-anchor="middle">每个 a 内，源码沿 j → 发出9个向量 copy；v 在一条16B指令内。</text>
+<rect x="40" y="644" width="340" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="674.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">逻辑移动</text>
+<rect x="380" y="644" width="380" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="392" y="674.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">global（连续物理页）</text>
+<rect x="760" y="644" width="400" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="772" y="674.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">shared（SW128）</text>
+<rect x="40" y="691" width="340" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="721.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">v → v+1（包内）</text>
+<rect x="380" y="691" width="380" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="392" y="721.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+1</text>
+<rect x="760" y="691" width="400" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="772" y="721.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+1</text>
+<rect x="40" y="738" width="340" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="768.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">a → a+1（向下16行）</text>
+<rect x="380" y="738" width="380" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="392" y="768.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+16×576 = +9216</text>
+<rect x="760" y="738" width="400" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="772" y="768.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+16×64 = +1024</text>
+<rect x="40" y="785" width="340" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="815.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">j → j+1（向右64列）</text>
+<rect x="380" y="785" width="380" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="392" y="815.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+64</text>
+<rect x="760" y="785" width="400" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="772" y="815.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+64×64 = +4096</text>
+<rect x="40" y="832" width="340" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="862.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">切换整个 K buffer</text>
+<rect x="380" y="832" width="380" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="392" y="862.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">重新查 block_table</text>
+<rect x="760" y="832" width="400" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="772" y="862.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">±64×576 = ±36864</text>
+<text x="40" y="923" font-size="21" fill="#172033" font-weight="400" text-anchor="start" class="mono">global per-thread: shape=((8,1),4,9), stride=((1,0),9216,64)</text>
+<text x="40" y="967" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">shared: W(r,f)=4096⌊f/64⌋+64r+((f mod64) XOR 8(r mod8))</text>
+<text x="40" y="1010" font-size="20" fill="#172033" font-weight="400" text-anchor="start">例 u=8：r=1、f=0 → global=576，shared=72；包内的8个值仍连续。</text>
+<text x="40" y="1047" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">上图箭头表示逻辑遍历；异步 copy 的完成次序不能据此推断。</text>
+</svg>

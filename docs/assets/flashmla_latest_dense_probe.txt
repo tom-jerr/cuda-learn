@@ -1,0 +1,7 @@
+sQ = Sw<3,4,3>_smem_ptr[16b](0x7ffd99f13c00) o ((_8,_8),(_64,_9)):((_64,_512),(_1,_4096))
+stripes = Sw<3,4,3>_smem_ptr[16b](0x7ffd99f13c00) o (_64,_64,_9):(_64,_1,_4096)
+sP1 = Sw<3,4,3>_smem_ptr[16b](0x7ffd99f23c00) o (_64,_64):(_64,_1)
+rQ8 = ptr[16b](0x7ffd99f13bc0) o ((_2,_2,_2),_1,_4):((_1,_2,_4),_0,_8)
+Q8 ldmatrix source t0 = Sw<3,4,3>_smem_ptr[16b](0x7ffd99f23c00) o ((_8,_1),_1,_4):((_1,_0),_0,_16)
+rQ8 ldmatrix destination t0 = ptr[16b](0x7ffd99f13bc0) o ((_8,_1),_1,_4):((_1,_0),_0,_8)
+PASS: 9 stripes at +4096 BF16; down16 rows +1024; Q8/P1 full alias; rQ8=32 BF16 per thread.

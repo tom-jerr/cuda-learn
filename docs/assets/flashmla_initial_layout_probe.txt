@@ -1,0 +1,8 @@
+K layout: Sw<3,4,3> o smem_ptr[16b](unset) o ((_8,_8),(_64,_9)):((_64,_512),(_1,_4096))
+V B-view: Sw<3,4,3> o smem_ptr[16b](unset) o ((_64,_8),_64):((_1,_4096),_64)
+Copy source t0: ((_8,_1),_4,_9):((_1,_0),_9216,_64)
+Copy dest t0: ((_8,_1),_4,_9):((_1,_0),_1024,_4096)
+C fragment: ((_2,_2,_8),_1,_1):((_1,_2,_4),_0,_0)
+C fragment: ((_2,_2,_32),_1,_1):((_1,_2,_4),_0,_0)
+P handoff: ((_2,_2),_128,_1,_8):((_1,_2),_4,_0,_512)
+PASS: original G2S coverage/strides, SW128 addresses, K/V aliasing, QK/PV ownership, P handoff, byte/element swizzle.

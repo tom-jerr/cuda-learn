@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+<title id="title">首版双缓冲：WG1 发起搬运，WG0 同时计算 QK / softmax</title><desc id="desc">示意时序，不按实际周期比例。i=2→1→0；偶数block用buffer0，奇数block用buffer1。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="900" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">首版双缓冲：WG1 发起搬运，WG0 同时计算 QK / softmax</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">示意时序，不按实际周期比例。i=2→1→0；偶数block用buffer0，奇数block用buffer1。</text>
+<path d="M205,137 L1154,137" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1154,137 1146,132 1146,142" fill="#174EA6"/>
+<text x="1120" y="122" font-size="18" fill="#174EA6" font-weight="400" text-anchor="end">时间 →</text>
+<text x="40" y="236" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG0</text>
+<rect x="200" y="205" width="950" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="40" y="346" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG1</text>
+<rect x="200" y="315" width="950" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="40" y="456" font-size="21" fill="#172033" font-weight="700" text-anchor="start">异步 copy</text>
+<rect x="200" y="425" width="950" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<rect x="210" y="205" width="145" height="66" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="282.5" y="245" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK₂</text>
+<rect x="355" y="205" width="105" height="66" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="407.5" y="245" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">softmax₂</text>
+<rect x="480" y="205" width="130" height="66" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="245" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV₂ 左</text>
+<rect x="210" y="315" width="85" height="66" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="252.5" y="355" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">issue K₁</text>
+<rect x="295" y="315" width="165" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="377.5" y="355" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">等 SReady</text>
+<rect x="460" y="315" width="55" height="66" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="487.5" y="355" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">读P</text>
+<rect x="515" y="315" width="95" height="66" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="562.5" y="355" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV₂右</text>
+<rect x="295" y="425" width="330" height="66" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="460.0" y="465" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">K₁→buffer1 在途</text>
+<path d="M650,180 L650,510" stroke="#5D687A" stroke-dasharray="5 5"/>
+<path d="M460,275 L460,310" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="460,310 455,302 465,302" fill="#174EA6"/>
+<text x="454" y="296" font-size="14" fill="#174EA6" font-weight="400" text-anchor="end">SReady</text>
+<rect x="670" y="205" width="140" height="66" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="740.0" y="245" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK₁</text>
+<rect x="810" y="205" width="100" height="66" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="860.0" y="245" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">softmax₁</text>
+<rect x="930" y="205" width="130" height="66" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="995.0" y="245" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV₁ 左</text>
+<rect x="670" y="315" width="85" height="66" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="712.5" y="355" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">issue K₀</text>
+<rect x="755" y="315" width="155" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="832.5" y="355" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">等 SReady</text>
+<rect x="910" y="315" width="55" height="66" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="937.5" y="355" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">读P</text>
+<rect x="965" y="315" width="95" height="66" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1012.5" y="355" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV₁右</text>
+<rect x="755" y="425" width="335" height="66" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="922.5" y="465" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">K₀→buffer0 在途</text>
+<path d="M910,275 L910,310" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="910,310 905,302 915,302" fill="#174EA6"/>
+<text x="904" y="296" font-size="14" fill="#174EA6" font-weight="400" text-anchor="end">SReady</text>
+<text x="650" y="546" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">CTA barrier：当前PV都完成；下一块copy也已wait完成</text>
+<text x="40" y="595" font-size="21" fill="#172033" font-weight="400" text-anchor="start">第一次迭代之前：WG1 先搬 Q 与 K₂，cp_async_wait&lt;0&gt;() 后全CTA同步。</text>
+<rect x="40" y="625" width="1120" height="181" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="654" font-size="21" fill="#172033" font-weight="700" text-anchor="start">缓冲槽复用的必要条件</text>
+<text x="55" y="684" font-size="18" fill="#172033" font-weight="400" text-anchor="start">buffer0 中的 K₂ 同时充当 V₂；WG0/WG1 的 PV₂ 都读完，才可覆盖为 K₀。</text>
+<text x="55" y="713" font-size="18" fill="#172033" font-weight="400" text-anchor="start">cp_async_wait&lt;0&gt;() 等搬运完成；__syncthreads() 交接数据并隔开迭代。</text>
+<text x="55" y="742" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG1 不是纯 producer：发起下一块copy之后，还要做本块的右半 PV。</text>
+<text x="55" y="771" font-size="18" fill="#172033" font-weight="400" text-anchor="start">首版每次 gemm 使用 warpgroup_wait&lt;0&gt;()；softmax 与本WG的QK不会重叠。</text>
+<text x="40" y="855" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">4月版改为两WG交替QK/softmax/PV，并按64 feature条带发起TMA；不能照搬本图。</text>
+</svg>

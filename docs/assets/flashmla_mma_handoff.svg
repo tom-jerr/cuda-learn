@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1070" viewBox="0 0 1200 1070" role="img" aria-labelledby="title desc">
+<title id="title">MMA、P的R2S，以及O的S2G</title><desc id="desc">SS：两个矩阵操作数都在shared；RS：A在register、B在shared。箭头表示数据关系，不表示时长。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1070" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">MMA、P的R2S，以及O的S2G</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">SS：两个矩阵操作数都在shared；RS：A在register、B在shared。箭头表示数据关系，不表示时长。</text>
+<rect x="40" y="112" width="320" height="122" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="141" font-size="21" fill="#172033" font-weight="700" text-anchor="start">Q shared · SW128</text>
+<text x="56" y="171" font-size="18" fill="#172033" font-weight="400" text-anchor="start">64 heads × 576</text>
+<text x="56" y="199" font-size="18" fill="#172033" font-weight="400" text-anchor="start">G2S：TMA</text>
+<rect x="420" y="112" width="320" height="122" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="436" y="141" font-size="21" fill="#172033" font-weight="700" text-anchor="start">K shared · INTER</text>
+<text x="436" y="171" font-size="18" fill="#172033" font-weight="400" text-anchor="start">64 tokens × 576</text>
+<text x="436" y="199" font-size="18" fill="#172033" font-weight="400" text-anchor="start">G2R → dequant → R2S</text>
+<rect x="800" y="112" width="360" height="122" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="816" y="141" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG0 · QK：SS WGMMA</text>
+<text x="816" y="171" font-size="18" fill="#172033" font-weight="400" text-anchor="start">m64n64k16 × 36</text>
+<text x="816" y="199" font-size="18" fill="#172033" font-weight="400" text-anchor="start">rScore：32个FP32/thread</text>
+<text x="390" y="184" font-size="28" fill="#172033" font-weight="400" text-anchor="middle">×</text>
+<path d="M740,173 L790,173" stroke="#172033" stroke-width="2" fill="none"/>
+<polygon points="790,173 782,168 782,178" fill="#172033"/>
+<text x="40" y="282" font-size="21" fill="#172033" font-weight="700" text-anchor="start">矩阵无需显式ldmatrix到线程寄存器；WGMMA使用shared descriptor读Q/K。</text>
+<text x="40" y="327" font-size="21" fill="#172033" font-weight="700" text-anchor="start">softmax后：rP有32个BF16/thread；同一批值可用于RS，或用STSM写shared。</text>
+<rect x="40" y="351" width="270" height="43" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="379.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">同一线程，warp0 lane0</text>
+<rect x="310" y="351" width="280" height="43" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="322" y="379.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">逻辑矩阵坐标</text>
+<rect x="590" y="351" width="285" height="43" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="602" y="379.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">BF16本地槽</text>
+<rect x="875" y="351" width="285" height="43" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="887" y="379.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">PV的k16包</text>
+<rect x="40" y="394" width="270" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="422.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">第0个8列组</text>
+<rect x="310" y="394" width="280" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="322" y="422.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">(0,0),(0,1),(8,0),(8,1)</text>
+<rect x="590" y="394" width="285" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="602" y="422.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0,1,2,3</text>
+<rect x="875" y="394" width="285" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="887" y="422.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">包0的前4值</text>
+<rect x="40" y="437" width="270" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="465.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">第1个8列组</text>
+<rect x="310" y="437" width="280" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="322" y="465.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">(0,8),(0,9),(8,8),(8,9)</text>
+<rect x="590" y="437" width="285" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="602" y="465.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4,5,6,7</text>
+<rect x="875" y="437" width="285" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="887" y="465.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">包0的后4值</text>
+<rect x="40" y="480" width="270" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="508.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">第2/3个8列组</text>
+<rect x="310" y="480" width="280" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="322" y="508.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">同两行，列16..31的一部分</text>
+<rect x="590" y="480" width="285" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="602" y="508.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8..15</text>
+<rect x="875" y="480" width="285" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="887" y="508.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">包1</text>
+<rect x="40" y="523" width="270" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="551.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">第4/5；6/7个8列组</text>
+<rect x="310" y="523" width="280" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="322" y="551.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">同两行，列32..63的一部分</text>
+<rect x="590" y="523" width="285" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="602" y="551.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">16..23；24..31</text>
+<rect x="875" y="523" width="285" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="887" y="551.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">包2；包3</text>
+<rect x="40" y="599" width="535" height="151" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="628" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG0：RS PV → O左半</text>
+<text x="56" y="658" font-size="18" fill="#172033" font-weight="400" text-anchor="start">rP[64,64] × V左[64,256]</text>
+<text x="56" y="686" font-size="18" fill="#172033" font-weight="400" text-anchor="start">P寄存器直接作为A，V使用K前256维view</text>
+<text x="56" y="714" font-size="18" fill="#172033" font-weight="400" text-anchor="start">m64n256k16 × 4 → 128个FP32/thread</text>
+<rect x="625" y="599" width="535" height="151" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="641" y="628" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG1：SS PV → O右半</text>
+<text x="641" y="658" font-size="18" fill="#172033" font-weight="400" text-anchor="start">STSM将P写入SW128 shared → fence / barrier</text>
+<text x="641" y="686" font-size="18" fill="#172033" font-weight="400" text-anchor="start">sP[64,64] × V右[64,256]；同时接收rescale</text>
+<text x="641" y="714" font-size="18" fill="#172033" font-weight="400" text-anchor="start">m64n256k16 × 4 → 128个FP32/thread</text>
+<text x="40" y="793" font-size="21" fill="#172033" font-weight="700" text-anchor="start">V(f,t) 与 K(t,f) 共用地址；右半V的基址 +16384 BF16，无须真实转置。</text>
+<rect x="40" y="824" width="1120" height="119" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="853" font-size="21" fill="#172033" font-weight="700" text-anchor="start">输出：O register FP32 → 归一化 / BF16 → STSM → shared SW128 → TMA → global</text>
+<text x="56" y="883" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每WG：64×256；每线程128值，分16包，每包8个BF16，用16轮x4 STSM。</text>
+<text x="56" y="911" font-size="18" fill="#172033" font-weight="400" text-anchor="start">shared：按64×64条带并swizzle；global：每head的512维连续，由TMA descriptor连接。</text>
+<text x="40" y="986" font-size="20" fill="#995600" font-weight="400" text-anchor="start">有split：R2S保存FP32，shared offset = 520×head + feature；逐行bulk S2G。</text>
+<text x="40" y="1027" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">retile只改变同一线程的索引视图；BF16转换、STSM、同步分别执行数值转换、搬运与交接。</text>
+</svg>

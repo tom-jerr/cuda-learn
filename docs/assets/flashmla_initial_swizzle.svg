@@ -1,0 +1,213 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1120" viewBox="0 0 1200 1120" role="img" aria-labelledby="title desc">
+<title id="title">Swizzle 推导：把行号的3位 XOR 到16-byte包编号</title><desc id="desc">一个8×64 BF16 atom；r=0..7，c=8g+v，g=0..7，v=0..7。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1120" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Swizzle 推导：把行号的3位 XOR 到16-byte包编号</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">一个8×64 BF16 atom；r=0..7，c=8g+v，g=0..7，v=0..7。</text>
+<rect x="40" y="112" width="1120" height="129" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="141" font-size="21" fill="#172033" font-weight="700" text-anchor="start">元素地址 e = 64r+8g+v：二进制拆成 [ rrr | ggg | vvv ]</text>
+<text x="55" y="171" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Sw&lt;3,3,3&gt;：保持 vvv，把 rrr 右移3位并 XOR 到 ggg。</text>
+<text x="55" y="200" font-size="18" fill="#172033" font-weight="400" text-anchor="start">结果 e′=64r+8(g XOR r)+v；行内8值的顺序保持不变。</text>
+<text x="40" y="288" font-size="22" fill="#172033" font-weight="700" text-anchor="start">表内数字=物理包编号 g XOR r；列是逻辑包 g。每包16 bytes。</text>
+<rect x="40" y="315" width="160" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="343.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">r / g</text>
+<rect x="200" y="315" width="120" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="212" y="343.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">0</text>
+<rect x="320" y="315" width="120" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="343.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">1</text>
+<rect x="440" y="315" width="120" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="343.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">2</text>
+<rect x="560" y="315" width="120" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="572" y="343.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">3</text>
+<rect x="680" y="315" width="120" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="343.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">4</text>
+<rect x="800" y="315" width="120" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="812" y="343.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">5</text>
+<rect x="920" y="315" width="120" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="932" y="343.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">6</text>
+<rect x="1040" y="315" width="120" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1052" y="343.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">7</text>
+<rect x="40" y="357" width="160" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="385.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">r=0</text>
+<rect x="200" y="357" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="212" y="385.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0</text>
+<rect x="320" y="357" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="385.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">1</text>
+<rect x="440" y="357" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="385.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2</text>
+<rect x="560" y="357" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="572" y="385.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">3</text>
+<rect x="680" y="357" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="385.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4</text>
+<rect x="800" y="357" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="812" y="385.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">5</text>
+<rect x="920" y="357" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="932" y="385.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">6</text>
+<rect x="1040" y="357" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1052" y="385.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">7</text>
+<rect x="40" y="399" width="160" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="427.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">r=1</text>
+<rect x="200" y="399" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="212" y="427.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">1</text>
+<rect x="320" y="399" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="427.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0</text>
+<rect x="440" y="399" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="427.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">3</text>
+<rect x="560" y="399" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="572" y="427.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2</text>
+<rect x="680" y="399" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="427.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">5</text>
+<rect x="800" y="399" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="812" y="427.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4</text>
+<rect x="920" y="399" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="932" y="427.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">7</text>
+<rect x="1040" y="399" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1052" y="427.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">6</text>
+<rect x="40" y="441" width="160" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">r=2</text>
+<rect x="200" y="441" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="212" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2</text>
+<rect x="320" y="441" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">3</text>
+<rect x="440" y="441" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0</text>
+<rect x="560" y="441" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="572" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">1</text>
+<rect x="680" y="441" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">6</text>
+<rect x="800" y="441" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="812" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">7</text>
+<rect x="920" y="441" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="932" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4</text>
+<rect x="1040" y="441" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1052" y="469.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">5</text>
+<rect x="40" y="483" width="160" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="511.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">r=3</text>
+<rect x="200" y="483" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="212" y="511.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">3</text>
+<rect x="320" y="483" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="511.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2</text>
+<rect x="440" y="483" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="511.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">1</text>
+<rect x="560" y="483" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="572" y="511.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0</text>
+<rect x="680" y="483" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="511.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">7</text>
+<rect x="800" y="483" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="812" y="511.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">6</text>
+<rect x="920" y="483" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="932" y="511.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">5</text>
+<rect x="1040" y="483" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1052" y="511.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4</text>
+<rect x="40" y="525" width="160" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="553.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">r=4</text>
+<rect x="200" y="525" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="212" y="553.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4</text>
+<rect x="320" y="525" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="553.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">5</text>
+<rect x="440" y="525" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="553.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">6</text>
+<rect x="560" y="525" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="572" y="553.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">7</text>
+<rect x="680" y="525" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="553.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0</text>
+<rect x="800" y="525" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="812" y="553.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">1</text>
+<rect x="920" y="525" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="932" y="553.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2</text>
+<rect x="1040" y="525" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1052" y="553.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">3</text>
+<rect x="40" y="567" width="160" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="595.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">r=5</text>
+<rect x="200" y="567" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="212" y="595.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">5</text>
+<rect x="320" y="567" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="595.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4</text>
+<rect x="440" y="567" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="595.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">7</text>
+<rect x="560" y="567" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="572" y="595.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">6</text>
+<rect x="680" y="567" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="595.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">1</text>
+<rect x="800" y="567" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="812" y="595.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0</text>
+<rect x="920" y="567" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="932" y="595.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">3</text>
+<rect x="1040" y="567" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1052" y="595.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2</text>
+<rect x="40" y="609" width="160" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="637.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">r=6</text>
+<rect x="200" y="609" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="212" y="637.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">6</text>
+<rect x="320" y="609" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="637.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">7</text>
+<rect x="440" y="609" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="637.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4</text>
+<rect x="560" y="609" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="572" y="637.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">5</text>
+<rect x="680" y="609" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="637.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2</text>
+<rect x="800" y="609" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="812" y="637.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">3</text>
+<rect x="920" y="609" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="932" y="637.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0</text>
+<rect x="1040" y="609" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1052" y="637.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">1</text>
+<rect x="40" y="651" width="160" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="679.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">r=7</text>
+<rect x="200" y="651" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="212" y="679.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">7</text>
+<rect x="320" y="651" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="679.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">6</text>
+<rect x="440" y="651" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452" y="679.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">5</text>
+<rect x="560" y="651" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="572" y="679.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4</text>
+<rect x="680" y="651" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="679.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">3</text>
+<rect x="800" y="651" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="812" y="679.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2</text>
+<rect x="920" y="651" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="932" y="679.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">1</text>
+<rect x="1040" y="651" width="120" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1052" y="679.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0</text>
+<rect x="200" y="357" width="120" height="42" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="260" y="385" font-size="20" fill="#174EA6" font-weight="700" text-anchor="middle">0</text>
+<rect x="200" y="399" width="120" height="42" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="260" y="427" font-size="20" fill="#174EA6" font-weight="700" text-anchor="middle">1</text>
+<rect x="200" y="441" width="120" height="42" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="260" y="469" font-size="20" fill="#174EA6" font-weight="700" text-anchor="middle">2</text>
+<rect x="200" y="483" width="120" height="42" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="260" y="511" font-size="20" fill="#174EA6" font-weight="700" text-anchor="middle">3</text>
+<rect x="200" y="525" width="120" height="42" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="260" y="553" font-size="20" fill="#174EA6" font-weight="700" text-anchor="middle">4</text>
+<rect x="200" y="567" width="120" height="42" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="260" y="595" font-size="20" fill="#174EA6" font-weight="700" text-anchor="middle">5</text>
+<rect x="200" y="609" width="120" height="42" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="260" y="637" font-size="20" fill="#174EA6" font-weight="700" text-anchor="middle">6</text>
+<rect x="200" y="651" width="120" height="42" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="260" y="679" font-size="20" fill="#174EA6" font-weight="700" text-anchor="middle">7</text>
+<text x="40" y="737" font-size="21" fill="#174EA6" font-weight="700" text-anchor="start">固定逻辑 g=0，向下读8行：物理包依次为0,1,2,3,4,5,6,7。</text>
+<rect x="40" y="766" width="280" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="796.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">同一128B访问组</text>
+<rect x="320" y="766" width="420" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="796.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">没有 swizzle</text>
+<rect x="740" y="766" width="420" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="752" y="796.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">有 swizzle</text>
+<rect x="40" y="812" width="280" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="842.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8行各取一个16B包</text>
+<rect x="320" y="812" width="420" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="842.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">都落在 banks 0..3</text>
+<rect x="740" y="812" width="420" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="752" y="842.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">分别落在0..3、4..7、…、28..31</text>
+<rect x="40" y="858" width="280" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="888.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">总大小 8×16B=128B</text>
+<rect x="320" y="858" width="420" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="888.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">相同bank、不同地址：冲突</text>
+<rect x="740" y="858" width="420" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="752" y="888.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">覆盖32 banks：该访问模式无冲突</text>
+<rect x="40" y="940" width="1120" height="130" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="969" font-size="21" fill="#172033" font-weight="700" text-anchor="start">改用 byte 地址：a=2e → [ rrr | ggg | vvv | 0 ]</text>
+<text x="55" y="999" font-size="18" fill="#172033" font-weight="400" text-anchor="start">源位由[8:6]变为[9:7]；目标位由[5:3]变为[6:4]；距离仍为3。</text>
+<text x="55" y="1028" font-size="18" fill="#172033" font-weight="400" text-anchor="start">B=3 不变，S=3 不变，M=3+1=4 → Sw&lt;3,4,3&gt;。</text>
+</svg>

@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="880" viewBox="0 0 1200 880" role="img" aria-labelledby="title desc">
+<title id="title">Dense：用 Q 的最后一条带存 P1</title><desc id="desc">M=64，Dqk=576=9×64；每个条带64×64 BF16 = 8 KiB。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="880" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Dense：用 Q 的最后一条带存 P1</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">M=64，Dqk=576=9×64；每个条带64×64 BF16 = 8 KiB。</text>
+<text x="40" y="133" font-size="23" fill="#172033" font-weight="700" text-anchor="start">① Q 经 TMA 到 shared：9条带，72 KiB</text>
+<rect x="40" y="160" width="124" height="80" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="102" y="192" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q0</text>
+<text x="102" y="220" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">0..63</text>
+<rect x="164" y="160" width="124" height="80" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="226" y="192" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q1</text>
+<text x="226" y="220" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">64..127</text>
+<rect x="288" y="160" width="124" height="80" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="350" y="192" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q2</text>
+<text x="350" y="220" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">128..191</text>
+<rect x="412" y="160" width="124" height="80" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="474" y="192" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q3</text>
+<text x="474" y="220" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">192..255</text>
+<rect x="536" y="160" width="124" height="80" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="598" y="192" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q4</text>
+<text x="598" y="220" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">256..319</text>
+<rect x="660" y="160" width="124" height="80" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="192" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q5</text>
+<text x="722" y="220" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">320..383</text>
+<rect x="784" y="160" width="124" height="80" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="846" y="192" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q6</text>
+<text x="846" y="220" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">384..447</text>
+<rect x="908" y="160" width="124" height="80" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="970" y="192" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q7</text>
+<text x="970" y="220" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">448..511</text>
+<rect x="1032" y="160" width="124" height="80" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1094" y="192" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q8</text>
+<text x="1094" y="220" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">512..575</text>
+<path d="M1094,245 L1094,287" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1094,287 1089,279 1099,279" fill="#174EA6"/>
+<rect x="650" y="295" width="506" height="118" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="665" y="324" font-size="21" fill="#172033" font-weight="700" text-anchor="start">② 两个 WG 各保存一份 rQ8</text>
+<text x="665" y="354" font-size="18" fill="#172033" font-weight="400" text-anchor="start">ldmatrix.x4 → 每线程32 BF16</text>
+<text x="665" y="383" font-size="18" fill="#172033" font-weight="400" text-anchor="start">shape=((2,2,2),1,4)，即16个32-bit槽</text>
+<rect x="40" y="295" width="575" height="118" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="324" font-size="21" fill="#172033" font-weight="700" text-anchor="start">存活条件</text>
+<text x="55" y="354" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG0 首块完整 SS QK 已读完 Q8，</text>
+<text x="55" y="383" font-size="18" fill="#172033" font-weight="400" text-anchor="start">两个 WG 的 rQ8 都已就绪，才可覆盖 Q8。</text>
+<path d="M1094,418 L1094,461" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1094,461 1089,453 1099,453" fill="#174EA6"/>
+<text x="40" y="472" font-size="23" fill="#172033" font-weight="700" text-anchor="start">③ 稳态：Q0..Q7 留在 shared；原 Q8 空间变为 sP1</text>
+<rect x="40" y="499" width="124" height="75" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="102" y="544" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q0</text>
+<rect x="164" y="499" width="124" height="75" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="226" y="544" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q1</text>
+<rect x="288" y="499" width="124" height="75" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="350" y="544" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q2</text>
+<rect x="412" y="499" width="124" height="75" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="474" y="544" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q3</text>
+<rect x="536" y="499" width="124" height="75" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="598" y="544" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q4</text>
+<rect x="660" y="499" width="124" height="75" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="544" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q5</text>
+<rect x="784" y="499" width="124" height="75" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="846" y="544" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q6</text>
+<rect x="908" y="499" width="124" height="75" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="970" y="544" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">Q7</text>
+<rect x="1032" y="499" width="124" height="75" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1094" y="544" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">P1</text>
+<rect x="40" y="612" width="300" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="642.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">MMA 工作</text>
+<rect x="340" y="612" width="420" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="352" y="642.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">A 操作数来源</text>
+<rect x="760" y="612" width="400" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="772" y="642.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">B 操作数来源</text>
+<rect x="40" y="658" width="300" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="688.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">QK 的 features 0..511</text>
+<rect x="340" y="658" width="420" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="352" y="688.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">sQ：SS WGMMA，32次 k16</text>
+<rect x="760" y="658" width="400" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="772" y="688.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">sK 对应8条带</text>
+<rect x="40" y="704" width="300" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="734.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">QK 的 features 512..575</text>
+<rect x="340" y="704" width="420" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="352" y="734.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">rQ8：RS WGMMA，4次 k16</text>
+<rect x="760" y="704" width="400" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="772" y="734.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">sK 第9条带</text>
+<rect x="40" y="750" width="300" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="780.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG0 计算 P1 × V1L</text>
+<rect x="340" y="750" width="420" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="352" y="780.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">sP1：SS WGMMA</text>
+<rect x="760" y="750" width="400" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="772" y="780.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">sK1 的 V 左半</text>
+<text x="40" y="837" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">节省8 KiB shared，代价是每个WG持有 rQ8；它同时改变了稳态 QK 的指令类型。</text>
+</svg>

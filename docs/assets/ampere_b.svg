@@ -1,0 +1,249 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="950" viewBox="0 0 1200 950" role="img" aria-labelledby="title desc">
+<title id="title">B：ldmatrix.x2.trans 把竖向两个值装进一个 reg</title><desc id="desc">固定 warp、ni、kk。N0=32×warp_n+8×ni；g=lane/4，t=lane%4。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}</style>
+<rect x="0" y="0" width="1200" height="950" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="46" font-size="29" fill="#172033" font-weight="700" text-anchor="start">B：ldmatrix.x2.trans 把竖向两个值装进一个 reg</text>
+<text x="40" y="80" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">固定 warp、ni、kk。N0=32×warp_n+8×ni；g=lane/4，t=lane%4。</text>
+<text x="40" y="126" font-size="21" fill="#172033" font-weight="700" text-anchor="start">① shared 中仍然是 row-major B[16][8]</text>
+<rect x="40" y="150" width="485" height="97" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="178" font-size="20" fill="#172033" font-weight="700" text-anchor="start">Q0：K 0..7，N 0..7</text>
+<text x="55" y="211" font-size="18" fill="#172033" font-weight="400" text-anchor="start">行地址来自 lane 0..7 → b_frag[ni][0]</text>
+<rect x="40" y="247" width="485" height="97" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="275" font-size="20" fill="#172033" font-weight="700" text-anchor="start">Q1：K 8..15，N 0..7</text>
+<text x="55" y="308" font-size="18" fill="#172033" font-weight="400" text-anchor="start">行地址来自 lane 8..15 → b_frag[ni][1]</text>
+<text x="590" y="126" font-size="21" fill="#172033" font-weight="700" text-anchor="start">② .trans 改变装入寄存器的排列</text>
+<rect x="590" y="150" width="100" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="602" y="179.5" font-size="17" fill="#172033" font-weight="700" text-anchor="start">寄存器</text>
+<rect x="690" y="150" width="470" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="702" y="179.5" font-size="17" fill="#172033" font-weight="700" text-anchor="start">低16位 / 高16位：B_smem 坐标</text>
+<rect x="590" y="197" width="100" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="602" y="226.5" font-size="17" fill="#172033" font-weight="400" text-anchor="start">b[0]</text>
+<rect x="690" y="197" width="470" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="702" y="226.5" font-size="17" fill="#172033" font-weight="400" text-anchor="start">(kk+2t, N0+g) / (kk+2t+1, N0+g)</text>
+<rect x="590" y="244" width="100" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="602" y="273.5" font-size="17" fill="#172033" font-weight="400" text-anchor="start">b[1]</text>
+<rect x="690" y="244" width="470" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="702" y="273.5" font-size="17" fill="#172033" font-weight="400" text-anchor="start">(kk+2t+8, N0+g) / (kk+2t+9, N0+g)</text>
+<text x="590" y="322" font-size="19" fill="#174EA6" font-weight="700" text-anchor="start">原矩阵同一列、相邻两行 → 一个 32-bit reg。</text>
+<text x="40" y="394" font-size="21" fill="#172033" font-weight="700" text-anchor="start">③ 完整 16×8 B fragment：每格包含竖向两个 BF16</text>
+<text x="119.0" y="431" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">0</text>
+<text x="173.0" y="431" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">1</text>
+<text x="227.0" y="431" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">2</text>
+<text x="281.0" y="431" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">3</text>
+<text x="335.0" y="431" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">4</text>
+<text x="389.0" y="431" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">5</text>
+<text x="443.0" y="431" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">6</text>
+<text x="497.0" y="431" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">7</text>
+<text x="80" y="473" font-size="15" fill="#172033" font-weight="400" text-anchor="end">0,1</text>
+<rect x="92" y="443" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="119.0" y="464" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L0</text>
+<text x="119.0" y="484" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="146" y="443" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="464" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L4</text>
+<text x="173.0" y="484" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="200" y="443" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="227.0" y="464" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L8</text>
+<text x="227.0" y="484" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="254" y="443" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="281.0" y="464" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L12</text>
+<text x="281.0" y="484" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="308" y="443" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="335.0" y="464" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L16</text>
+<text x="335.0" y="484" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="362" y="443" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="389.0" y="464" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L20</text>
+<text x="389.0" y="484" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="416" y="443" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="443.0" y="464" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L24</text>
+<text x="443.0" y="484" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="470" y="443" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497.0" y="464" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L28</text>
+<text x="497.0" y="484" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<text x="80" y="522" font-size="15" fill="#172033" font-weight="400" text-anchor="end">2,3</text>
+<rect x="92" y="492" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="119.0" y="513" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L1</text>
+<text x="119.0" y="533" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="146" y="492" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="513" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L5</text>
+<text x="173.0" y="533" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="200" y="492" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="227.0" y="513" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L9</text>
+<text x="227.0" y="533" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="254" y="492" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="281.0" y="513" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L13</text>
+<text x="281.0" y="533" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="308" y="492" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="335.0" y="513" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L17</text>
+<text x="335.0" y="533" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="362" y="492" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="389.0" y="513" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L21</text>
+<text x="389.0" y="533" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="416" y="492" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="443.0" y="513" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L25</text>
+<text x="443.0" y="533" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="470" y="492" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497.0" y="513" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L29</text>
+<text x="497.0" y="533" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<text x="80" y="571" font-size="15" fill="#172033" font-weight="400" text-anchor="end">4,5</text>
+<rect x="92" y="541" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="119.0" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L2</text>
+<text x="119.0" y="582" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="146" y="541" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L6</text>
+<text x="173.0" y="582" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="200" y="541" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="227.0" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L10</text>
+<text x="227.0" y="582" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="254" y="541" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="281.0" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L14</text>
+<text x="281.0" y="582" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="308" y="541" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="335.0" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L18</text>
+<text x="335.0" y="582" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="362" y="541" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="389.0" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L22</text>
+<text x="389.0" y="582" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="416" y="541" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="443.0" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L26</text>
+<text x="443.0" y="582" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="470" y="541" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497.0" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L30</text>
+<text x="497.0" y="582" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<text x="80" y="620" font-size="15" fill="#172033" font-weight="400" text-anchor="end">6,7</text>
+<rect x="92" y="590" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="119.0" y="611" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L3</text>
+<text x="119.0" y="631" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="146" y="590" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="611" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L7</text>
+<text x="173.0" y="631" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="200" y="590" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="227.0" y="611" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L11</text>
+<text x="227.0" y="631" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="254" y="590" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="281.0" y="611" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L15</text>
+<text x="281.0" y="631" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="308" y="590" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="335.0" y="611" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L19</text>
+<text x="335.0" y="631" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="362" y="590" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="389.0" y="611" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L23</text>
+<text x="389.0" y="631" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="416" y="590" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="443.0" y="611" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L27</text>
+<text x="443.0" y="631" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<rect x="470" y="590" width="54" height="49" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497.0" y="611" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L31</text>
+<text x="497.0" y="631" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b0</text>
+<text x="80" y="669" font-size="15" fill="#172033" font-weight="400" text-anchor="end">8,9</text>
+<rect x="92" y="639" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="119.0" y="660" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L0</text>
+<text x="119.0" y="680" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="146" y="639" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="660" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L4</text>
+<text x="173.0" y="680" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="200" y="639" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="227.0" y="660" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L8</text>
+<text x="227.0" y="680" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="254" y="639" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="281.0" y="660" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L12</text>
+<text x="281.0" y="680" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="308" y="639" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="335.0" y="660" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L16</text>
+<text x="335.0" y="680" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="362" y="639" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="389.0" y="660" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L20</text>
+<text x="389.0" y="680" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="416" y="639" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="443.0" y="660" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L24</text>
+<text x="443.0" y="680" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="470" y="639" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497.0" y="660" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L28</text>
+<text x="497.0" y="680" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<text x="80" y="718" font-size="15" fill="#172033" font-weight="400" text-anchor="end">10,11</text>
+<rect x="92" y="688" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="119.0" y="709" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L1</text>
+<text x="119.0" y="729" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="146" y="688" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="709" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L5</text>
+<text x="173.0" y="729" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="200" y="688" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="227.0" y="709" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L9</text>
+<text x="227.0" y="729" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="254" y="688" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="281.0" y="709" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L13</text>
+<text x="281.0" y="729" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="308" y="688" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="335.0" y="709" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L17</text>
+<text x="335.0" y="729" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="362" y="688" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="389.0" y="709" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L21</text>
+<text x="389.0" y="729" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="416" y="688" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="443.0" y="709" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L25</text>
+<text x="443.0" y="729" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="470" y="688" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497.0" y="709" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L29</text>
+<text x="497.0" y="729" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<text x="80" y="767" font-size="15" fill="#172033" font-weight="400" text-anchor="end">12,13</text>
+<rect x="92" y="737" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="119.0" y="758" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L2</text>
+<text x="119.0" y="778" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="146" y="737" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="758" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L6</text>
+<text x="173.0" y="778" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="200" y="737" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="227.0" y="758" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L10</text>
+<text x="227.0" y="778" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="254" y="737" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="281.0" y="758" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L14</text>
+<text x="281.0" y="778" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="308" y="737" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="335.0" y="758" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L18</text>
+<text x="335.0" y="778" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="362" y="737" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="389.0" y="758" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L22</text>
+<text x="389.0" y="778" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="416" y="737" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="443.0" y="758" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L26</text>
+<text x="443.0" y="778" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="470" y="737" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497.0" y="758" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L30</text>
+<text x="497.0" y="778" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<text x="80" y="816" font-size="15" fill="#172033" font-weight="400" text-anchor="end">14,15</text>
+<rect x="92" y="786" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="119.0" y="807" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L3</text>
+<text x="119.0" y="827" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="146" y="786" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="807" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L7</text>
+<text x="173.0" y="827" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="200" y="786" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="227.0" y="807" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L11</text>
+<text x="227.0" y="827" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="254" y="786" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="281.0" y="807" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L15</text>
+<text x="281.0" y="827" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="308" y="786" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="335.0" y="807" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L19</text>
+<text x="335.0" y="827" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="362" y="786" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="389.0" y="807" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L23</text>
+<text x="389.0" y="827" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="416" y="786" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="443.0" y="807" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L27</text>
+<text x="443.0" y="827" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<rect x="470" y="786" width="54" height="49" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497.0" y="807" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">L31</text>
+<text x="497.0" y="827" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">b1</text>
+<text x="590" y="458" font-size="21" fill="#172033" font-weight="700" text-anchor="start">lane 13：g=3，t=1</text>
+<text x="590" y="499" font-size="18" fill="#172033" font-weight="400" text-anchor="start">提供地址：B_smem[kk+13][N0]。</text>
+<text x="590" y="535" font-size="18" fill="#172033" font-weight="400" text-anchor="start">收到 b[0]：B[kk+2,N0+3]，B[kk+3,N0+3]</text>
+<text x="590" y="571" font-size="18" fill="#172033" font-weight="400" text-anchor="start">收到 b[1]：B[kk+10,N0+3]，B[kk+11,N0+3]</text>
+<text x="590" y="607" font-size="18" fill="#172033" font-weight="400" text-anchor="start"></text>
+<text x="590" y="643" font-size="18" fill="#172033" font-weight="400" text-anchor="start">x2 仅使用 lane 0..15 提供的行地址。</text>
+<text x="590" y="679" font-size="18" fill="#172033" font-weight="400" text-anchor="start">lane 16..31 仍参与指令，并收到两个 reg。</text>
+<text x="590" y="715" font-size="18" fill="#172033" font-weight="400" text-anchor="start">代码中 +(lane&gt;&gt;4) 对有效的16个地址恒为0，</text>
+<text x="590" y="751" font-size="18" fill="#172033" font-weight="400" text-anchor="start">它不负责转置；转置来自 .trans。</text>
+<text x="590" y="825" font-size="20" fill="#174EA6" font-weight="700" text-anchor="start">32 lanes × 2 regs × 2 BF16 = 16×8</text>
+<text x="40" y="892" font-size="20" fill="#174EA6" font-weight="700" text-anchor="start">ni=0,1,2,3：沿 N 每次加8；kk=0,16：沿 K 加16。shared 中没有原地转置操作。</text>
+<text x="40" y="929" font-size="17" fill="#5D687A" font-weight="400" text-anchor="start">.x2 的地址来源规则按本例 Ampere / sm_80 解释；所有32个lane必须执行同一条 ldmatrix。</text>
+</svg>

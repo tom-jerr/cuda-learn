@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+<title id="title">迭代顺序：每个 bk 搬32层 K，再分两次 k16 计算</title><desc id="desc">示意顺序，宽度不代表耗时；warp 间的计算进度可不同。当前代码没有跨 bk 的 copy / MMA 流水重叠。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}</style>
+<rect x="0" y="0" width="1200" height="750" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="46" font-size="29" fill="#172033" font-weight="700" text-anchor="start">迭代顺序：每个 bk 搬32层 K，再分两次 k16 计算</text>
+<text x="40" y="80" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">示意顺序，宽度不代表耗时；warp 间的计算进度可不同。当前代码没有跨 bk 的 copy / MMA 流水重叠。</text>
+<text x="40" y="173" font-size="20" fill="#172033" font-weight="700" text-anchor="start">warp 0</text>
+<rect x="180" y="142" width="162" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="261.0" y="171" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">copy issue</text>
+<rect x="350" y="142" width="80" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390.0" y="171" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">commit</text>
+<rect x="438" y="142" width="98" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="487.0" y="171" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">wait_all</text>
+<rect x="570" y="142" width="182" height="47" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="661.0" y="171" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">kk=0</text>
+<rect x="785" y="142" width="182" height="47" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="876.0" y="171" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">kk=16</text>
+<text x="40" y="236" font-size="20" fill="#172033" font-weight="700" text-anchor="start">warp 1</text>
+<rect x="180" y="205" width="162" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="261.0" y="234" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">copy issue</text>
+<rect x="350" y="205" width="80" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390.0" y="234" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">commit</text>
+<rect x="438" y="205" width="98" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="487.0" y="234" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">wait_all</text>
+<rect x="570" y="205" width="182" height="47" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="661.0" y="234" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">kk=0</text>
+<rect x="785" y="205" width="182" height="47" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="876.0" y="234" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">kk=16</text>
+<text x="40" y="299" font-size="20" fill="#172033" font-weight="700" text-anchor="start">warp 2</text>
+<rect x="180" y="268" width="162" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="261.0" y="297" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">copy issue</text>
+<rect x="350" y="268" width="80" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390.0" y="297" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">commit</text>
+<rect x="438" y="268" width="98" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="487.0" y="297" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">wait_all</text>
+<rect x="570" y="268" width="182" height="47" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="661.0" y="297" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">kk=0</text>
+<rect x="785" y="268" width="182" height="47" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="876.0" y="297" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">kk=16</text>
+<text x="40" y="362" font-size="20" fill="#172033" font-weight="700" text-anchor="start">warp 3</text>
+<rect x="180" y="331" width="162" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="261.0" y="360" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">copy issue</text>
+<rect x="350" y="331" width="80" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390.0" y="360" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">commit</text>
+<rect x="438" y="331" width="98" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="487.0" y="360" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">wait_all</text>
+<rect x="570" y="331" width="182" height="47" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="661.0" y="360" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">kk=0</text>
+<rect x="785" y="331" width="182" height="47" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="876.0" y="360" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">kk=16</text>
+<line x1="551" y1="122" x2="551" y2="393" stroke="#174EA6" stroke-width="2" stroke-dasharray="5 5"/>
+<text x="551" y="112" font-size="16" fill="#174EA6" font-weight="400" text-anchor="middle">CTA barrier</text>
+<line x1="996" y1="122" x2="996" y2="393" stroke="#174EA6" stroke-width="2" stroke-dasharray="5 5"/>
+<text x="996" y="112" font-size="16" fill="#174EA6" font-weight="400" text-anchor="middle">CTA barrier</text>
+<text x="1018" y="198" font-size="18" fill="#172033" font-weight="700" text-anchor="start">下一轮</text>
+<text x="1018" y="232" font-size="18" fill="#172033" font-weight="400" text-anchor="start">bk += 32</text>
+<text x="1018" y="266" font-size="17" fill="#172033" font-weight="400" text-anchor="start">覆盖 shared</text>
+<line x1="180" y1="407" x2="544" y2="407" stroke="#5D687A" stroke-width="2"/>
+<text x="180" y="434" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">异步 copy：issue 后可在途；wait_all 返回时该线程的 copy 已完成。</text>
+<text x="40" y="486" font-size="22" fill="#172033" font-weight="700" text-anchor="start">展开任意一个 kk（每 warp）：</text>
+<rect x="40" y="510" width="354" height="105" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="540" font-size="21" fill="#172033" font-weight="700" text-anchor="start">A load</text>
+<text x="56" y="569" font-size="18" fill="#172033" font-weight="400" text-anchor="start">mi=0,1</text>
+<text x="56" y="597" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2× ldmatrix.x4</text>
+<text x="401" y="568" font-size="21" fill="#172033" font-weight="400" text-anchor="start">→</text>
+<rect x="423" y="510" width="354" height="105" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="439" y="540" font-size="21" fill="#172033" font-weight="700" text-anchor="start">B load</text>
+<text x="439" y="569" font-size="18" fill="#172033" font-weight="400" text-anchor="start">ni=0,1,2,3</text>
+<text x="439" y="597" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4× ldmatrix.x2.trans</text>
+<text x="784" y="568" font-size="21" fill="#172033" font-weight="400" text-anchor="start">→</text>
+<rect x="806" y="510" width="354" height="105" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="822" y="540" font-size="21" fill="#172033" font-weight="700" text-anchor="start">MMA</text>
+<text x="822" y="569" font-size="18" fill="#172033" font-weight="400" text-anchor="start">(mi,ni)=(0,0)…(1,3)</text>
+<text x="822" y="597" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8× mma.m16n8k16</text>
+<text x="40" y="658" font-size="20" fill="#172033" font-weight="700" text-anchor="start">每 bk / 每 warp：4次 x4 + 8次 x2.trans + 16次 MMA；全 block：64次 warp 级 MMA。</text>
+<text x="40" y="700" font-size="20" fill="#174EA6" font-weight="700" text-anchor="start">accum：初始化一次 → 累加 bk+kk 的每段 K → 全部 bk 完成后转 BF16、写回 HBM。</text>
+<text x="40" y="735" font-size="17" fill="#5D687A" font-weight="400" text-anchor="start">两处 __syncthreads()：前者保证可读取全 block 的 copy 结果；后者保证 shared 被覆盖前所有 warp 已用完。</text>
+</svg>

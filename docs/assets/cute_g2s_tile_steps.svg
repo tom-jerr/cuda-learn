@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="960" viewBox="0 0 1200 960" role="img" aria-labelledby="title desc">
+<title id="title">G2S：先数 32×32 tile，再比较源与目的地址</title><desc id="desc">A(M,K) 与 B(N,K) 同理。所有地址差以 half 为单位；K=256，shared 每行逻辑宽32。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="960" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">G2S：先数 32×32 tile，再比较源与目的地址</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">A(M,K) 与 B(N,K) 同理。所有地址差以 half 为单位；K=256，shared 每行逻辑宽32。</text>
+<text x="40" y="130" font-size="22" fill="#172033" font-weight="700" text-anchor="start">global：128×256，被切成 4×8 个 copy tile</text>
+<text x="720" y="130" font-size="22" fill="#172033" font-weight="700" text-anchor="start">shared：3 个 128×32 stage</text>
+<text x="122" y="188" font-size="15" fill="#172033" font-weight="400" text-anchor="middle" class="mono">kt=0</text>
+<text x="186" y="188" font-size="15" fill="#172033" font-weight="400" text-anchor="middle" class="mono">kt=1</text>
+<text x="250" y="188" font-size="15" fill="#172033" font-weight="400" text-anchor="middle" class="mono">kt=2</text>
+<text x="314" y="188" font-size="15" fill="#172033" font-weight="400" text-anchor="middle" class="mono">kt=3</text>
+<text x="378" y="188" font-size="15" fill="#172033" font-weight="400" text-anchor="middle" class="mono">kt=4</text>
+<text x="442" y="188" font-size="15" fill="#172033" font-weight="400" text-anchor="middle" class="mono">kt=5</text>
+<text x="506" y="188" font-size="15" fill="#172033" font-weight="400" text-anchor="middle" class="mono">kt=6</text>
+<text x="570" y="188" font-size="15" fill="#172033" font-weight="400" text-anchor="middle" class="mono">kt=7</text>
+<text x="78" y="239" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r0</text>
+<rect x="90" y="205" width="64" height="52" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="122" y="237" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="154" y="205" width="64" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="186" y="237" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="218" y="205" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="250" y="237" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="282" y="205" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="314" y="237" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="346" y="205" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="378" y="237" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="410" y="205" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="442" y="237" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="474" y="205" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="506" y="237" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="538" y="205" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="570" y="237" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<text x="78" y="291" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r1</text>
+<rect x="90" y="257" width="64" height="52" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="122" y="289" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="154" y="257" width="64" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="186" y="289" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="218" y="257" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="250" y="289" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="282" y="257" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="314" y="289" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="346" y="257" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="378" y="289" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="410" y="257" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="442" y="289" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="474" y="257" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="506" y="289" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="538" y="257" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="570" y="289" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<text x="78" y="343" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r2</text>
+<rect x="90" y="309" width="64" height="52" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="122" y="341" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="154" y="309" width="64" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="186" y="341" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="218" y="309" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="250" y="341" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="282" y="309" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="314" y="341" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="346" y="309" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="378" y="341" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="410" y="309" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="442" y="341" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="474" y="309" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="506" y="341" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="538" y="309" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="570" y="341" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<text x="78" y="395" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r3</text>
+<rect x="90" y="361" width="64" height="52" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="122" y="393" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="154" y="361" width="64" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="186" y="393" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="218" y="361" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="250" y="393" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="282" y="361" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="314" y="393" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="346" y="361" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="378" y="393" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="410" y="361" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="442" y="393" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="474" y="361" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="506" y="393" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="538" y="361" width="64" height="52" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="570" y="393" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<text x="795" y="188" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">stage 0</text>
+<rect x="735" y="205" width="120" height="52" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="795" y="237" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="735" y="257" width="120" height="52" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="795" y="289" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="735" y="309" width="120" height="52" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="795" y="341" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="735" y="361" width="120" height="52" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="795" y="393" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<text x="915" y="188" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">stage 1</text>
+<rect x="855" y="205" width="120" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="915" y="237" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="855" y="257" width="120" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="915" y="289" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="855" y="309" width="120" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="915" y="341" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="855" y="361" width="120" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="915" y="393" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<text x="1035" y="188" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">stage 2</text>
+<rect x="975" y="205" width="120" height="52" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1035" y="237" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="975" y="257" width="120" height="52" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1035" y="289" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="975" y="309" width="120" height="52" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1035" y="341" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<rect x="975" y="361" width="120" height="52" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1035" y="393" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">32×32</text>
+<text x="40" y="451" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">向下32行：跨 32 条完整 global 行 → +8192</text>
+<text x="720" y="451" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">向下32行 → shared +1024</text>
+<rect x="40" y="490" width="285" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="521.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">线程 view 中的移动</text>
+<rect x="325" y="490" width="300" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="337" y="521.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">global 源地址差</text>
+<rect x="625" y="490" width="535" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="521.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">shared 目的地址差</text>
+<rect x="40" y="538" width="285" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="569.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">向量内向右1个 half</text>
+<rect x="325" y="538" width="300" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="337" y="569.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+1</text>
+<rect x="625" y="538" width="535" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="569.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+1（swizzle 保留8-half向量内部）</text>
+<rect x="40" y="586" width="285" height="48" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="617.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">向下一个 copy tile</text>
+<rect x="325" y="586" width="300" height="48" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="337" y="617.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+8192：跨32行，每行256</text>
+<rect x="625" y="586" width="535" height="48" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="617.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+1024：跨32行，每行32</text>
+<rect x="40" y="634" width="285" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="665.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">向右一个 global K tile</text>
+<rect x="325" y="634" width="300" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="337" y="665.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+32：仍在同一组 global 行</text>
+<rect x="625" y="634" width="535" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="665.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">由循环选 stage，不是向右分配新空间</text>
+<rect x="40" y="682" width="285" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="713.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">换到下一个 shared stage</text>
+<rect x="325" y="682" width="300" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="337" y="713.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">由循环选 K tile</text>
+<rect x="625" y="682" width="535" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="713.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+4096：一个完整128×32缓冲槽</text>
+<text x="40" y="779" font-size="21" fill="#172033" font-weight="700" text-anchor="start">shape：每线程8个值 × 向下4块 × 块内K方向1块 × 8个K tiles / 3个stages</text>
+<text x="40" y="824" font-size="23" fill="#172033" font-weight="400" text-anchor="start" class="mono">src: ((8,1),4,1,8):((1,0),8192,0,32)</text>
+<text x="40" y="868" font-size="23" fill="#172033" font-weight="400" text-anchor="start" class="mono">dst: 向量 +1；向下 +1024；换 stage +4096</text>
+<text x="40" y="917" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">shape 中大小为1的mode没有第二个位置；对应stride常打印为0。</text>
+</svg>

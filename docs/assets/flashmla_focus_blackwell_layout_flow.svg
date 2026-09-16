@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1120" viewBox="0 0 1200 1120" role="img" aria-labelledby="title desc">
+<title id="title">Blackwell head64：TMA raw layout 与反量化后的 MMA layout</title><desc id="desc">V32 NoPE512；这里是单个head64路径，不使用Hopper双CTA的DSM cross-over。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1120" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Blackwell head64：TMA raw layout 与反量化后的 MMA layout</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">V32 NoPE512；这里是单个head64路径，不使用Hopper双CTA的DSM cross-over。</text>
+<rect x="40" y="113" width="1120" height="102" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="142" font-size="21" fill="#172033" font-weight="700" text-anchor="start">HBM tensor map：一行是一条物理token的NoPE部分</text>
+<text x="55" y="172" font-size="18" fill="#172033" font-weight="400" text-anchor="start">dtype=INT64（8个FP8字节一包）；shape=(64, physical_rows)；行byte stride=656。</text>
+<text x="40" y="258" font-size="21" fill="#172033" font-weight="700" text-anchor="start">gather4 输入四个独立row坐标：例 [17,400,-1,23]；无效行触发零填充。</text>
+<path d="M600,280 L600,325" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="600,325 595,317 605,317" fill="#174EA6"/>
+<rect x="40" y="338" width="1120" height="117" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="367" font-size="21" fill="#172033" font-weight="700" text-anchor="start">raw shared：64个选中token紧密排列，每行512个FP8</text>
+<text x="55" y="397" font-size="18" fill="#172033" font-weight="400" text-anchor="start">shape=(64,512), stride=(512,1)，单位byte；无SW128 XOR。</text>
+<text x="55" y="426" font-size="18" fill="#172033" font-weight="400" text-anchor="start">global行stride656 → shared行stride512；64行共32KiB；16次gather4。</text>
+<path d="M600,463 L600,510" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="600,510 595,502 605,502" fill="#174EA6"/>
+<rect x="40" y="524" width="1120" height="146" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="553" font-size="21" fill="#172033" font-weight="700" text-anchor="start">dequant WG：每8线程处理一个token的64-feature块</text>
+<text x="55" y="583" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每线程读8个FP8 → 乘scale → 写8个BF16。</text>
+<text x="55" y="612" font-size="18" fill="#172033" font-weight="400" text-anchor="start">128线程 =16组；每组做4个token，覆盖64行；沿feature做8轮。</text>
+<text x="55" y="641" font-size="18" fill="#172033" font-weight="400" text-anchor="start">写入64×512 BF16 SW128：8个64-feature条带，共64KiB。</text>
+<rect x="40" y="710" width="245" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="740.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">同一个逻辑移动</text>
+<rect x="285" y="710" width="395" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297" y="740.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">raw FP8 shared（byte）</text>
+<rect x="680" y="710" width="480" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="740.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">BF16 SW128 shared（element）</text>
+<rect x="40" y="756" width="245" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="786.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">向下16个token</text>
+<rect x="285" y="756" width="395" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297" y="786.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+16×512=8192</text>
+<rect x="680" y="756" width="480" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="786.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+16×64=1024</text>
+<rect x="40" y="802" width="245" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="832.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">向右64 features</text>
+<rect x="285" y="802" width="395" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297" y="832.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+64</text>
+<rect x="680" y="802" width="480" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="832.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+64×64=4096</text>
+<rect x="40" y="848" width="245" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="878.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">向右8 features</text>
+<rect x="285" y="848" width="395" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297" y="878.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+8</text>
+<rect x="680" y="848" width="480" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="692" y="878.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">包位置由行号XOR决定</text>
+<text x="40" y="945" font-size="20" fill="#172033" font-weight="700" text-anchor="start">MMA view再变化：Q进TMEM；K以dual-GEMM view解释；PV以转置V view解释。</text>
+<text x="40" y="991" font-size="20" fill="#172033" font-weight="400" text-anchor="start">RoPE由独立gather路径直接写BF16 SW64；V32可先算RoPE QK，等待NoPE反量化。</text>
+<text x="40" y="1037" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">TMA只搬字节并按descriptor排布；FP8→BF16与乘scale仍由线程执行。</text>
+<text x="40" y="1082" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">MODEL1的payload/scale组织和RoPE布局不同；本图地址只对应V32。</text>
+</svg>

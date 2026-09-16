@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+<title id="title">CUTLASS 3.x execution architecture for Ampere GEMM and FA2</title>
+<desc id="desc">Static composition diagram showing host adapter, scheduler, mainloop pipeline, epilogue, and the custom CuTe FA2 composition.</desc>
+<defs>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#172033"/></marker>
+<marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#174EA6"/></marker>
+</defs>
+<rect width="1600" height="980" fill="#F7F9FC"/>
+<text x="70" y="62" fill="#172033" font-size="34" font-family="DejaVu Sans" font-weight="750" text-anchor="start">CUTLASS 3.x on Ampere · Execution architecture</text>
+<text x="70" y="96" fill="#5D687A" font-size="19" font-family="DejaVu Sans" font-weight="500" text-anchor="start">Shared CuTe atoms: a 3.x GEMM collective and a custom FA2 attention loop</text>
+<rect x="50" y="130" width="1500" height="405" rx="20" fill="#FFFFFF" stroke="#CBD3DE" stroke-width="2"/>
+<text x="78" y="171" fill="#174EA6" font-size="25" font-family="DejaVu Sans" font-weight="750" text-anchor="start">A. BF16 GEMM · CUTLASS 3.x kernel composition</text>
+<rect x="82" y="204" width="230" height="82" rx="12" fill="#DCE8FF" stroke="#174EA6" stroke-width="2"/>
+<text x="100" y="234" fill="#174EA6" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Host adapter</text>
+<text x="100" y="262" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">GemmUniversalAdapter</text>
+<rect x="360" y="204" width="246" height="82" rx="12" fill="#DCE8FF" stroke="#174EA6" stroke-width="2"/>
+<text x="378" y="234" fill="#174EA6" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Kernel shell</text>
+<text x="378" y="262" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">GemmUniversal&lt;M,N,K,L&gt;</text>
+<line x1="315" y1="245" x2="350" y2="245" stroke="#174EA6" stroke-width="3" marker-end="url(#arrow-blue)"/>
+<rect x="650" y="187" width="850" height="135" rx="16" fill="#F7F9FC" stroke="#174EA6" stroke-width="2"/>
+<text x="676" y="219" fill="#172033" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Kernel = scheduler + mainloop + epilogue</text>
+<rect x="680" y="237" width="230" height="70" rx="12" fill="#EEE4F7" stroke="#7142A0" stroke-width="2"/>
+<text x="698" y="267" fill="#7142A0" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">CTA scheduler</text>
+<text x="698" y="295" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">grid(m,n,batch) · direct</text>
+<rect x="935" y="237" width="300" height="70" rx="12" fill="#FCE9C8" stroke="#995600" stroke-width="2"/>
+<text x="953" y="267" fill="#995600" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">CollectiveMainloop</text>
+<text x="953" y="295" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">Sm80CpAsync&lt;3&gt;</text>
+<rect x="1260" y="237" width="210" height="70" rx="12" fill="#DEF1E8" stroke="#21654D" stroke-width="2"/>
+<text x="1278" y="267" fill="#21654D" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">CollectiveEpilogue</text>
+<text x="1278" y="295" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">FP32 → BF16</text>
+<path d="M606 245 H630 V272 H670" fill="none" stroke="#174EA6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow-blue)"/>
+<line x1="910" y1="272" x2="925" y2="272" stroke="#172033" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="1235" y1="272" x2="1250" y2="272" stroke="#172033" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="82" y="358" fill="#995600" font-size="18" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Inside CollectiveMainloop · 128×128×32 · 4 warps</text>
+<rect x="82" y="377" width="236" height="82" rx="12" fill="#FCE9C8" stroke="#995600" stroke-width="2"/>
+<text x="100" y="407" fill="#995600" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Gmem TiledCopy</text>
+<text x="100" y="435" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">128-bit cp.async</text>
+<rect x="355" y="377" width="236" height="82" rx="12" fill="#FCE9C8" stroke="#995600" stroke-width="2"/>
+<text x="373" y="407" fill="#995600" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">SMEM ring</text>
+<text x="373" y="435" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">A/B × 3 stages</text>
+<rect x="628" y="377" width="236" height="82" rx="12" fill="#FCE9C8" stroke="#995600" stroke-width="2"/>
+<text x="646" y="407" fill="#995600" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">SmemCopyAtom</text>
+<text x="646" y="435" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">ldmatrix N / T</text>
+<rect x="901" y="377" width="180" height="82" rx="12" fill="#DCE8FF" stroke="#174EA6" stroke-width="2"/>
+<text x="919" y="407" fill="#174EA6" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">TiledMMA</text>
+<text x="919" y="435" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">m16n8k16</text>
+<rect x="1118" y="377" width="352" height="82" rx="12" fill="#DEF1E8" stroke="#21654D" stroke-width="2"/>
+<text x="1136" y="407" fill="#21654D" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Accumulator + epilogue</text>
+<text x="1136" y="435" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">FP32 → LinearCombination → BF16</text>
+<line x1="318" y1="418" x2="345" y2="418" stroke="#995600" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="591" y1="418" x2="618" y2="418" stroke="#995600" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="864" y1="418" x2="891" y2="418" stroke="#995600" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="1081" y1="418" x2="1108" y2="418" stroke="#172033" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1085 307 V349 H745 V367" fill="none" stroke="#995600" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)" stroke-dasharray="6 5"/>
+<text x="82" y="492" fill="#995600" font-size="17" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Prologue</text>
+<text x="178" y="492" fill="#5D687A" font-size="17" font-family="DejaVu Sans" font-weight="500" text-anchor="start">fill stage 0/1</text>
+<text x="350" y="492" fill="#995600" font-size="17" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Mainloop</text>
+<text x="448" y="492" fill="#5D687A" font-size="17" font-family="DejaVu Sans" font-weight="500" text-anchor="start">copy(next) ∥ ldmatrix + mma(current)</text>
+<rect x="50" y="565" width="1500" height="345" rx="20" fill="#FFFFFF" stroke="#CBD3DE" stroke-width="2"/>
+<text x="78" y="606" fill="#7142A0" font-size="25" font-family="DejaVu Sans" font-weight="750" text-anchor="start">B. FlashAttention-2 · custom CUTLASS 3.x CuTe kernel</text>
+<text x="78" y="636" fill="#5D687A" font-size="17" font-family="DejaVu Sans" font-weight="500" text-anchor="start">No turnkey SM80 FA2 collective: compose the algorithm from TiledCopy and TiledMMA atoms</text>
+<rect x="82" y="681" width="198" height="96" rx="12" fill="#EEE4F7" stroke="#7142A0" stroke-width="2"/>
+<text x="100" y="711" fill="#7142A0" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Scheduler</text>
+<text x="100" y="739" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">CTA = (Q tile,H,B)</text>
+<rect x="320" y="681" width="198" height="96" rx="12" fill="#FCE9C8" stroke="#995600" stroke-width="2"/>
+<text x="338" y="711" fill="#995600" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Prologue</text>
+<text x="338" y="739" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">Q + K₀/V₀ → SMEM</text>
+<rect x="558" y="681" width="198" height="96" rx="12" fill="#DCE8FF" stroke="#174EA6" stroke-width="2"/>
+<text x="576" y="711" fill="#174EA6" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">QK mainloop</text>
+<text x="576" y="739" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">FP16 MMA → FP32 S</text>
+<rect x="796" y="681" width="198" height="96" rx="12" fill="#F8E0E0" stroke="#A33A3A" stroke-width="2"/>
+<text x="814" y="711" fill="#A33A3A" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Online softmax</text>
+<text x="814" y="739" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">row max/sum + mask</text>
+<rect x="1034" y="681" width="198" height="96" rx="12" fill="#DCE8FF" stroke="#174EA6" stroke-width="2"/>
+<text x="1052" y="711" fill="#174EA6" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">PV mainloop</text>
+<text x="1052" y="739" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">P(FP16) × V(FP16)</text>
+<rect x="1272" y="681" width="198" height="96" rx="12" fill="#DEF1E8" stroke="#21654D" stroke-width="2"/>
+<text x="1290" y="711" fill="#21654D" font-size="20" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Epilogue</text>
+<text x="1290" y="739" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">O/l → FP16 store</text>
+<line x1="286" y1="729" x2="310" y2="729" stroke="#172033" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="524" y1="729" x2="548" y2="729" stroke="#172033" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="762" y1="729" x2="786" y2="729" stroke="#172033" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="1000" y1="729" x2="1024" y2="729" stroke="#172033" stroke-width="2" marker-end="url(#arrow)"/>
+<line x1="1238" y1="729" x2="1262" y2="729" stroke="#172033" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="320" y="813" width="912" height="62" rx="12" fill="#FCE9C8" stroke="#995600" stroke-width="2"/>
+<text x="342" y="839" fill="#995600" font-size="19" font-family="DejaVu Sans" font-weight="700" text-anchor="start">Pipeline · 2-stage K/V ping-pong</text>
+<text x="342" y="863" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="500" text-anchor="start">cp.async K/V[t+1] overlaps QK[t] → softmax[t] → PV[t]; Q remains in shared memory</text>
+<path d="M771 813 V792 H1133 V781" fill="none" stroke="#995600" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#arrow)" stroke-dasharray="7 6"/>
+<text x="70" y="949" fill="#5D687A" font-size="17" font-family="DejaVu Sans" font-weight="500" text-anchor="start">Boundary: prologue/mainloop/epilogue describe data lifetime; pipeline is the overlap inside the mainloop.</text>
+</svg>

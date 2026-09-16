@@ -1,0 +1,1 @@
+PASS: INTER/SW128 exact offsets; all QK/PV C ownership; latent/RoPE producer coverage for cluster=1/2; address examples.

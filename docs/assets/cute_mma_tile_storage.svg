@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1080" viewBox="0 0 1200 1080" role="img" aria-labelledby="title desc">
+<title id="title">MMA：tile 的排列决定数量，存储表决定 stride</title><desc id="desc">下面的槽位范围属于同一个线程，单位为 half；不是全局地址，也不是机器寄存器 R 编号。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1080" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">MMA：tile 的排列决定数量，存储表决定 stride</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">下面的槽位范围属于同一个线程，单位为 half；不是全局地址，也不是机器寄存器 R 编号。</text>
+<rect x="40" y="112" width="120" height="40" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="139.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">操作数</text>
+<rect x="160" y="112" width="290" height="40" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="172" y="139.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">4个warp各做一次atom</text>
+<rect x="450" y="112" width="235" height="40" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="462" y="139.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">每线程基本值数</text>
+<rect x="685" y="112" width="255" height="40" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="697" y="139.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">需要重复的tile数</text>
+<rect x="940" y="112" width="220" height="40" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="952" y="139.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">fragment shape</text>
+<rect x="40" y="152" width="120" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="179.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">A</text>
+<rect x="160" y="152" width="290" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="172" y="179.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">32×16（M×K）</text>
+<rect x="450" y="152" width="235" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="462" y="179.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8 half</text>
+<rect x="685" y="152" width="255" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="697" y="179.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">M方向4；K方向2</text>
+<rect x="940" y="152" width="220" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="952" y="179.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">(8,4,2)</text>
+<rect x="40" y="192" width="120" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="219.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">B</text>
+<rect x="160" y="192" width="290" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="172" y="219.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">16×16（N×K）</text>
+<rect x="450" y="192" width="235" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="462" y="219.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4 half</text>
+<rect x="685" y="192" width="255" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="697" y="219.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">N方向8；K方向2</text>
+<rect x="940" y="192" width="220" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="952" y="219.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">(4,8,2)</text>
+<rect x="40" y="232" width="120" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="259.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">C</text>
+<rect x="160" y="232" width="290" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="172" y="259.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">32×16（M×N）</text>
+<rect x="450" y="232" width="235" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="462" y="259.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4 half</text>
+<rect x="685" y="232" width="255" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="697" y="259.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">M方向4；N方向8</text>
+<rect x="940" y="232" width="220" height="40" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="952" y="259.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">(4,4,8)</text>
+<text x="40" y="322" font-size="22" fill="#172033" font-weight="700" text-anchor="start">A：一个M位置的两段k16相邻存放</text>
+<text x="640" y="322" font-size="22" fill="#172033" font-weight="700" text-anchor="start">B：一个N位置的两段k16相邻存放</text>
+<rect x="40" y="347" width="180" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="375.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">A 的 M tile</text>
+<rect x="220" y="347" width="165" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="232" y="375.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">K0..15</text>
+<rect x="385" y="347" width="165" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="397" y="375.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">K16..31</text>
+<rect x="40" y="389" width="180" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="417.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">M组0</text>
+<rect x="220" y="389" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="232" y="417.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0..7</text>
+<rect x="385" y="389" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="397" y="417.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8..15</text>
+<rect x="40" y="431" width="180" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="459.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">M组1</text>
+<rect x="220" y="431" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="232" y="459.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">16..23</text>
+<rect x="385" y="431" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="397" y="459.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">24..31</text>
+<rect x="40" y="473" width="180" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="501.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">M组2</text>
+<rect x="220" y="473" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="232" y="501.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">32..39</text>
+<rect x="385" y="473" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="397" y="501.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">40..47</text>
+<rect x="40" y="515" width="180" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="543.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">M组3</text>
+<rect x="220" y="515" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="232" y="543.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">48..55</text>
+<rect x="385" y="515" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="397" y="543.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">56..63</text>
+<rect x="640" y="347" width="180" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="652" y="375.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">B 的 N tile</text>
+<rect x="820" y="347" width="165" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="832" y="375.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">K0..15</text>
+<rect x="985" y="347" width="165" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="997" y="375.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">K16..31</text>
+<rect x="640" y="389" width="180" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="652" y="417.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">N组0</text>
+<rect x="820" y="389" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="832" y="417.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0..3</text>
+<rect x="985" y="389" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="997" y="417.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4..7</text>
+<rect x="640" y="431" width="180" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="652" y="459.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">N组1</text>
+<rect x="820" y="431" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="832" y="459.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8..11</text>
+<rect x="985" y="431" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="997" y="459.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">12..15</text>
+<rect x="640" y="473" width="180" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="652" y="501.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">N组2</text>
+<rect x="820" y="473" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="832" y="501.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">16..19</text>
+<rect x="985" y="473" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="997" y="501.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">20..23</text>
+<rect x="640" y="515" width="180" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="652" y="543.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">N组3</text>
+<rect x="820" y="515" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="832" y="543.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">24..27</text>
+<rect x="985" y="515" width="165" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="997" y="543.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">28..31</text>
+<text x="40" y="591" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">下移M32：+16槽；右移K16：+8槽</text>
+<text x="640" y="591" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">下移N16：+8槽；右移K16：+4槽</text>
+<text x="640" y="618" font-size="17" fill="#5D687A" font-weight="400" text-anchor="start">B 共8个N组，此处只画前4个。</text>
+<text x="40" y="670" font-size="22" fill="#172033" font-weight="700" text-anchor="start">C：每个N分组，先存完沿M向下的4个小tile</text>
+<rect x="40" y="697" width="220" height="43" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="725.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">C 的行范围</text>
+<rect x="260" y="697" width="225" height="43" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="725.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">N0..15</text>
+<rect x="485" y="697" width="225" height="43" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="725.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">N16..31</text>
+<rect x="710" y="697" width="225" height="43" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="725.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">N32..47</text>
+<rect x="935" y="697" width="225" height="43" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="725.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">N48..63</text>
+<rect x="40" y="740" width="220" height="43" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="768.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">M0..31</text>
+<rect x="260" y="740" width="225" height="43" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="768.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0..3</text>
+<rect x="485" y="740" width="225" height="43" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="768.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">16..19</text>
+<rect x="710" y="740" width="225" height="43" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="768.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">32..35</text>
+<rect x="935" y="740" width="225" height="43" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="768.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">48..51</text>
+<rect x="40" y="783" width="220" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="811.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">M32..63</text>
+<rect x="260" y="783" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="811.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4..7</text>
+<rect x="485" y="783" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="811.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">20..23</text>
+<rect x="710" y="783" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="811.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">36..39</text>
+<rect x="935" y="783" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="811.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">52..55</text>
+<rect x="40" y="826" width="220" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="854.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">M64..95</text>
+<rect x="260" y="826" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="854.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8..11</text>
+<rect x="485" y="826" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="854.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">24..27</text>
+<rect x="710" y="826" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="854.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">40..43</text>
+<rect x="935" y="826" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="854.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">56..59</text>
+<rect x="40" y="869" width="220" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="897.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">M96..127</text>
+<rect x="260" y="869" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="897.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">12..15</text>
+<rect x="485" y="869" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="897.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">28..31</text>
+<rect x="710" y="869" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="897.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">44..47</text>
+<rect x="935" y="869" width="225" height="43" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="897.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">60..63</text>
+<text x="40" y="953" font-size="22" fill="#174EA6" font-weight="700" text-anchor="start">C 向下32行：槽位 +4；向右16列：槽位 +16。</text>
+<text x="40" y="996" font-size="21" fill="#172033" font-weight="400" text-anchor="start">把相邻两个N小tile合成32×32宏块后：跨M仍 +4，跨N变为 +32。</text>
+<text x="40" y="1037" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">这些是本例 partition_fragment 的实测存储顺序；shape 本身不能唯一确定 stride。</text>
+</svg>

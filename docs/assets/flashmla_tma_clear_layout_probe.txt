@@ -1,0 +1,2 @@
+V half int64 view: ((_16,_4),(_8,_8)):((_1,_1024),(_16,_128))
+PASS: int64/BF16 address equivalence; both V halves; exact tail coverage for valid=0..64.

@@ -1,5 +1,9 @@
 # 非 CUTLASS/CuTe 的 Hopper FlashAttention-3 复刻
 
+官方 FP8 FA3、FlashMLA prefill/decode 的 tile、copy、WGMMA 与量化布局分析，见
+[Hopper FP8 attention layout 教程](hopper_fp8_attention_layouts.md)（含4张可编辑图和CPU布局检查程序）。
+本文下面仍描述本仓库的 BF16 教学实现。
+
 对应实现：
 
 - [`src/flash_attn3_hopper.cu`](../src/flash_attn3_hopper.cu)：attention

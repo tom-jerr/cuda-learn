@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="720" viewBox="0 0 1600 720" role="img" aria-labelledby="title desc">
+<title id="title">FA3 / Hopper：一个 consumer 内如何把 softmax 藏进 PV 的执行窗口</title><desc id="desc">官方 060c9188：IntraWGOverlap=true、RescaleOBeforeGemm=false；j 是 KV 遍历序号。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1600" height="720" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">FA3 / Hopper：一个 consumer 内如何把 softmax 藏进 PV 的执行窗口</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">官方 060c9188：IntraWGOverlap=true、RescaleOBeforeGemm=false；j 是 KV 遍历序号。</text>
+<rect x="40" y="114" width="445" height="66" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="262.5" y="141" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">WG0：producer 预留组</text>
+<text x="262.5" y="166" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">普通 TMA 路径：1 warp 工作，3 warps 返回</text>
+<rect x="515" y="114" width="510" height="66" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="770.0" y="141" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">WG1：consumer 0</text>
+<text x="770.0" y="166" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">64 行 Q；QK + softmax + PV；累加结果在寄存器</text>
+<rect x="1055" y="114" width="505" height="66" fill="#E0F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1307.5" y="141" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">WG2：consumer 1</text>
+<text x="1307.5" y="166" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">另外 64 行 Q；共享 K / V，独立 S / P / O</text>
+<text x="40" y="217" font-size="22" fill="#174EA6" font-weight="400" text-anchor="start">普通 BF16 D128、两 consumer、TMA KV：寄存器额度 24 / 240 / 240（每线程）。</text>
+<text x="40" y="253" font-size="22" fill="#172033" font-weight="400" text-anchor="start">Prologue：QK(0) → wait&lt;0&gt; → softmax(0)；之后进入下面的稳态。</text>
+<path d="M225,299 L1550,299" fill="none" stroke="#174EA6" stroke-width="1.5"/>
+<polygon points="1550,299 1543,295 1543,303" fill="#174EA6"/>
+<text x="1548" y="324" font-size="17" fill="#5D687A" font-weight="400" text-anchor="end">提交与执行分开画；非实测时间</text>
+<text x="40" y="381" font-size="20" fill="#172033" font-weight="700" text-anchor="start">本 WG 控制 /</text>
+<text x="40" y="410" font-size="20" fill="#172033" font-weight="700" text-anchor="start">CUDA cores</text>
+<rect x="225" y="350" width="145" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.5" y="377" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">issue QK</text>
+<text x="297.5" y="402" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">QK(j+1)</text>
+<rect x="385" y="350" width="135" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452.5" y="377" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">issue PV</text>
+<text x="452.5" y="402" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">PV(j)</text>
+<rect x="535" y="350" width="145" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="607.5" y="377" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">wait&lt;1&gt;</text>
+<text x="607.5" y="402" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">QK 已完成</text>
+<rect x="700" y="350" width="325" height="66" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="862.5" y="377" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">softmax(j+1)</text>
+<text x="862.5" y="402" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">读 S；计算新 scale / P</text>
+<rect x="1045" y="350" width="145" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1117.5" y="377" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">wait&lt;0&gt;</text>
+<text x="1117.5" y="402" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">PV 已完成</text>
+<rect x="1210" y="350" width="340" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1380.0" y="377" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">rescale O</text>
+<text x="1380.0" y="402" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">缩放旧累计结果；随后可继续</text>
+<text x="40" y="495" font-size="20" fill="#172033" font-weight="700" text-anchor="start">Tensor Core</text>
+<rect x="225" y="463" width="455" height="66" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="452.5" y="490" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">QK(j+1) 在途</text>
+<text x="452.5" y="515" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">shared Q / K → 寄存器 S</text>
+<rect x="700" y="463" width="490" height="66" fill="#E0F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="945.0" y="490" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">PV(j) 在途</text>
+<text x="945.0" y="515" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">寄存器 P + shared V → 寄存器 O</text>
+<path d="M680,416 L680,530" fill="none" stroke="#174EA6" stroke-width="1.5" stroke-dasharray="5 4"/>
+<path d="M1190,416 L1190,530" fill="none" stroke="#237457" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="225" y="566" font-size="22" fill="#172033" font-weight="400" text-anchor="start">wait&lt;1&gt; 后释放 K(j+1)；wait&lt;0&gt; 后释放 V(j)。P 寄存器也不能在 PV 读完前覆盖。</text>
+<text x="40" y="612" font-size="22" fill="#174EA6" font-weight="400" text-anchor="start">另一 consumer WG 可以在本组做 softmax 时提交 MMA；源码用 NamedBarrier 调整发射节奏。</text>
+<text x="40" y="651" font-size="21" fill="#172033" font-weight="400" text-anchor="start">producer 同时预取未来 K/V；所有 reader 按协议 release 后，该 slot 才能复用。</text>
+<text x="40" y="690" font-size="21" fill="#5D687A" font-weight="400" text-anchor="start">Epilogue：补发最后 PV → 排空 MMA → O / rowsum → 类型转换与布局整理 → global O。</text>
+</svg>

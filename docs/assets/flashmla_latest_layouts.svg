@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1070" viewBox="0 0 1200 1070" role="img" aria-labelledby="title desc">
+<title id="title">先排列 atom，再读 stride：dense SW128 与 sparse INTER</title><desc id="desc">Hopper，64 tokens × 576 features；地址差单位 BF16。箭头表示存储平铺顺序。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1070" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">先排列 atom，再读 stride：dense SW128 与 sparse INTER</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">Hopper，64 tokens × 576 features；地址差单位 BF16。箭头表示存储平铺顺序。</text>
+<text x="40" y="135" font-size="24" fill="#172033" font-weight="700" text-anchor="start">Dense：SW128</text>
+<text x="40" y="169" font-size="19" fill="#172033" font-weight="400" text-anchor="start">8×64 atom = 512 BF16</text>
+<rect x="70" y="198" width="128" height="36" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="134" y="222" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A0</text>
+<rect x="70" y="234" width="128" height="36" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="134" y="258" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A1</text>
+<rect x="70" y="270" width="128" height="36" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="134" y="294" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A2</text>
+<rect x="70" y="306" width="128" height="36" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="134" y="330" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A3</text>
+<rect x="70" y="342" width="128" height="36" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="134" y="366" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A4</text>
+<rect x="70" y="378" width="128" height="36" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="134" y="402" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A5</text>
+<rect x="70" y="414" width="128" height="36" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="134" y="438" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A6</text>
+<rect x="70" y="450" width="128" height="36" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="134" y="474" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A7</text>
+<rect x="198" y="198" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="262" y="222" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A8</text>
+<rect x="198" y="234" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="262" y="258" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A9</text>
+<rect x="198" y="270" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="262" y="294" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A10</text>
+<rect x="198" y="306" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="262" y="330" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A11</text>
+<rect x="198" y="342" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="262" y="366" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A12</text>
+<rect x="198" y="378" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="262" y="402" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A13</text>
+<rect x="198" y="414" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="262" y="438" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A14</text>
+<rect x="198" y="450" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="262" y="474" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A15</text>
+<rect x="326" y="198" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390" y="222" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A16</text>
+<rect x="326" y="234" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390" y="258" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A17</text>
+<rect x="326" y="270" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390" y="294" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A18</text>
+<rect x="326" y="306" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390" y="330" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A19</text>
+<rect x="326" y="342" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390" y="366" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A20</text>
+<rect x="326" y="378" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390" y="402" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A21</text>
+<rect x="326" y="414" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390" y="438" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A22</text>
+<rect x="326" y="450" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390" y="474" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A23</text>
+<path d="M52,201 L52,482" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="52,482 47,474 57,474" fill="#174EA6"/>
+<text x="70" y="515" font-size="19" fill="#174EA6" font-weight="400" text-anchor="start">① 先沿行向下放满8个 atom</text>
+<path d="M75,543 L450,543" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="450,543 442,538 442,548" fill="#174EA6"/>
+<text x="70" y="577" font-size="19" fill="#174EA6" font-weight="400" text-anchor="start">② 再向右一条带：+4096</text>
+<text x="70" y="615" font-size="20" fill="#172033" font-weight="700" text-anchor="start">64×64 条带 = 4096 BF16</text>
+<text x="650" y="135" font-size="24" fill="#172033" font-weight="700" text-anchor="start">Sparse：INTER</text>
+<text x="650" y="169" font-size="19" fill="#172033" font-weight="400" text-anchor="start">8×8 atom = 64 BF16</text>
+<rect x="680" y="198" width="128" height="36" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="744" y="222" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A0</text>
+<rect x="680" y="234" width="128" height="36" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="744" y="258" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A1</text>
+<rect x="680" y="270" width="128" height="36" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="744" y="294" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A2</text>
+<rect x="680" y="306" width="128" height="36" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="744" y="330" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A3</text>
+<rect x="680" y="342" width="128" height="36" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="744" y="366" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A4</text>
+<rect x="680" y="378" width="128" height="36" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="744" y="402" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A5</text>
+<rect x="680" y="414" width="128" height="36" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="744" y="438" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A6</text>
+<rect x="680" y="450" width="128" height="36" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="744" y="474" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A7</text>
+<rect x="808" y="198" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="872" y="222" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A8</text>
+<rect x="808" y="234" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="872" y="258" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A9</text>
+<rect x="808" y="270" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="872" y="294" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A10</text>
+<rect x="808" y="306" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="872" y="330" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A11</text>
+<rect x="808" y="342" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="872" y="366" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A12</text>
+<rect x="808" y="378" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="872" y="402" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A13</text>
+<rect x="808" y="414" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="872" y="438" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A14</text>
+<rect x="808" y="450" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="872" y="474" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A15</text>
+<rect x="936" y="198" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1000" y="222" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A16</text>
+<rect x="936" y="234" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1000" y="258" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A17</text>
+<rect x="936" y="270" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1000" y="294" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A18</text>
+<rect x="936" y="306" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1000" y="330" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A19</text>
+<rect x="936" y="342" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1000" y="366" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A20</text>
+<rect x="936" y="378" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1000" y="402" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A21</text>
+<rect x="936" y="414" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1000" y="438" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A22</text>
+<rect x="936" y="450" width="128" height="36" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1000" y="474" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">A23</text>
+<path d="M662,201 L662,482" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="662,482 657,474 667,474" fill="#174EA6"/>
+<text x="680" y="515" font-size="19" fill="#174EA6" font-weight="400" text-anchor="start">① 先沿行向下放满8个 atom</text>
+<path d="M685,543 L1060,543" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1060,543 1052,538 1052,548" fill="#174EA6"/>
+<text x="680" y="577" font-size="19" fill="#174EA6" font-weight="400" text-anchor="start">② 再向右一条带：+512</text>
+<text x="680" y="615" font-size="20" fill="#172033" font-weight="700" text-anchor="start">64×8 条带 = 512 BF16</text>
+<rect x="40" y="653" width="260" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="683.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">同一个逻辑移动</text>
+<rect x="300" y="653" width="430" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="312" y="683.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">Dense SW128</text>
+<rect x="730" y="653" width="430" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="742" y="683.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">Sparse INTER</text>
+<rect x="40" y="700" width="260" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="730.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">向下8 token行</text>
+<rect x="300" y="700" width="430" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="312" y="730.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+512</text>
+<rect x="730" y="700" width="430" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="742" y="730.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+64</text>
+<rect x="40" y="747" width="260" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="777.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">向右8 features</text>
+<rect x="300" y="747" width="430" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="312" y="777.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">包位置受 XOR 影响</text>
+<rect x="730" y="747" width="430" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="742" y="777.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+512：跨过整个64×8条带</text>
+<rect x="40" y="794" width="260" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="824.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">向右64 features</text>
+<rect x="300" y="794" width="430" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="312" y="824.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+4096：1条带</text>
+<rect x="730" y="794" width="430" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="742" y="824.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+4096：8条小条带</text>
+<rect x="40" y="841" width="260" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="871.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">向右256 features</text>
+<rect x="300" y="841" width="430" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="312" y="871.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+16384</text>
+<rect x="730" y="841" width="430" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="742" y="871.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+16384</text>
+<text x="40" y="935" font-size="20" fill="#172033" font-weight="400" text-anchor="start">Dense 条带内部：16B包编号 g → g XOR (r mod8)；8个 BF16 包内顺序不变。</text>
+<text x="40" y="979" font-size="20" fill="#172033" font-weight="400" text-anchor="start">Sparse 一个16-FP8加载解出16个BF16：拆为两次8-BF16写入，目的地址相差512。</text>
+<text x="40" y="1026" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">两者的 V 都是 K 前512维的转置 view；地址复用，并没有另做 shared transpose。</text>
+</svg>

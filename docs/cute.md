@@ -1,5 +1,11 @@
 # CuTe C++ 入门：从 Layout 到 TiledCopy、TiledMMA 和流水线 GEMM
 
+针对 `M=81920,N=256,K=256`、输入/累加/输出均为 half 的原版多级 kernel，见
+[完整注释与 layout 推导](cute_gemm_81920.md)，包含三阶段预取、分批 epilogue 和性能测试。
+
+Hopper的TMA descriptor、mbarrier计数与phase、shared buffer复用，见
+[独立可运行示例与详细解释](tma_descriptor_mbarrier.md)。
+
 对应代码：[`examples/cute_gemm/simple.cu`](../examples/cute_gemm/simple.cu)。它依据所给
 Ampere HGEMM 实现缩小而来，保留最能体现 CuTe 抽象层次的主循环，暂时把复杂的 shared
 memory epilogue 换成直接写回，以便先看清 CuTe 如何描述数据和线程。

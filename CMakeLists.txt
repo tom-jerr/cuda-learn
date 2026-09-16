@@ -12,6 +12,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CUDA_ARCHITECTURES 89)
 option(CUDA_LEARN_ENABLE_HOPPER_FA3
        "Build the raw-PTX FlashAttention-3 reproduction for sm_90a" OFF)
+option(CUDA_LEARN_ENABLE_HOPPER_MXFP4_MOE
+       "Build the Hopper MXFP4 x FP8 RS-WGMMA MoE teaching example" OFF)
 option(CUDA_LEARN_ENABLE_CUTE_EXAMPLE
        "Configure the standalone CuTe Ampere teaching examples" ON)
 set(CUTLASS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/cutlass" CACHE PATH
@@ -28,6 +30,22 @@ execute_process(
 if(NOT TVM_FFI_CONFIG_RC EQUAL 0)
   message(FATAL_ERROR
     "tvm_ffi not found for ${Python_EXECUTABLE}; install it with: pip install apache-tvm")
+endif()
+
+# Standalone Hopper W4A8 MoE example.  Keep it separate from the sm_89 library:
+#   cmake -S . -B build-hopper-moe -DCUDA_LEARN_ENABLE_HOPPER_MXFP4_MOE=ON
+#   cmake --build build-hopper-moe --target hopper_mxfp4_moe -j
+if(CUDA_LEARN_ENABLE_HOPPER_MXFP4_MOE)
+  add_executable(hopper_mxfp4_moe EXCLUDE_FROM_ALL
+    examples/hopper_mxfp4_moe/main.cu)
+  target_include_directories(hopper_mxfp4_moe PRIVATE
+    "${CUTLASS_DIR}/include" "${CUDAToolkit_INCLUDE_DIRS}/cccl")
+  target_link_libraries(hopper_mxfp4_moe PRIVATE CUDA::cudart)
+  set_target_properties(hopper_mxfp4_moe PROPERTIES
+    CUDA_ARCHITECTURES OFF
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples/hopper_mxfp4_moe")
+  target_compile_options(hopper_mxfp4_moe PRIVATE
+    $<$<COMPILE_LANGUAGE:CUDA>:--generate-code=arch=compute_90a,code=sm_90a>)
 endif()
 find_package(tvm_ffi CONFIG REQUIRED
   PATHS "${TVM_FFI_CMAKE_DIR}" NO_DEFAULT_PATH)
@@ -70,6 +88,9 @@ file(GLOB_RECURSE CUDA_LEARN_SOURCES
 add_library(cuda_learn SHARED ${CUDA_LEARN_SOURCES})
 target_include_directories(cuda_learn PRIVATE
   "${CMAKE_CURRENT_SOURCE_DIR}/src/include"
+  "${CUTLASS_DIR}/include"
+  # CUDA 13's CCCL is implicit in nvcc, but must be explicit for clangd.
+  "${CUDAToolkit_INCLUDE_DIRS}/cccl"
   "${CUDNN_INCLUDE_DIR}")
 set_target_properties(cuda_learn PROPERTIES
   OUTPUT_NAME "cuda_learn"
@@ -138,22 +159,49 @@ if(CUDA_LEARN_ENABLE_CUTE_EXAMPLE)
     CUDA_ARCHITECTURES 89
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples/cute_gemm")
 
-  add_executable(cute_fa2 EXCLUDE_FROM_ALL examples/cute_fa2/simple.cu)
-  target_include_directories(cute_fa2 PRIVATE
-    "${CUTLASS_INCLUDE_DIR}"
-    "${CUDAToolkit_INCLUDE_DIRS}/cccl")
-  target_link_libraries(cute_fa2 PRIVATE CUDA::cudart)
-  set_target_properties(cute_fa2 PROPERTIES
+  # Full-half 81920x256x256 example matching the pasted multistage kernel.
+  add_executable(cute_gemm_81920 EXCLUDE_FROM_ALL
+    examples/cute_gemm/multi_stage_bench.cu
+    examples/cute_gemm/multi_stage_layout.cu)
+  target_include_directories(cute_gemm_81920 PRIVATE
+    "${CUTLASS_INCLUDE_DIR}" "${CUDAToolkit_INCLUDE_DIRS}/cccl")
+  target_link_libraries(cute_gemm_81920 PRIVATE CUDA::cudart CUDA::cublas)
+  set_target_properties(cute_gemm_81920 PROPERTIES
     CUDA_ARCHITECTURES 89
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples/cute_fa2")
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples/cute_gemm")
 
-  add_executable(cute_fa2_4096 EXCLUDE_FROM_ALL
-    examples/cute_fa2/fa2_4096.cu)
-  target_include_directories(cute_fa2_4096 PRIVATE
-    "${CUTLASS_INCLUDE_DIR}"
-    "${CUDAToolkit_INCLUDE_DIRS}/cccl")
-  target_link_libraries(cute_fa2_4096 PRIVATE CUDA::cudart)
-  set_target_properties(cute_fa2_4096 PROPERTIES
-    CUDA_ARCHITECTURES 89
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples/cute_fa2")
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/examples/cute_step_by_step/gemm.cu")
+    add_executable(cute_step_by_step EXCLUDE_FROM_ALL
+      examples/cute_step_by_step/gemm.cu)
+    target_include_directories(cute_step_by_step PRIVATE
+      "${CUTLASS_INCLUDE_DIR}"
+      "${CUDAToolkit_INCLUDE_DIRS}/cccl")
+    target_link_libraries(cute_step_by_step PRIVATE CUDA::cudart)
+    set_target_properties(cute_step_by_step PROPERTIES
+      CUDA_ARCHITECTURES 89
+      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples/cute_step_by_step")
+  endif()
+
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/examples/cute_fa2/simple.cu")
+    add_executable(cute_fa2 EXCLUDE_FROM_ALL examples/cute_fa2/simple.cu)
+    target_include_directories(cute_fa2 PRIVATE
+      "${CUTLASS_INCLUDE_DIR}"
+      "${CUDAToolkit_INCLUDE_DIRS}/cccl")
+    target_link_libraries(cute_fa2 PRIVATE CUDA::cudart)
+    set_target_properties(cute_fa2 PROPERTIES
+      CUDA_ARCHITECTURES 89
+      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples/cute_fa2")
+  endif()
+
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/examples/cute_fa2/fa2_4096.cu")
+    add_executable(cute_fa2_4096 EXCLUDE_FROM_ALL
+      examples/cute_fa2/fa2_4096.cu)
+    target_include_directories(cute_fa2_4096 PRIVATE
+      "${CUTLASS_INCLUDE_DIR}"
+      "${CUDAToolkit_INCLUDE_DIRS}/cccl")
+    target_link_libraries(cute_fa2_4096 PRIVATE CUDA::cudart)
+    set_target_properties(cute_fa2_4096 PROPERTIES
+      CUDA_ARCHITECTURES 89
+      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples/cute_fa2")
+  endif()
 endif()

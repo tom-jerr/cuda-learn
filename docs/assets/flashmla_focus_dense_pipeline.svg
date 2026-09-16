@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1180" viewBox="0 0 1800 1180" role="img" aria-labelledby="title desc">
+<title id="title">Dense：两 WG 的发射、Tensor Core 未完成窗口与 TMA 重叠</title><desc id="desc">一个满足源码依赖的代表性时序；K0/K1是槽位，block0..3是数据。灰条表示可能未完成，不代表独占计算单元。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1800" height="1180" fill="white" stroke="white" stroke-width="1"/>
+<path d="M881,608 V825" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M750.8,578 V825" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M974,306 V740" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M509,306 V740" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Dense：两 WG 的发射、Tensor Core 未完成窗口与 TMA 重叠</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">一个满足源码依赖的代表性时序；K0/K1是槽位，block0..3是数据。灰条表示可能未完成，不代表独占计算单元。</text>
+<path d="M230,118 L1755,118" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1755,118 1747,113 1747,123" fill="#174EA6"/>
+<text x="1755" y="149" font-size="18" fill="#5D687A" font-weight="400" text-anchor="end">先后关系 →；非测量，不按比例</text>
+<text x="40" y="207" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG0 标量/发射</text>
+<path d="M230,228 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="292" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG0 PV 在途</text>
+<path d="M230,313 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="377" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG0 QK 在途</text>
+<path d="M230,398 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="482" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG1 标量/发射</text>
+<path d="M230,503 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="567" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG1 PV 在途</text>
+<path d="M230,588 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="652" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG1 QK 在途</text>
+<path d="M230,673 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="767" font-size="20" fill="#172033" font-weight="700" text-anchor="start">TMA → 左半</text>
+<path d="M230,788 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="852" font-size="20" fill="#172033" font-weight="700" text-anchor="start">TMA → 右半</text>
+<path d="M230,873 H1755" stroke="#CBD3DE" fill="none"/>
+<rect x="230" y="180" width="93" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="276.5" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM0</text>
+<path d="M323,176 V222" stroke="#174EA6" stroke-width="2"/>
+<text x="328" y="197" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">PV0L↑</text>
+<rect x="509" y="180" width="93" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="555.5" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">P0×a1→sP0</text>
+<path d="M648.5,176 V222" stroke="#174EA6" stroke-width="2"/>
+<text x="653.5" y="197" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">PV1L↑</text>
+<rect x="788" y="180" width="148.79999999999995" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="862.4" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK2 j0..3↑</text>
+<path d="M974,176 V222" stroke="#174EA6" stroke-width="2"/>
+<text x="979" y="197" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">wait&lt;4&gt;</text>
+<rect x="1113.5" y="180" width="139.5" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1183.25" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK2 j4..8↑</text>
+<rect x="1346" y="180" width="93" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1392.5" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM2</text>
+<rect x="323" y="265" width="186" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="416.0" y="290.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV0L 在途</text>
+<rect x="648.5" y="265" width="325.5" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="811.25" y="290.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV1L 在途</text>
+<rect x="788" y="350" width="558" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1067.0" y="375.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK2：左4组先发，后5组接续；最终 wait&lt;0&gt;</text>
+<rect x="416" y="455" width="93" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="462.5" y="480.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM1</text>
+<path d="M564.8,451 V497" stroke="#174EA6" stroke-width="2"/>
+<text x="569.8" y="472" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">PV1R↑</text>
+<path d="M639.2,451 V497" stroke="#174EA6" stroke-width="2"/>
+<text x="644.2" y="472" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">PV0R↑</text>
+<path d="M750.8,451 V497" stroke="#174EA6" stroke-width="2"/>
+<text x="755.8" y="443" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">wait&lt;1&gt;</text>
+<path d="M881,451 V497" stroke="#174EA6" stroke-width="2"/>
+<text x="886" y="443" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">wait&lt;0&gt;</text>
+<rect x="946.1" y="455" width="148.80000000000004" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1020.5" y="480.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK3 j4..8↑</text>
+<rect x="1253" y="455" width="139.5" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1322.75" y="480.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK3 j0..3↑</text>
+<rect x="1532" y="455" width="93" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1578.5" y="480.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM3</text>
+<rect x="564.8" y="540" width="185.99999999999997" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="657.8" y="565.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV1R 在途</text>
+<rect x="750.8" y="540" width="130.20000000000005" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="815.9" y="565.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV0R 尾部</text>
+<rect x="639.2" y="584" width="241.79999999999995" height="24" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="760.1" y="602.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV0R完整窗口</text>
+<rect x="230" y="625" width="186" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="323.0" y="650.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK1→完成</text>
+<rect x="946.1" y="625" width="306.9" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1099.55" y="650.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK3 右5组</text>
+<rect x="1253" y="625" width="279" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1392.5" y="650.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">左4组→wait&lt;0&gt;</text>
+<rect x="509" y="740" width="279" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="648.5" y="765.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">block2 j0..3 → K0</text>
+<rect x="974" y="740" width="279" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1113.5" y="765.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">block3 j0..3 → K1</text>
+<rect x="750.8" y="825" width="176.70000000000005" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="839.15" y="850.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">block3 j4..8</text>
+<rect x="927.5" y="825" width="186.0" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1020.5" y="850.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">block2 j4..8</text>
+<path d="M881,821 V867" stroke="#174EA6" stroke-width="2"/>
+<text x="886" y="813" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">block2 TMA↑</text>
+<text x="40" y="933" font-size="21" fill="#172033" font-weight="400" text-anchor="start">SM = softmax；↑ = 发射。WG1的SM1还要等WG0发布scale0；SM2/SM3也保持同样依赖。</text>
+<text x="40" y="978" font-size="21" fill="#172033" font-weight="400" text-anchor="start">P0在SM1更新max后乘a1，再交给WG1；WG0等到WG1发射PV0R后，才发射PV1L。</text>
+<text x="40" y="1023" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">wait&lt;4&gt;只保证旧PV1L结束；4个较新QK提交组可仍在途，所以TMA能与QK重叠。</text>
+<text x="40" y="1068" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">图内对不同传输/计算的相对长短只选取一种合法情况；实际完成顺序与重叠长度由硬件运行决定。</text>
+<text x="40" y="1113" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">首块：WG0先等完整K0后做SS QK；本图从该QK已完成、WG1的QK1仍可在途的位置展开。</text>
+<text x="40" y="1154" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">右半TMA含RoPE；到达后仍逐条带等待barrier。本图为了可读性将同半边条带的服务窗口合并。</text>
+</svg>

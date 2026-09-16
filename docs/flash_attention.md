@@ -11,6 +11,8 @@
 - multi-stage 教学优化版：[src/flash_attn_multistage.cu](../src/flash_attn_multistage.cu)，
   64×64、4 warp、40 KiB、双 stage XOR-swizzled K/V，并把相邻 `x2` 合并为
   `x4` / `x4.trans`；
+- KV-cache 版本与官方 split-KV 分析见
+  [flash_attention_kvcache.md](flash_attention_kvcache.md)；
 - Python 调用：[python/cuda_learn/ops.py](../python/cuda_learn/ops.py)；
 - 测试与 benchmark：[python/cuda_learn/tests/test_ops.py](../python/cuda_learn/tests/test_ops.py)。
 

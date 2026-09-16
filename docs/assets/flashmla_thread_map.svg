@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1060" viewBox="0 0 1200 1060" role="img" aria-labelledby="title desc">
+<title id="title">Block / warp / thread：三种不同的切分轴</title><desc id="desc">固定：V3.2，128 query heads，1个 KV head；一个 cluster 的两个 CTA 协作处理同一 query。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1060" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Block / warp / thread：三种不同的切分轴</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">固定：V3.2，128 query heads，1个 KV head；一个 cluster 的两个 CTA 协作处理同一 query。</text>
+<rect x="40" y="112" width="535" height="313" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="144" font-size="22" fill="#172033" font-weight="700" text-anchor="start">CTA 0：heads 0..63，384 threads</text>
+<rect x="56" y="164" width="503" height="73" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="72" y="193" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG0 · threads 0..127 · warps 0..3</text>
+<text x="72" y="223" font-size="18" fill="#172033" font-weight="400" text-anchor="start">QK + online softmax + O[:, 0:256]</text>
+<rect x="56" y="248" width="503" height="73" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="72" y="277" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG1 · threads 128..255 · warps 4..7</text>
+<text x="72" y="307" font-size="18" fill="#172033" font-weight="400" text-anchor="start">接收 P / rescale，计算 O[:, 256:512]</text>
+<rect x="56" y="332" width="503" height="73" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="72" y="361" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG2 · threads 256..383 · warps 8..11</text>
+<text x="72" y="391" font-size="18" fill="#172033" font-weight="400" text-anchor="start">gather / dequant selected rows 0..31</text>
+<rect x="625" y="112" width="535" height="313" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="641" y="144" font-size="22" fill="#172033" font-weight="700" text-anchor="start">CTA 1：heads 64..127，384 threads</text>
+<rect x="641" y="164" width="503" height="73" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="657" y="193" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG0 · threads 0..127 · warps 0..3</text>
+<text x="657" y="223" font-size="18" fill="#172033" font-weight="400" text-anchor="start">QK + online softmax + O[:, 0:256]</text>
+<rect x="641" y="248" width="503" height="73" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="657" y="277" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG1 · threads 128..255 · warps 4..7</text>
+<text x="657" y="307" font-size="18" fill="#172033" font-weight="400" text-anchor="start">接收 P / rescale，计算 O[:, 256:512]</text>
+<rect x="641" y="332" width="503" height="73" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="657" y="361" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG2 · threads 256..383 · warps 8..11</text>
+<text x="657" y="391" font-size="18" fill="#172033" font-weight="400" text-anchor="start">gather / dequant selected rows 32..63</text>
+<text x="40" y="466" font-size="21" fill="#172033" font-weight="700" text-anchor="start">两个 CTA 用 DSM 互送已解量化的半块；每个 CTA 最终都有完整 K[64,576]。</text>
+<text x="40" y="515" font-size="22" fill="#174EA6" font-weight="700" text-anchor="start">Producer：表中每列的4个lane处理同一个token，每个lane搬16维。</text>
+<rect x="40" y="535" width="220" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="563.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">warp内 lane</text>
+<rect x="260" y="535" width="225" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="563.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">0 / 8 / 16 / 24</text>
+<rect x="485" y="535" width="225" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="563.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">1 / 9 / 17 / 25</text>
+<rect x="710" y="535" width="225" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="563.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">2 / 10 / 18 / 26</text>
+<rect x="935" y="535" width="225" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="563.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">… 7 / 15 / 23 / 31</text>
+<rect x="40" y="577" width="220" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="605.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">selected row</text>
+<rect x="260" y="577" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="605.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8w + 0</text>
+<rect x="485" y="577" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="605.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8w + 1</text>
+<rect x="710" y="577" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="605.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8w + 2</text>
+<rect x="935" y="577" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="605.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8w + 7</text>
+<rect x="40" y="619" width="220" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="647.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4个lane的feature</text>
+<rect x="260" y="619" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="647.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0:16, 16:32,</text>
+<rect x="485" y="619" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="647.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每组相同分工</text>
+<rect x="710" y="619" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="647.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每组相同分工</text>
+<rect x="935" y="619" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="647.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每组相同分工</text>
+<rect x="40" y="661" width="220" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="689.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">一轮搬64维</text>
+<rect x="260" y="661" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="689.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">32:48, 48:64</text>
+<rect x="485" y="661" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="689.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">沿feature重复8轮</text>
+<rect x="710" y="661" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="689.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">得到512维latent</text>
+<rect x="935" y="661" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="689.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">另搬64维RoPE</text>
+<text x="40" y="748" font-size="22" fill="#995600" font-weight="700" text-anchor="start">Consumer：4个相邻lane共同拥有两行score；每线程持有离散的列。</text>
+<rect x="40" y="770" width="220" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="798.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">WG0 / warp0</text>
+<rect x="260" y="770" width="225" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="798.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">lane 0</text>
+<rect x="485" y="770" width="225" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="798.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">lane 1</text>
+<rect x="710" y="770" width="225" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="798.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">lane 2</text>
+<rect x="935" y="770" width="225" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="798.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">lane 3</text>
+<rect x="40" y="812" width="220" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="840.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">拥有的两行head</text>
+<rect x="260" y="812" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="840.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0 和 8</text>
+<rect x="485" y="812" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="840.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0 和 8</text>
+<rect x="710" y="812" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="840.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0 和 8</text>
+<rect x="935" y="812" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="840.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0 和 8</text>
+<rect x="40" y="854" width="220" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="882.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">第0个8列组</text>
+<rect x="260" y="854" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="882.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">token 0,1</text>
+<rect x="485" y="854" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="882.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">token 2,3</text>
+<rect x="710" y="854" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="882.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">token 4,5</text>
+<rect x="935" y="854" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="882.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">token 6,7</text>
+<rect x="40" y="896" width="220" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="924.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">第1个8列组</text>
+<rect x="260" y="896" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="924.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">token 8,9</text>
+<rect x="485" y="896" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="497" y="924.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">token 10,11</text>
+<rect x="710" y="896" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="924.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">token 12,13</text>
+<rect x="935" y="896" width="225" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="924.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">token 14,15</text>
+<text x="40" y="987" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">w 为 WG 内 warp 编号0..3；producer行号还需加32×CTA编号。</text>
+<text x="40" y="1020" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">MMA 的64行是 heads，N轴是 selected tokens；每个warp的结果覆盖16个heads。</text>
+</svg>

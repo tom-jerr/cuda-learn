@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="700" viewBox="0 0 1600 700" role="img" aria-labelledby="title desc">
+<title id="title">CUTLASS Pipeline：管理缓冲槽的写入、读取与复用</title><desc id="desc">每个 slot 都遵守相同协议；横轴是合法先后与重叠示意，不是实测周期。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1600" height="700" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">CUTLASS Pipeline：管理缓冲槽的写入、读取与复用</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">每个 slot 都遵守相同协议；横轴是合法先后与重叠示意，不是实测周期。</text>
+<path d="M260,157 L292,157" fill="none" stroke="#174EA6" stroke-width="1.5"/>
+<polygon points="292,157 285,153 285,161" fill="#174EA6"/>
+<path d="M510,157 L542,157" fill="none" stroke="#174EA6" stroke-width="1.5"/>
+<polygon points="542,157 535,153 535,161" fill="#174EA6"/>
+<path d="M790,157 L822,157" fill="none" stroke="#174EA6" stroke-width="1.5"/>
+<polygon points="822,157 815,153 815,161" fill="#174EA6"/>
+<path d="M1040,157 L1072,157" fill="none" stroke="#174EA6" stroke-width="1.5"/>
+<polygon points="1072,157 1065,153 1065,161" fill="#174EA6"/>
+<path d="M1300,157 L1332,157" fill="none" stroke="#174EA6" stroke-width="1.5"/>
+<polygon points="1332,157 1325,153 1325,161" fill="#174EA6"/>
+<rect x="40" y="122" width="220" height="66" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="150.0" y="149" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">producer_acquire</text>
+<text x="150.0" y="174" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">等 empty：允许覆盖</text>
+<rect x="300" y="122" width="210" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="405.0" y="149" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">TMA load</text>
+<text x="405.0" y="174" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">提交异步传输</text>
+<rect x="550" y="122" width="240" height="66" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="670.0" y="149" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">consumer_wait</text>
+<text x="670.0" y="174" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">等 full：数据已到达</text>
+<rect x="830" y="122" width="210" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="935.0" y="149" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">MMA consume</text>
+<text x="935.0" y="174" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">输入仍可能被读取</text>
+<rect x="1080" y="122" width="220" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1190.0" y="149" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">completion</text>
+<text x="1190.0" y="174" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">最后一次读取已结束</text>
+<rect x="1340" y="122" width="220" height="66" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1450.0" y="149" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">consumer_release</text>
+<text x="1450.0" y="174" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">归还 empty</text>
+<text x="40" y="224" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">TMA 完成时硬件更新 full barrier；PipelineTmaAsync 的 producer_commit 通常是 no-op。</text>
+<text x="40" y="258" font-size="21" fill="#172033" font-weight="400" text-anchor="start">UMMA 类 Pipeline 可把 release 注册为 MMA 完成后的通知；调用 release 返回不代表已经可覆盖。</text>
+<path d="M240,306 L1560,306" fill="none" stroke="#174EA6" stroke-width="1.5"/>
+<polygon points="1560,306 1553,302 1553,310" fill="#174EA6"/>
+<text x="1560" y="332" font-size="17" fill="#5D687A" font-weight="400" text-anchor="end">逻辑时间 →</text>
+<text x="40" y="383" font-size="22" fill="#172033" font-weight="700" text-anchor="start">TMA 硬件</text>
+<text x="40" y="493" font-size="22" fill="#172033" font-weight="700" text-anchor="start">Tensor Core</text>
+<rect x="240" y="346" width="135" height="62" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="307.5" y="373" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">load 0</text>
+<text x="307.5" y="398" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">slot 0</text>
+<rect x="381.75" y="346" width="134.99999999999997" height="62" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="449.25" y="373" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">load 1</text>
+<text x="449.25" y="398" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">slot 1</text>
+<rect x="523.5" y="346" width="135.0" height="62" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="591.0" y="373" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">load 2</text>
+<text x="591.0" y="398" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">slot 2</text>
+<rect x="678.75" y="346" width="135.0" height="62" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="746.25" y="373" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">load 3</text>
+<text x="746.25" y="398" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">slot 0</text>
+<rect x="942.0" y="346" width="135.0" height="62" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1009.5" y="373" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">load 4</text>
+<text x="1009.5" y="398" font-size="17" fill="#5D687A" font-weight="400" text-anchor="middle">slot 1</text>
+<rect x="388.5" y="461" width="270.0" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="523.5" y="494.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">MMA 0 / slot 0</text>
+<rect x="665.25" y="461" width="270.00000000000006" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="800.25" y="494.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">MMA 1 / slot 1</text>
+<rect x="942.0" y="461" width="270.0" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1077.0" y="494.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">MMA 2 / slot 2</text>
+<rect x="1218.75" y="461" width="270.0" height="52" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1353.75" y="494.0" font-size="20" fill="#172033" font-weight="700" text-anchor="middle">MMA 3 / slot 0</text>
+<path d="M658.5,514 L658.5,432 L678.75,432 L678.75,411" fill="none" stroke="#237457" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="40" y="561" font-size="22" fill="#237457" font-weight="700" text-anchor="start">slot 0：load 0 → MMA 0 完成 → 才允许 load 3；满环产生背压，不能覆盖在途输入。</text>
+<text x="40" y="605" font-size="22" fill="#172033" font-weight="400" text-anchor="start">3-slot consumer state：(0,0) → (1,0) → (2,0) → (0,1) → (1,1) → (2,1) → (0,0)</text>
+<text x="40" y="648" font-size="21" fill="#5D687A" font-weight="400" text-anchor="start">(index, phase) 区分位置和轮次。producer 初始 phase=1，consumer 初始 phase=0。</text>
+</svg>

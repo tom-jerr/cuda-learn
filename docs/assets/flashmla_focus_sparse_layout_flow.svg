@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1110" viewBox="0 0 1200 1110" role="img" aria-labelledby="title desc">
+<title id="title">Hopper sparse FP8：gather → 寄存器反量化 → 两份 INTER shared</title><desc id="desc">V32 / cluster=2。这里KV路径没有TMA；TMA用于Q加载及相关输出搬运。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1110" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Hopper sparse FP8：gather → 寄存器反量化 → 两份 INTER shared</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">V32 / cluster=2。这里KV路径没有TMA；TMA用于Q加载及相关输出搬运。</text>
+<rect x="40" y="112" width="1120" height="117" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="141" font-size="21" fill="#172033" font-weight="700" text-anchor="start">HBM：indices先选物理token，再从656B记录取数据</text>
+<text x="55" y="171" font-size="18" fill="#172033" font-weight="400" text-anchor="start">[512B E4M3 latent | 16B FP32 scales | 128B BF16 RoPE]</text>
+<text x="55" y="200" font-size="18" fill="#172033" font-weight="400" text-anchor="start">producer每lane取16个FP8；4个lane共同覆盖一个token的64维。</text>
+<path d="M600,235 L600,278" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="600,278 595,270 605,270" fill="#174EA6"/>
+<rect x="40" y="292" width="540" height="122" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="321" font-size="21" fill="#172033" font-weight="700" text-anchor="start">CTA0 producer：selected rows0..31</text>
+<text x="55" y="351" font-size="18" fill="#172033" font-weight="400" text-anchor="start">FP8 + scale → 16 BF16 / lane / 轮</text>
+<text x="55" y="380" font-size="18" fill="#172033" font-weight="400" text-anchor="start">拆成两个8-BF16包，各16B</text>
+<rect x="620" y="292" width="540" height="122" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="635" y="321" font-size="21" fill="#172033" font-weight="700" text-anchor="start">CTA1 producer：selected rows32..63</text>
+<text x="635" y="351" font-size="18" fill="#172033" font-weight="400" text-anchor="start">与CTA0相同的feature分工</text>
+<text x="635" y="380" font-size="18" fill="#172033" font-weight="400" text-anchor="start">只处理另一半tokens</text>
+<text x="40" y="462" font-size="21" fill="#172033" font-weight="700" text-anchor="start">INTER平铺顺序：先向下填满64×8，再向右到下一个8-feature条带。</text>
+<rect x="40" y="485" width="240" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="516.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">例：selected row5</text>
+<rect x="280" y="485" width="290" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="292" y="516.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">features0..7</text>
+<rect x="570" y="485" width="290" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="582" y="516.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">features8..15</text>
+<rect x="860" y="485" width="300" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="872" y="516.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">下一64-feature块</text>
+<rect x="40" y="533" width="240" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="564.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">shared位置</text>
+<rect x="280" y="533" width="290" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="292" y="564.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">40..47</text>
+<rect x="570" y="533" width="290" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="582" y="564.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">552..559</text>
+<rect x="860" y="533" width="300" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="872" y="564.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">起点 40+4096</text>
+<rect x="40" y="581" width="240" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="612.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">来自同一次16B FP8读</text>
+<rect x="280" y="581" width="290" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="292" y="612.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">解出前8 BF16</text>
+<rect x="570" y="581" width="290" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="582" y="612.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">解出后8 BF16</text>
+<rect x="860" y="581" width="300" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="872" y="612.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">下一次16B FP8读</text>
+<text x="40" y="668" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">同一个BF16包：普通store写本CTA；st.async写peer CTA的相同offset。</text>
+<rect x="40" y="704" width="540" height="131" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="733" font-size="21" fill="#172033" font-weight="700" text-anchor="start">CTA0 shared K：64×576 BF16</text>
+<text x="55" y="763" font-size="18" fill="#172033" font-weight="400" text-anchor="start">rows0..31：local producer写入</text>
+<text x="55" y="792" font-size="18" fill="#172033" font-weight="400" text-anchor="start">rows32..63：CTA1经DSM写入</text>
+<text x="55" y="821" font-size="18" fill="#172033" font-weight="400" text-anchor="start">V左/右半只是K的前512维view</text>
+<rect x="620" y="704" width="540" height="131" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="635" y="733" font-size="21" fill="#172033" font-weight="700" text-anchor="start">CTA1 shared K：64×576 BF16</text>
+<text x="635" y="763" font-size="18" fill="#172033" font-weight="400" text-anchor="start">rows0..31：CTA0经DSM写入</text>
+<text x="635" y="792" font-size="18" fill="#172033" font-weight="400" text-anchor="start">rows32..63：local producer写入</text>
+<text x="635" y="821" font-size="18" fill="#172033" font-weight="400" text-anchor="start">和CTA0内容相同，Q heads不同</text>
+<text x="40" y="894" font-size="21" fill="#172033" font-weight="400" text-anchor="start">每方向36KiB：32 tokens ×576 BF16 ×2 bytes；两个CTA都要等待完整64行。</text>
+<text x="40" y="940" font-size="22" fill="#172033" font-weight="400" text-anchor="start" class="mono">INTER element offset = 8r + 512⌊f/8⌋ + (f mod8)</text>
+<text x="40" y="986" font-size="21" fill="#172033" font-weight="400" text-anchor="start">向右256 features：+16384 BF16；sV_R与sV_L共享同一K分配。</text>
+<text x="40" y="1032" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">反量化与重新排布由线程完成；DSM保持这些BF16包的目标offset，不再做反量化。</text>
+<text x="40" y="1075" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">计算块的selected row与原序列/物理页的row不同：只有查indices后才知道源地址。</text>
+</svg>

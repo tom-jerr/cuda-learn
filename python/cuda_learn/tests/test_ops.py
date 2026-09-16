@@ -9,7 +9,7 @@ import torch.nn.functional as F
 
 from cuda_learn import ops
 from cuda_learn.bench import bench
-from cuda_learn.flash_attn_baseline import flash_attn_2
+from cuda_learn.flash_attn_baseline import flash_attn_2, flash_attn_2_kvcache
 
 DEVICE = "cuda"
 
@@ -234,6 +234,67 @@ def test_flash_attn_multistage_causal(q, k, v):
     return ops.flash_attn_multistage(q, k, v, causal=True)
 
 
+@bench(
+    make_inputs=_make_fa,
+    ref=_fa_ref,
+    flops=lambda q, k, v: 4 * q.shape[0] * q.shape[1] * q.shape[2] ** 2
+    * q.shape[3],
+    rtol=2e-2,
+    atol=2e-2,
+    baselines={
+        "raw-PTX FA2": ops.flash_attn_multistage,
+        "flash-attn 2.8.3": flash_attn_2,
+    },
+)
+def test_flash_attn_cutlass3(q, k, v):
+    return ops.flash_attn_cutlass3(q, k, v)
+
+
+@bench(
+    make_inputs=_make_fa,
+    ref=lambda q, k, v: F.scaled_dot_product_attention(
+        q, k, v, is_causal=True),
+    flops=lambda q, k, v: 2 * q.shape[0] * q.shape[1] * q.shape[2]
+    * (q.shape[2] + 1) * q.shape[3],
+    rtol=2e-2,
+    atol=2e-2,
+    baselines={
+        "raw-PTX FA2": lambda q, k, v: ops.flash_attn_multistage(
+            q, k, v, causal=True),
+        "flash-attn 2.8.3": lambda q, k, v: flash_attn_2(
+            q, k, v, causal=True),
+    },
+)
+def test_flash_attn_cutlass3_causal(q, k, v):
+    return ops.flash_attn_cutlass3(q, k, v, causal=True)
+
+
+def _make_fa_kvcache_decode():
+    batch, heads, capacity = 2, 8, 1024
+    q = torch.randn(batch, heads, 1, 64,
+                    device=DEVICE, dtype=torch.float16)
+    k_cache = torch.randn(batch, heads, capacity, 64,
+                          device=DEVICE, dtype=torch.float16)
+    v_cache = torch.randn_like(k_cache)
+    cache_seqlens = torch.full(
+        (batch,), capacity, device=DEVICE, dtype=torch.int32)
+    return q, k_cache, v_cache, cache_seqlens
+
+
+@bench(
+    make_inputs=_make_fa_kvcache_decode,
+    ref=lambda q, k, v, lengths: F.scaled_dot_product_attention(q, k, v),
+    flops=lambda q, k, v, lengths: 4 * q.shape[0] * q.shape[1]
+    * q.shape[2] * k.shape[2] * q.shape[3],
+    rtol=2e-2,
+    atol=2e-2,
+    baselines={"flash-attn 2.8.3 kvcache": flash_attn_2_kvcache},
+)
+def test_flash_attn_multistage_kvcache_decode(q, k, v, lengths):
+    return ops.flash_attn_multistage_kvcache(
+        q, k, v, lengths, causal=True)
+
+
 # ---------- flash_attn3_hopper（BF16 SM90a，N 需为 128 的倍数）----------
 
 
@@ -268,6 +329,71 @@ def test_flash_attn3_hopper(q, k, v):
 )
 def test_flash_attn3_hopper_causal(q, k, v):
     return ops.flash_attn3_hopper(q, k, v, causal=True)
+
+
+# ---------- MLA decode (BF16, fixed Hq=128/Dqk=576/Dv=512/page=64) ----------
+
+
+def _make_mla_decode():
+    # The reversed table makes the correctness test exercise paged addressing,
+    # rather than accidentally passing with a contiguous-cache assumption.
+    batch, heads, seqlen, page_size, dim_qk = 1, 128, 4096, 64, 576
+    num_pages = seqlen // page_size
+    q = torch.randn(batch, heads, dim_qk, device=DEVICE,
+                    dtype=torch.bfloat16)
+    kv = torch.randn(num_pages, page_size, dim_qk, device=DEVICE,
+                     dtype=torch.bfloat16)
+    block_table = torch.arange(num_pages - 1, -1, -1, device=DEVICE,
+                               dtype=torch.int32).unsqueeze(0)
+    cache_seqlens = torch.full((batch,), seqlen, device=DEVICE,
+                              dtype=torch.int32)
+    return q, kv, block_table, cache_seqlens
+
+
+def _mla_decode_ref(q, kv_cache, block_table, cache_seqlens):
+    scale = 1.0 / math.sqrt(576)
+    outputs, lses = [], []
+    for b in range(q.shape[0]):
+        seqlen = int(cache_seqlens[b].item())
+        pages = block_table[b, :((seqlen + 63) // 64)].long()
+        dense_kv = kv_cache[pages].reshape(-1, 576)[:seqlen].float()
+        scores = q[b].float() @ dense_kv.transpose(0, 1) * scale
+        outputs.append((scores.softmax(dim=-1) @ dense_kv[:, :512]).to(q.dtype))
+        lses.append(scores.logsumexp(dim=-1))
+    return torch.stack(outputs), torch.stack(lses)
+
+
+def _mla_flops(q, kv_cache, block_table, cache_seqlens):
+    # QK and PV both count a multiply-add as two FLOPs.
+    return 2 * q.shape[0] * q.shape[1] * int(cache_seqlens.max().item()) \
+        * (576 + 512)
+
+
+@bench(
+    make_inputs=_make_mla_decode,
+    ref=_mla_decode_ref,
+    flops=_mla_flops,
+    rtol=3e-2,
+    atol=3e-2,
+    warmup=2,
+    iters=10,
+)
+def test_mla_decode_native(q, kv_cache, block_table, cache_seqlens):
+    return ops.mla_decode_native(q, kv_cache, block_table, cache_seqlens)
+
+
+@bench(
+    make_inputs=_make_mla_decode,
+    ref=_mla_decode_ref,
+    flops=_mla_flops,
+    rtol=3e-2,
+    atol=3e-2,
+    warmup=2,
+    iters=10,
+    baselines={"1-head/CTA": ops.mla_decode_native},
+)
+def test_mla_decode_optimized(q, kv_cache, block_table, cache_seqlens):
+    return ops.mla_decode_optimized(q, kv_cache, block_table, cache_seqlens)
 
 
 # ---------- RoPE (FP16 NeoX split-half, in-place Q/K) ----------

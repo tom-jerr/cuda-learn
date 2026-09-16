@@ -1,0 +1,194 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1050" viewBox="0 0 1200 1050" role="img" aria-labelledby="title desc">
+<title id="title">Shared layout：8×64 atom 怎样平铺成64×576</title><desc id="desc">K/Q 使用 SW128。图中每格是8行×64列的 atom；格内先按列连续，再应用 XOR。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1050" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Shared layout：8×64 atom 怎样平铺成64×576</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">K/Q 使用 SW128。图中每格是8行×64列的 atom；格内先按列连续，再应用 XOR。</text>
+<rect x="40" y="111" width="1120" height="125" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="140" font-size="21" fill="#172033" font-weight="700" text-anchor="start">先不考虑 swizzle：atom shape=(8,64), stride=(64,1)</text>
+<text x="55" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="start">r=r₀+8r₁，f=f₀+64j；shape=((8,8),(64,9))</text>
+<text x="55" y="199" font-size="18" fill="#172033" font-weight="400" text-anchor="start">stride=((64,512),(1,4096))；e=64r₀+512r₁+f₀+4096j</text>
+<text x="149" y="287" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">j=0</text>
+<text x="257" y="287" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">j=1</text>
+<text x="365" y="287" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">j=2</text>
+<text x="473" y="287" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">j=3</text>
+<text x="581" y="287" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">j=4</text>
+<text x="689" y="287" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">j=5</text>
+<text x="797" y="287" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">j=6</text>
+<text x="905" y="287" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">j=7</text>
+<text x="1013" y="287" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">j=8</text>
+<text x="83" y="330" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r₁=0</text>
+<rect x="95" y="303" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="149" y="328" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">0</text>
+<rect x="203" y="303" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="257" y="328" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">4096</text>
+<rect x="311" y="303" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="365" y="328" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">8192</text>
+<rect x="419" y="303" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="473" y="328" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">12288</text>
+<rect x="527" y="303" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="581" y="328" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">16384</text>
+<rect x="635" y="303" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="689" y="328" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">20480</text>
+<rect x="743" y="303" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="797" y="328" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">24576</text>
+<rect x="851" y="303" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="328" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">28672</text>
+<rect x="959" y="303" width="108" height="39" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1013" y="328" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">32768</text>
+<text x="83" y="369" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r₁=1</text>
+<rect x="95" y="342" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="149" y="367" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">512</text>
+<rect x="203" y="342" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="257" y="367" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">4608</text>
+<rect x="311" y="342" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="365" y="367" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">8704</text>
+<rect x="419" y="342" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="473" y="367" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">12800</text>
+<rect x="527" y="342" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="581" y="367" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">16896</text>
+<rect x="635" y="342" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="689" y="367" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">20992</text>
+<rect x="743" y="342" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="797" y="367" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">25088</text>
+<rect x="851" y="342" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="367" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">29184</text>
+<rect x="959" y="342" width="108" height="39" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1013" y="367" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">33280</text>
+<text x="83" y="408" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r₁=2</text>
+<rect x="95" y="381" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="149" y="406" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">1024</text>
+<rect x="203" y="381" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="257" y="406" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">5120</text>
+<rect x="311" y="381" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="365" y="406" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">9216</text>
+<rect x="419" y="381" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="473" y="406" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">13312</text>
+<rect x="527" y="381" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="581" y="406" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">17408</text>
+<rect x="635" y="381" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="689" y="406" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">21504</text>
+<rect x="743" y="381" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="797" y="406" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">25600</text>
+<rect x="851" y="381" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="406" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">29696</text>
+<rect x="959" y="381" width="108" height="39" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1013" y="406" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">33792</text>
+<text x="83" y="447" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r₁=3</text>
+<rect x="95" y="420" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="149" y="445" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">1536</text>
+<rect x="203" y="420" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="257" y="445" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">5632</text>
+<rect x="311" y="420" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="365" y="445" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">9728</text>
+<rect x="419" y="420" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="473" y="445" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">13824</text>
+<rect x="527" y="420" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="581" y="445" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">17920</text>
+<rect x="635" y="420" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="689" y="445" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">22016</text>
+<rect x="743" y="420" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="797" y="445" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">26112</text>
+<rect x="851" y="420" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="445" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">30208</text>
+<rect x="959" y="420" width="108" height="39" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1013" y="445" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">34304</text>
+<text x="83" y="486" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r₁=4</text>
+<rect x="95" y="459" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="149" y="484" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">2048</text>
+<rect x="203" y="459" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="257" y="484" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">6144</text>
+<rect x="311" y="459" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="365" y="484" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">10240</text>
+<rect x="419" y="459" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="473" y="484" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">14336</text>
+<rect x="527" y="459" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="581" y="484" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">18432</text>
+<rect x="635" y="459" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="689" y="484" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">22528</text>
+<rect x="743" y="459" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="797" y="484" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">26624</text>
+<rect x="851" y="459" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="484" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">30720</text>
+<rect x="959" y="459" width="108" height="39" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1013" y="484" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">34816</text>
+<text x="83" y="525" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r₁=5</text>
+<rect x="95" y="498" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="149" y="523" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">2560</text>
+<rect x="203" y="498" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="257" y="523" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">6656</text>
+<rect x="311" y="498" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="365" y="523" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">10752</text>
+<rect x="419" y="498" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="473" y="523" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">14848</text>
+<rect x="527" y="498" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="581" y="523" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">18944</text>
+<rect x="635" y="498" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="689" y="523" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">23040</text>
+<rect x="743" y="498" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="797" y="523" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">27136</text>
+<rect x="851" y="498" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="523" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">31232</text>
+<rect x="959" y="498" width="108" height="39" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1013" y="523" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">35328</text>
+<text x="83" y="564" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r₁=6</text>
+<rect x="95" y="537" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="149" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">3072</text>
+<rect x="203" y="537" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="257" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">7168</text>
+<rect x="311" y="537" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="365" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">11264</text>
+<rect x="419" y="537" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="473" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">15360</text>
+<rect x="527" y="537" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="581" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">19456</text>
+<rect x="635" y="537" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="689" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">23552</text>
+<rect x="743" y="537" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="797" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">27648</text>
+<rect x="851" y="537" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">31744</text>
+<rect x="959" y="537" width="108" height="39" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1013" y="562" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">35840</text>
+<text x="83" y="603" font-size="17" fill="#172033" font-weight="400" text-anchor="end">r₁=7</text>
+<rect x="95" y="576" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="149" y="601" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">3584</text>
+<rect x="203" y="576" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="257" y="601" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">7680</text>
+<rect x="311" y="576" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="365" y="601" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">11776</text>
+<rect x="419" y="576" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="473" y="601" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">15872</text>
+<rect x="527" y="576" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="581" y="601" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">19968</text>
+<rect x="635" y="576" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="689" y="601" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">24064</text>
+<rect x="743" y="576" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="797" y="601" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">28160</text>
+<rect x="851" y="576" width="108" height="39" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="905" y="601" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">32256</text>
+<rect x="959" y="576" width="108" height="39" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1013" y="601" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">36352</text>
+<path d="M1100,309 L1100,611" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1100,611 1095,603 1105,603" fill="#174EA6"/>
+<text x="1125" y="448" font-size="22" fill="#174EA6" font-weight="400" text-anchor="start">↓</text>
+<text x="1125" y="480" font-size="16" fill="#174EA6" font-weight="400" text-anchor="middle">+512</text>
+<path d="M98,649 L1055,649" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1055,649 1047,644 1047,654" fill="#174EA6"/>
+<text x="550" y="680" font-size="19" fill="#174EA6" font-weight="400" text-anchor="middle">先沿 r₁ ↓ 放8个 atom，组成64×64条带；再沿 j →，每次 +4096。</text>
+<text x="40" y="723" font-size="20" fill="#172033" font-weight="400" text-anchor="start">格中数字是 BF16 元素 offset；蓝色前8条带同时充当 V，黄色最后条带只用于 QK。</text>
+<rect x="40" y="755" width="545" height="178" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="784" font-size="21" fill="#172033" font-weight="700" text-anchor="start">K 的逻辑坐标：(token,feature)</text>
+<text x="55" y="814" font-size="18" fill="#172033" font-weight="400" text-anchor="start">shape=(64,576)；共9个64×64条带</text>
+<text x="55" y="843" font-size="18" fill="#172033" font-weight="400" text-anchor="start">V 使用 feature0..511 的前8条带。</text>
+<text x="55" y="872" font-size="18" fill="#172033" font-weight="400" text-anchor="start">一个K槽：36864 BF16=72 KiB；</text>
+<text x="55" y="901" font-size="18" fill="#172033" font-weight="400" text-anchor="start">两个K槽：144 KiB。</text>
+<rect x="615" y="755" width="545" height="178" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="630" y="784" font-size="21" fill="#172033" font-weight="700" text-anchor="start">PV 的 B view：(feature,token)</text>
+<text x="630" y="814" font-size="18" fill="#172033" font-weight="400" text-anchor="start">shape=(512,64)；Vt(f,r)=K(r,f)</text>
+<text x="630" y="843" font-size="18" fill="#172033" font-weight="400" text-anchor="start">底层 stride=((1,4096),64)</text>
+<text x="630" y="872" font-size="18" fill="#172033" font-weight="400" text-anchor="start">仍指向相同 shared bytes；</text>
+<text x="630" y="901" font-size="18" fill="#172033" font-weight="400" text-anchor="start">改变 view 不等于搬运/转置数据。</text>
+<text x="40" y="987" font-size="21" fill="#172033" font-weight="700" text-anchor="start">Swizzle只重排格内16B包；外层条带的 +512、+4096 仍成立。</text>
+<text x="40" y="1023" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">同一逻辑 K(1,0) 与 Vt(0,1) 都在元素地址72；完整公式见 Swizzle 图。</text>
+</svg>

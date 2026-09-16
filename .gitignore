@@ -18,6 +18,9 @@ cmake_install.cmake
 /examples/cuda_graph/fork_join
 /examples/fusion/silu_and_mul
 /examples/*/simple
+/examples/mbarrier/main
+/examples/tma_desc/main
+/examples/tma_desc/tma_copy
 
 # Python-generated files
 __pycache__/

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1010" viewBox="0 0 1200 1010" role="img" aria-labelledby="title desc">
+<title id="title">FlashMLA：prefill 与 decode 的 WG 分工不同</title><desc id="desc">同一个 query token 的64 heads为行；左右指输出latent的0..255 / 256..511。此图无时间比例。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1010" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">FlashMLA：prefill 与 decode 的 WG 分工不同</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">同一个 query token 的64 heads为行；左右指输出latent的0..255 / 256..511。此图无时间比例。</text>
+<text x="40" y="128" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Hopper sparse prefill：输入 Q / KV 都是 BF16</text>
+<rect x="40" y="153" width="345" height="210" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="183" font-size="21" fill="#172033" font-weight="700" text-anchor="start">Producer WG2：稀疏 gather</text>
+<text x="56" y="213" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8线程合作搬一个token的64维</text>
+<text x="56" y="242" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每线程一条16-byte cp.async</text>
+<text x="56" y="271" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每组负责4行；9个64维条带</text>
+<text x="56" y="300" font-size="18" fill="#172033" font-weight="400" text-anchor="start">K0：第一个64-token块</text>
+<text x="56" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="start">K1：第二个64-token块</text>
+<rect x="425" y="153" width="345" height="210" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="441" y="183" font-size="21" fill="#172033" font-weight="700" text-anchor="start">Consumer WG0</text>
+<text x="441" y="213" font-size="18" fill="#172033" font-weight="400" text-anchor="start">计算 QK0 → softmax P0</text>
+<text x="441" y="242" font-size="18" fill="#172033" font-weight="400" text-anchor="start">本地 P0 × V0左：RS</text>
+<text x="441" y="271" font-size="18" fill="#172033" font-weight="400" text-anchor="start">读取 P1 × V1左：SS</text>
+<text x="441" y="300" font-size="18" fill="#172033" font-weight="400" text-anchor="start">持有 O[:,0..255]</text>
+<text x="441" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="start">把 P0 scatter 到 shared</text>
+<rect x="810" y="153" width="350" height="210" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="826" y="183" font-size="21" fill="#172033" font-weight="700" text-anchor="start">Consumer WG1</text>
+<text x="826" y="213" font-size="18" fill="#172033" font-weight="400" text-anchor="start">计算 QK1 → softmax P1</text>
+<text x="826" y="242" font-size="18" fill="#172033" font-weight="400" text-anchor="start">本地 P1 × V1右：RS</text>
+<text x="826" y="271" font-size="18" fill="#172033" font-weight="400" text-anchor="start">读取 P0 × V0右：SS</text>
+<text x="826" y="300" font-size="18" fill="#172033" font-weight="400" text-anchor="start">持有 O[:,256..511]</text>
+<text x="826" y="329" font-size="18" fill="#172033" font-weight="400" text-anchor="start">把 P1 scatter 到 shared</text>
+<path d="M385,245 L415,245" fill="none" stroke="#172033" stroke-width="2"/>
+<polygon points="415,245 406,240 406,250" fill="#172033"/>
+<path d="M770,245 L800,245" fill="none" stroke="#172033" stroke-width="2"/>
+<polygon points="800,245 791,240 791,250" fill="#172033"/>
+<text x="40" y="408" font-size="21" fill="#172033" font-weight="400" text-anchor="start">两段token的 P 要交换，两个输出半块都必须累加两段token；还要协调行max与sum。</text>
+<rect x="40" y="440" width="335" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="471.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">prefill copy view 的移动</text>
+<rect x="375" y="440" width="390" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="387" y="471.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">global 源地址变化（BF16）</text>
+<rect x="765" y="440" width="395" height="49" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="777" y="471.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">shared 目的地址变化（BF16）</text>
+<rect x="40" y="489" width="335" height="49" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="520.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">沿feature跨64维</text>
+<rect x="375" y="489" width="390" height="49" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="387" y="520.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+64</text>
+<rect x="765" y="489" width="395" height="49" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="777" y="520.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+4096：跨一个64×64条带</text>
+<rect x="40" y="538" width="335" height="49" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="569.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">同组下一个token槽（+16行）</text>
+<rect x="375" y="538" width="390" height="49" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="387" y="569.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">重新读取indices；不是固定stride</text>
+<rect x="765" y="538" width="395" height="49" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="777" y="569.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+1024：16行×64</text>
+<rect x="40" y="587" width="335" height="49" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="618.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">换到下一个KV缓冲槽</text>
+<rect x="375" y="587" width="390" height="49" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="387" y="618.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">选下一批indices</text>
+<rect x="765" y="587" width="395" height="49" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="777" y="618.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">+36864：64×576</text>
+<text x="40" y="693" font-size="23" fill="#172033" font-weight="700" text-anchor="start">Hopper sparse decode：Q为BF16，KV为656-byte FP8混合记录</text>
+<rect x="40" y="718" width="345" height="181" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="748" font-size="21" fill="#172033" font-weight="700" text-anchor="start">Producer WG2</text>
+<text x="56" y="778" font-size="18" fill="#172033" font-weight="400" text-anchor="start">indices → gather → dequant</text>
+<text x="56" y="807" font-size="18" fill="#172033" font-weight="400" text-anchor="start">BF16写入本地shared与DSM</text>
+<text x="56" y="836" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每次准备一个64-token块</text>
+<text x="56" y="865" font-size="18" fill="#172033" font-weight="400" text-anchor="start">两个KV缓冲槽循环使用</text>
+<rect x="425" y="718" width="345" height="181" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="441" y="748" font-size="21" fill="#172033" font-weight="700" text-anchor="start">Consumer WG0</text>
+<text x="441" y="778" font-size="18" fill="#172033" font-weight="400" text-anchor="start">计算全部 QK → softmax P</text>
+<text x="441" y="807" font-size="18" fill="#172033" font-weight="400" text-anchor="start">本地 P × V左：RS</text>
+<text x="441" y="836" font-size="18" fill="#172033" font-weight="400" text-anchor="start">把 P 和 rescale 交给 WG1</text>
+<text x="441" y="865" font-size="18" fill="#172033" font-weight="400" text-anchor="start">持有 O[:,0..255]</text>
+<rect x="810" y="718" width="350" height="181" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="826" y="748" font-size="21" fill="#172033" font-weight="700" text-anchor="start">Consumer WG1</text>
+<text x="826" y="778" font-size="18" fill="#172033" font-weight="400" text-anchor="start">接收同一份 P 与 rescale</text>
+<text x="826" y="807" font-size="18" fill="#172033" font-weight="400" text-anchor="start">shared P × V右：SS</text>
+<text x="826" y="836" font-size="18" fill="#172033" font-weight="400" text-anchor="start">不重复计算 QK / softmax</text>
+<text x="826" y="865" font-size="18" fill="#172033" font-weight="400" text-anchor="start">持有 O[:,256..511]</text>
+<path d="M385,813 L415,813" fill="none" stroke="#172033" stroke-width="2"/>
+<polygon points="415,813 406,808 406,818" fill="#172033"/>
+<path d="M770,813 L800,813" fill="none" stroke="#172033" stroke-width="2"/>
+<polygon points="800,813 791,808 791,818" fill="#172033"/>
+<text x="40" y="958" font-size="20" fill="#172033" font-weight="400" text-anchor="start">输出：FP32 accumulator → BF16 + STSM → shared → TMA store；split时另走FP32 combine。</text>
+</svg>

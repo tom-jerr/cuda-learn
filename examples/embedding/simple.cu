@@ -44,6 +44,27 @@ Embedding lookup（前向查表）的面试简化版
     }                                                                          \
   } while (0)
 
+// Embedding Lookup: output[token, :] = table[ids[token], :]
+//
+// N: token 数量
+// V: vocab_size，词表大小
+// D: embedding_dim，每个 token 的向量维度
+//
+// grid(N), block(128)，均为一维；block 大小可调整
+// table: VxD，嵌入表，按行连续存储
+// ids: Nx1，每个 token 对应的词表索引
+// output: NxD，每个 token 查表得到的嵌入向量
+//
+// 每个 block：
+//   负责一个 token，读取 id = ids[blockIdx.x]；
+//   将 table 的第 id 行复制到 output 的第 blockIdx.x 行；
+//   若 id 不在 [0, V) 内，则将对应输出行全部置零。
+//
+// 每个线程：
+//   负责列 threadIdx.x、threadIdx.x + blockDim.x、……，直到列索引 >= D。
+//   例如 block(128) 时，线程 t 负责第 t、t+128、t+256、…… 列。
+//
+// grid.x 必须等于 N，因为 kernel 没有检查 token 是否越界。
 __global__ void embedding_kernel(const float *table, const int *ids,
                                  float *output, int vocab_size,
                                  int embedding_dim) {

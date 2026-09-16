@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="940" viewBox="0 0 1600 940" role="img" aria-labelledby="title desc">
+<title id="title">CUTLASS 3.x Ampere runtime pipeline timeline</title>
+<desc id="desc">Timeline comparing the three-stage GEMM cp.async pipeline and the two-stage KV FlashAttention-2 pipeline.</desc>
+<defs>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#172033"/></marker>
+<marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#174EA6"/></marker>
+</defs>
+<rect width="1600" height="940" fill="#F7F9FC"/>
+<text x="70" y="62" fill="#172033" font-size="34" font-family="DejaVu Sans" font-weight="750" text-anchor="start">CUTLASS 3.x on Ampere · Pipeline timeline</text>
+<text x="70" y="96" fill="#5D687A" font-size="19" font-family="DejaVu Sans" font-weight="500" text-anchor="start">Conceptual timing, not cycle-scaled; dashed lines mark logical iterations</text>
+<line x1="280" y1="145" x2="280" y2="875" stroke="#CBD3DE" stroke-width="1" stroke-dasharray="6 8"/>
+<text x="382" y="138" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="600" text-anchor="middle">T0</text>
+<line x1="485" y1="145" x2="485" y2="875" stroke="#CBD3DE" stroke-width="1" stroke-dasharray="6 8"/>
+<text x="587" y="138" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="600" text-anchor="middle">T1</text>
+<line x1="690" y1="145" x2="690" y2="875" stroke="#CBD3DE" stroke-width="1" stroke-dasharray="6 8"/>
+<text x="792" y="138" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="600" text-anchor="middle">T2</text>
+<line x1="895" y1="145" x2="895" y2="875" stroke="#CBD3DE" stroke-width="1" stroke-dasharray="6 8"/>
+<text x="997" y="138" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="600" text-anchor="middle">T3</text>
+<line x1="1100" y1="145" x2="1100" y2="875" stroke="#CBD3DE" stroke-width="1" stroke-dasharray="6 8"/>
+<text x="1202" y="138" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="600" text-anchor="middle">T4</text>
+<line x1="1305" y1="145" x2="1305" y2="875" stroke="#CBD3DE" stroke-width="1" stroke-dasharray="6 8"/>
+<text x="1407" y="138" fill="#5D687A" font-size="16" font-family="DejaVu Sans" font-weight="600" text-anchor="middle">T5</text>
+<line x1="1510" y1="145" x2="1510" y2="875" stroke="#CBD3DE" stroke-width="1" stroke-dasharray="6 8"/>
+<text x="70" y="176" fill="#174EA6" font-size="25" font-family="DejaVu Sans" font-weight="750" text-anchor="start">GEMM · 3 stages</text>
+<text x="70" y="205" fill="#5D687A" font-size="17" font-family="DejaVu Sans" font-weight="500" text-anchor="start">128×128×32</text>
+<text x="70" y="264" fill="#172033" font-size="17" font-family="DejaVu Sans" font-weight="600" text-anchor="start">producer / cp.async</text>
+<text x="70" y="328" fill="#5D687A" font-size="17" font-family="DejaVu Sans" font-weight="600" text-anchor="start">SMEM stage 0</text>
+<text x="70" y="392" fill="#5D687A" font-size="17" font-family="DejaVu Sans" font-weight="600" text-anchor="start">SMEM stage 1</text>
+<text x="70" y="456" fill="#5D687A" font-size="17" font-family="DejaVu Sans" font-weight="600" text-anchor="start">SMEM stage 2</text>
+<text x="70" y="520" fill="#172033" font-size="17" font-family="DejaVu Sans" font-weight="600" text-anchor="start">consumer / Tensor Core</text>
+<rect x="288" y="230" width="189" height="52" rx="8" fill="#FCE9C8" stroke="#995600" stroke-width="1"/>
+<text x="382" y="255" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">copy A/B K₀</text>
+<rect x="493" y="230" width="189" height="52" rx="8" fill="#FCE9C8" stroke="#995600" stroke-width="1"/>
+<text x="587" y="255" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">copy A/B K₁</text>
+<rect x="698" y="230" width="189" height="52" rx="8" fill="#FCE9C8" stroke="#995600" stroke-width="1"/>
+<text x="792" y="255" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">copy K₂</text>
+<rect x="903" y="230" width="189" height="52" rx="8" fill="#FCE9C8" stroke="#995600" stroke-width="1"/>
+<text x="997" y="255" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">copy K₃</text>
+<rect x="1108" y="230" width="189" height="52" rx="8" fill="#FCE9C8" stroke="#995600" stroke-width="1"/>
+<text x="1202" y="255" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">copy K₄</text>
+<rect x="288" y="294" width="189" height="52" rx="8" fill="#FFFFFF" stroke="#995600" stroke-width="1"/>
+<text x="382" y="319" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">ready K₀</text>
+<rect x="493" y="358" width="189" height="52" rx="8" fill="#FFFFFF" stroke="#995600" stroke-width="1"/>
+<text x="587" y="383" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">ready K₁</text>
+<rect x="698" y="422" width="189" height="52" rx="8" fill="#FFFFFF" stroke="#995600" stroke-width="1"/>
+<text x="792" y="447" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">ready K₂</text>
+<rect x="903" y="294" width="189" height="52" rx="8" fill="#FFFFFF" stroke="#995600" stroke-width="1"/>
+<text x="997" y="319" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">ready K₃</text>
+<rect x="1108" y="358" width="189" height="52" rx="8" fill="#FFFFFF" stroke="#995600" stroke-width="1"/>
+<text x="1202" y="383" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">ready K₄</text>
+<rect x="698" y="486" width="189" height="52" rx="8" fill="#DCE8FF" stroke="#174EA6" stroke-width="1"/>
+<text x="792" y="511" fill="#174EA6" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">LDSM + MMA K₀</text>
+<rect x="903" y="486" width="189" height="52" rx="8" fill="#DCE8FF" stroke="#174EA6" stroke-width="1"/>
+<text x="997" y="511" fill="#174EA6" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">LDSM + MMA K₁</text>
+<rect x="1108" y="486" width="189" height="52" rx="8" fill="#DCE8FF" stroke="#174EA6" stroke-width="1"/>
+<text x="1202" y="511" fill="#174EA6" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">LDSM + MMA K₂</text>
+<rect x="1313" y="486" width="189" height="52" rx="8" fill="#DCE8FF" stroke="#174EA6" stroke-width="1"/>
+<text x="1407" y="511" fill="#174EA6" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">LDSM + MMA K₃ / drain</text>
+<path d="M680 288 V478" fill="none" stroke="#174EA6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 5"/>
+<text x="293" y="553" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="650" text-anchor="start">Prologue: submit Stages−1 copy groups</text>
+<text x="703" y="553" fill="#174EA6" font-size="16" font-family="DejaVu Sans" font-weight="650" text-anchor="start">Steady state: copy(next) overlaps consume(current)</text>
+<line x1="55" y1="594" x2="1545" y2="594" stroke="#CBD3DE" stroke-width="2"/>
+<text x="70" y="635" fill="#7142A0" font-size="25" font-family="DejaVu Sans" font-weight="750" text-anchor="start">FA2 · 2-stage KV</text>
+<text x="70" y="664" fill="#5D687A" font-size="17" font-family="DejaVu Sans" font-weight="500" text-anchor="start">64×64 · D=64</text>
+<text x="70" y="720" fill="#172033" font-size="17" font-family="DejaVu Sans" font-weight="600" text-anchor="start">producer / cp.async</text>
+<text x="70" y="784" fill="#5D687A" font-size="17" font-family="DejaVu Sans" font-weight="600" text-anchor="start">stage 0 / stage 1</text>
+<text x="70" y="848" fill="#172033" font-size="17" font-family="DejaVu Sans" font-weight="600" text-anchor="start">consumer chain</text>
+<rect x="288" y="686" width="189" height="52" rx="8" fill="#FCE9C8" stroke="#995600" stroke-width="1"/>
+<text x="382" y="711" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">copy Q + KV₀</text>
+<rect x="493" y="686" width="189" height="52" rx="8" fill="#FCE9C8" stroke="#995600" stroke-width="1"/>
+<text x="587" y="711" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">copy KV₁</text>
+<rect x="698" y="686" width="189" height="52" rx="8" fill="#FCE9C8" stroke="#995600" stroke-width="1"/>
+<text x="792" y="711" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">copy KV₂</text>
+<rect x="903" y="686" width="189" height="52" rx="8" fill="#FCE9C8" stroke="#995600" stroke-width="1"/>
+<text x="997" y="711" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">copy KV₃</text>
+<rect x="288" y="750" width="189" height="52" rx="8" fill="#FFFFFF" stroke="#995600" stroke-width="1"/>
+<text x="382" y="775" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">S0 = KV₀</text>
+<rect x="493" y="750" width="189" height="52" rx="8" fill="#FFFFFF" stroke="#995600" stroke-width="1"/>
+<text x="587" y="775" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">S1 = KV₁</text>
+<rect x="698" y="750" width="189" height="52" rx="8" fill="#FFFFFF" stroke="#995600" stroke-width="1"/>
+<text x="792" y="775" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">S0 = KV₂</text>
+<rect x="903" y="750" width="189" height="52" rx="8" fill="#FFFFFF" stroke="#995600" stroke-width="1"/>
+<text x="997" y="775" fill="#995600" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">S1 = KV₃</text>
+<rect x="493" y="814" width="189" height="52" rx="8" fill="#EEE4F7" stroke="#7142A0" stroke-width="1"/>
+<text x="587" y="839" fill="#7142A0" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">QK → softmax → PV</text>
+<text x="587" y="862" fill="#5D687A" font-size="14" font-family="DejaVu Sans" font-weight="500" text-anchor="middle">tile 0</text>
+<rect x="698" y="814" width="189" height="52" rx="8" fill="#EEE4F7" stroke="#7142A0" stroke-width="1"/>
+<text x="792" y="839" fill="#7142A0" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">QK → softmax → PV</text>
+<text x="792" y="862" fill="#5D687A" font-size="14" font-family="DejaVu Sans" font-weight="500" text-anchor="middle">tile 1</text>
+<rect x="903" y="814" width="189" height="52" rx="8" fill="#EEE4F7" stroke="#7142A0" stroke-width="1"/>
+<text x="997" y="839" fill="#7142A0" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">QK → softmax → PV</text>
+<text x="997" y="862" fill="#5D687A" font-size="14" font-family="DejaVu Sans" font-weight="500" text-anchor="middle">tile 2</text>
+<rect x="1108" y="814" width="189" height="52" rx="8" fill="#EEE4F7" stroke="#7142A0" stroke-width="1"/>
+<text x="1202" y="839" fill="#7142A0" font-size="16" font-family="DejaVu Sans" font-weight="700" text-anchor="middle">QK → softmax → PV</text>
+<text x="1202" y="862" fill="#5D687A" font-size="14" font-family="DejaVu Sans" font-weight="500" text-anchor="middle">tile 3</text>
+<path d="M500 744 V806" fill="none" stroke="#7142A0" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="6 5"/>
+<text x="1317" y="839" fill="#21654D" font-size="17" font-family="DejaVu Sans" font-weight="750" text-anchor="start">Epilogue</text>
+<text x="1317" y="863" fill="#5D687A" font-size="15" font-family="DejaVu Sans" font-weight="500" text-anchor="start">O / l → FP16</text>
+<text x="70" y="912" fill="#5D687A" font-size="17" font-family="DejaVu Sans" font-weight="500" text-anchor="start">Synchronization: cp_async_fence commits; cp_async_wait + __syncthreads precede SMEM stage reuse.</text>
+</svg>

@@ -1,0 +1,338 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 1200 1000" role="img" aria-labelledby="title desc">
+<title id="title">A：ldmatrix.x4 的行地址与寄存器归属</title><desc id="desc">固定 warp、mi、kk。M0=32×warp_m+16×mi；g=lane/4，t=lane%4。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}</style>
+<rect x="0" y="0" width="1200" height="1000" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="46" font-size="29" fill="#172033" font-weight="700" text-anchor="start">A：ldmatrix.x4 的行地址与寄存器归属</text>
+<text x="40" y="80" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">固定 warp、mi、kk。M0=32×warp_m+16×mi；g=lane/4，t=lane%4。</text>
+<text x="40" y="126" font-size="21" fill="#172033" font-weight="700" text-anchor="start">① 四个 8×8 子矩阵：提供行地址的 lane</text>
+<rect x="40" y="150" width="255" height="102" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="179" font-size="19" fill="#172033" font-weight="700" text-anchor="start">Q0 → a_frag[mi][0]</text>
+<text x="52" y="207" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行 0..7，K 0..7</text>
+<text x="52" y="233" font-size="17" fill="#172033" font-weight="400" text-anchor="start">地址来自 lane 0..7</text>
+<rect x="40" y="252" width="255" height="102" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="281" font-size="19" fill="#172033" font-weight="700" text-anchor="start">Q1 → a_frag[mi][1]</text>
+<text x="52" y="309" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行 8..15，K 0..7</text>
+<text x="52" y="335" font-size="17" fill="#172033" font-weight="400" text-anchor="start">地址来自 lane 8..15</text>
+<rect x="295" y="150" width="255" height="102" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="307" y="179" font-size="19" fill="#172033" font-weight="700" text-anchor="start">Q2 → a_frag[mi][2]</text>
+<text x="307" y="207" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行 0..7，K 8..15</text>
+<text x="307" y="233" font-size="17" fill="#172033" font-weight="400" text-anchor="start">地址来自 lane 16..23</text>
+<rect x="295" y="252" width="255" height="102" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="307" y="281" font-size="19" fill="#172033" font-weight="700" text-anchor="start">Q3 → a_frag[mi][3]</text>
+<text x="307" y="309" font-size="17" fill="#172033" font-weight="400" text-anchor="start">行 8..15，K 8..15</text>
+<text x="307" y="335" font-size="17" fill="#172033" font-weight="400" text-anchor="start">地址来自 lane 24..31</text>
+<text x="610" y="126" font-size="21" fill="#172033" font-weight="700" text-anchor="start">② 每个 lane 都收到四个 32-bit 寄存器</text>
+<rect x="610" y="150" width="110" height="41" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="622" y="176.5" font-size="16" fill="#172033" font-weight="700" text-anchor="start">寄存器</text>
+<rect x="720" y="150" width="440" height="41" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="732" y="176.5" font-size="16" fill="#172033" font-weight="700" text-anchor="start">低16位 / 高16位：A_smem 坐标</text>
+<rect x="610" y="191" width="110" height="41" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="622" y="217.5" font-size="16" fill="#172033" font-weight="400" text-anchor="start">a[0]</text>
+<rect x="720" y="191" width="440" height="41" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="732" y="217.5" font-size="16" fill="#172033" font-weight="400" text-anchor="start">(M0+g, kk+2t) / (M0+g, kk+2t+1)</text>
+<rect x="610" y="232" width="110" height="41" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="622" y="258.5" font-size="16" fill="#172033" font-weight="400" text-anchor="start">a[1]</text>
+<rect x="720" y="232" width="440" height="41" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="732" y="258.5" font-size="16" fill="#172033" font-weight="400" text-anchor="start">(M0+g+8, kk+2t) / (M0+g+8, kk+2t+1)</text>
+<rect x="610" y="273" width="110" height="41" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="622" y="299.5" font-size="16" fill="#172033" font-weight="400" text-anchor="start">a[2]</text>
+<rect x="720" y="273" width="440" height="41" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="732" y="299.5" font-size="16" fill="#172033" font-weight="400" text-anchor="start">(M0+g, kk+2t+8) / (M0+g, kk+2t+9)</text>
+<rect x="610" y="314" width="110" height="41" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="622" y="340.5" font-size="16" fill="#172033" font-weight="400" text-anchor="start">a[3]</text>
+<rect x="720" y="314" width="440" height="41" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="732" y="340.5" font-size="16" fill="#172033" font-weight="400" text-anchor="start">(M0+g+8, kk+2t+8) / (M0+g+8, kk+2t+9)</text>
+<text x="40" y="408" font-size="21" fill="#172033" font-weight="700" text-anchor="start">③ 完整 16×16 A fragment：每格是横向相邻的两个 BF16</text>
+<text x="40" y="437" font-size="17" fill="#5D687A" font-weight="400" text-anchor="start">标签 Lx / aj：lane x 的 a_frag[mi][j]；行、列均为 fragment 内相对坐标。</text>
+<text x="111.0" y="464" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">0,1</text>
+<text x="173.0" y="464" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">2,3</text>
+<text x="235.0" y="464" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">4,5</text>
+<text x="297.0" y="464" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">6,7</text>
+<text x="359.0" y="464" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">8,9</text>
+<text x="421.0" y="464" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">10,11</text>
+<text x="483.0" y="464" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">12,13</text>
+<text x="545.0" y="464" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">14,15</text>
+<text x="68" y="495" font-size="15" fill="#172033" font-weight="400" text-anchor="end">0</text>
+<rect x="80" y="476" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="494" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L0 / a0</text>
+<rect x="142" y="476" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="494" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L1 / a0</text>
+<rect x="204" y="476" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="494" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L2 / a0</text>
+<rect x="266" y="476" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="494" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L3 / a0</text>
+<rect x="328" y="476" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="494" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L0 / a2</text>
+<rect x="390" y="476" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="494" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L1 / a2</text>
+<rect x="452" y="476" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="494" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L2 / a2</text>
+<rect x="514" y="476" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="494" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L3 / a2</text>
+<text x="68" y="522" font-size="15" fill="#172033" font-weight="400" text-anchor="end">1</text>
+<rect x="80" y="503" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="521" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L4 / a0</text>
+<rect x="142" y="503" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="521" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L5 / a0</text>
+<rect x="204" y="503" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="521" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L6 / a0</text>
+<rect x="266" y="503" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="521" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L7 / a0</text>
+<rect x="328" y="503" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="521" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L4 / a2</text>
+<rect x="390" y="503" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="521" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L5 / a2</text>
+<rect x="452" y="503" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="521" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L6 / a2</text>
+<rect x="514" y="503" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="521" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L7 / a2</text>
+<text x="68" y="549" font-size="15" fill="#172033" font-weight="400" text-anchor="end">2</text>
+<rect x="80" y="530" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="548" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L8 / a0</text>
+<rect x="142" y="530" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="548" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L9 / a0</text>
+<rect x="204" y="530" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="548" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L10 / a0</text>
+<rect x="266" y="530" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="548" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L11 / a0</text>
+<rect x="328" y="530" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="548" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L8 / a2</text>
+<rect x="390" y="530" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="548" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L9 / a2</text>
+<rect x="452" y="530" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="548" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L10 / a2</text>
+<rect x="514" y="530" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="548" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L11 / a2</text>
+<text x="68" y="576" font-size="15" fill="#172033" font-weight="400" text-anchor="end">3</text>
+<rect x="80" y="557" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="575" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L12 / a0</text>
+<rect x="142" y="557" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="575" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L13 / a0</text>
+<rect x="204" y="557" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="575" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L14 / a0</text>
+<rect x="266" y="557" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="575" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L15 / a0</text>
+<rect x="328" y="557" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="575" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L12 / a2</text>
+<rect x="390" y="557" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="575" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L13 / a2</text>
+<rect x="452" y="557" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="575" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L14 / a2</text>
+<rect x="514" y="557" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="575" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L15 / a2</text>
+<text x="68" y="603" font-size="15" fill="#172033" font-weight="400" text-anchor="end">4</text>
+<rect x="80" y="584" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="602" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L16 / a0</text>
+<rect x="142" y="584" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="602" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L17 / a0</text>
+<rect x="204" y="584" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="602" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L18 / a0</text>
+<rect x="266" y="584" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="602" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L19 / a0</text>
+<rect x="328" y="584" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="602" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L16 / a2</text>
+<rect x="390" y="584" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="602" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L17 / a2</text>
+<rect x="452" y="584" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="602" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L18 / a2</text>
+<rect x="514" y="584" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="602" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L19 / a2</text>
+<text x="68" y="630" font-size="15" fill="#172033" font-weight="400" text-anchor="end">5</text>
+<rect x="80" y="611" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="629" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L20 / a0</text>
+<rect x="142" y="611" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="629" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L21 / a0</text>
+<rect x="204" y="611" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="629" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L22 / a0</text>
+<rect x="266" y="611" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="629" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L23 / a0</text>
+<rect x="328" y="611" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="629" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L20 / a2</text>
+<rect x="390" y="611" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="629" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L21 / a2</text>
+<rect x="452" y="611" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="629" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L22 / a2</text>
+<rect x="514" y="611" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="629" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L23 / a2</text>
+<text x="68" y="657" font-size="15" fill="#172033" font-weight="400" text-anchor="end">6</text>
+<rect x="80" y="638" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="656" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L24 / a0</text>
+<rect x="142" y="638" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="656" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L25 / a0</text>
+<rect x="204" y="638" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="656" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L26 / a0</text>
+<rect x="266" y="638" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="656" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L27 / a0</text>
+<rect x="328" y="638" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="656" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L24 / a2</text>
+<rect x="390" y="638" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="656" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L25 / a2</text>
+<rect x="452" y="638" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="656" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L26 / a2</text>
+<rect x="514" y="638" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="656" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L27 / a2</text>
+<text x="68" y="684" font-size="15" fill="#172033" font-weight="400" text-anchor="end">7</text>
+<rect x="80" y="665" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="683" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L28 / a0</text>
+<rect x="142" y="665" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="683" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L29 / a0</text>
+<rect x="204" y="665" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="683" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L30 / a0</text>
+<rect x="266" y="665" width="62" height="27" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="683" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L31 / a0</text>
+<rect x="328" y="665" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="683" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L28 / a2</text>
+<rect x="390" y="665" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="683" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L29 / a2</text>
+<rect x="452" y="665" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="683" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L30 / a2</text>
+<rect x="514" y="665" width="62" height="27" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="683" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L31 / a2</text>
+<text x="68" y="711" font-size="15" fill="#172033" font-weight="400" text-anchor="end">8</text>
+<rect x="80" y="692" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="710" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L0 / a1</text>
+<rect x="142" y="692" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="710" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L1 / a1</text>
+<rect x="204" y="692" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="710" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L2 / a1</text>
+<rect x="266" y="692" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="710" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L3 / a1</text>
+<rect x="328" y="692" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="710" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L0 / a3</text>
+<rect x="390" y="692" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="710" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L1 / a3</text>
+<rect x="452" y="692" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="710" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L2 / a3</text>
+<rect x="514" y="692" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="710" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L3 / a3</text>
+<text x="68" y="738" font-size="15" fill="#172033" font-weight="400" text-anchor="end">9</text>
+<rect x="80" y="719" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="737" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L4 / a1</text>
+<rect x="142" y="719" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="737" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L5 / a1</text>
+<rect x="204" y="719" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="737" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L6 / a1</text>
+<rect x="266" y="719" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="737" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L7 / a1</text>
+<rect x="328" y="719" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="737" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L4 / a3</text>
+<rect x="390" y="719" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="737" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L5 / a3</text>
+<rect x="452" y="719" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="737" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L6 / a3</text>
+<rect x="514" y="719" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="737" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L7 / a3</text>
+<text x="68" y="765" font-size="15" fill="#172033" font-weight="400" text-anchor="end">10</text>
+<rect x="80" y="746" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="764" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L8 / a1</text>
+<rect x="142" y="746" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="764" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L9 / a1</text>
+<rect x="204" y="746" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="764" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L10 / a1</text>
+<rect x="266" y="746" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="764" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L11 / a1</text>
+<rect x="328" y="746" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="764" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L8 / a3</text>
+<rect x="390" y="746" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="764" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L9 / a3</text>
+<rect x="452" y="746" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="764" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L10 / a3</text>
+<rect x="514" y="746" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="764" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L11 / a3</text>
+<text x="68" y="792" font-size="15" fill="#172033" font-weight="400" text-anchor="end">11</text>
+<rect x="80" y="773" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="791" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L12 / a1</text>
+<rect x="142" y="773" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="791" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L13 / a1</text>
+<rect x="204" y="773" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="791" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L14 / a1</text>
+<rect x="266" y="773" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="791" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L15 / a1</text>
+<rect x="328" y="773" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="791" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L12 / a3</text>
+<rect x="390" y="773" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="791" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L13 / a3</text>
+<rect x="452" y="773" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="791" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L14 / a3</text>
+<rect x="514" y="773" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="791" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L15 / a3</text>
+<text x="68" y="819" font-size="15" fill="#172033" font-weight="400" text-anchor="end">12</text>
+<rect x="80" y="800" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="818" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L16 / a1</text>
+<rect x="142" y="800" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="818" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L17 / a1</text>
+<rect x="204" y="800" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="818" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L18 / a1</text>
+<rect x="266" y="800" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="818" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L19 / a1</text>
+<rect x="328" y="800" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="818" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L16 / a3</text>
+<rect x="390" y="800" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="818" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L17 / a3</text>
+<rect x="452" y="800" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="818" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L18 / a3</text>
+<rect x="514" y="800" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="818" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L19 / a3</text>
+<text x="68" y="846" font-size="15" fill="#172033" font-weight="400" text-anchor="end">13</text>
+<rect x="80" y="827" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="845" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L20 / a1</text>
+<rect x="142" y="827" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="845" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L21 / a1</text>
+<rect x="204" y="827" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="845" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L22 / a1</text>
+<rect x="266" y="827" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="845" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L23 / a1</text>
+<rect x="328" y="827" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="845" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L20 / a3</text>
+<rect x="390" y="827" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="845" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L21 / a3</text>
+<rect x="452" y="827" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="845" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L22 / a3</text>
+<rect x="514" y="827" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="845" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L23 / a3</text>
+<text x="68" y="873" font-size="15" fill="#172033" font-weight="400" text-anchor="end">14</text>
+<rect x="80" y="854" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="872" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L24 / a1</text>
+<rect x="142" y="854" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="872" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L25 / a1</text>
+<rect x="204" y="854" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="872" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L26 / a1</text>
+<rect x="266" y="854" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="872" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L27 / a1</text>
+<rect x="328" y="854" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="872" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L24 / a3</text>
+<rect x="390" y="854" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="872" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L25 / a3</text>
+<rect x="452" y="854" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="872" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L26 / a3</text>
+<rect x="514" y="854" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="872" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L27 / a3</text>
+<text x="68" y="900" font-size="15" fill="#172033" font-weight="400" text-anchor="end">15</text>
+<rect x="80" y="881" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="111.0" y="899" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L28 / a1</text>
+<rect x="142" y="881" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="173.0" y="899" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L29 / a1</text>
+<rect x="204" y="881" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="235.0" y="899" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L30 / a1</text>
+<rect x="266" y="881" width="62" height="27" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="297.0" y="899" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L31 / a1</text>
+<rect x="328" y="881" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="359.0" y="899" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L28 / a3</text>
+<rect x="390" y="881" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="421.0" y="899" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L29 / a3</text>
+<rect x="452" y="881" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="483.0" y="899" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L30 / a3</text>
+<rect x="514" y="881" width="62" height="27" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="545.0" y="899" font-size="13" fill="#172033" font-weight="400" text-anchor="middle">L31 / a3</text>
+<text x="635" y="490" font-size="21" fill="#172033" font-weight="700" text-anchor="start">以 lane 13 为例：g=3，t=1</text>
+<text x="635" y="531" font-size="18" fill="#172033" font-weight="400" text-anchor="start">它提供的行地址：A_smem[M0+13][kk]。</text>
+<text x="635" y="568" font-size="18" fill="#172033" font-weight="400" text-anchor="start">这个地址属于 Q1 的行索引5（从0开始）。</text>
+<text x="635" y="605" font-size="18" fill="#172033" font-weight="400" text-anchor="start">但它最终收到的是：</text>
+<text x="635" y="642" font-size="18" fill="#172033" font-weight="400" text-anchor="start">a[0] = A[M0+3,  kk+2 : kk+3]</text>
+<text x="635" y="679" font-size="18" fill="#172033" font-weight="400" text-anchor="start">a[1] = A[M0+11, kk+2 : kk+3]</text>
+<text x="635" y="716" font-size="18" fill="#172033" font-weight="400" text-anchor="start">a[2] = A[M0+3,  kk+10 : kk+11]</text>
+<text x="635" y="753" font-size="18" fill="#172033" font-weight="400" text-anchor="start">a[3] = A[M0+11, kk+10 : kk+11]</text>
+<text x="635" y="790" font-size="18" fill="#172033" font-weight="400" text-anchor="start">冒号表示含两端的相邻元素。</text>
+<text x="635" y="858" font-size="19" fill="#174EA6" font-weight="700" text-anchor="start">32 lanes × 4 regs × 2 BF16 = 16×16</text>
+<text x="40" y="962" font-size="20" fill="#174EA6" font-weight="700" text-anchor="start">mi=0,1：沿 M 加16；kk=0,16：沿 K 加16。x4 是一条 warp 指令中的四个 8×8 子矩阵。</text>
+</svg>

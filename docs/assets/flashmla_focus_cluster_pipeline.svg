@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1240" viewBox="0 0 1800 1240" role="img" aria-labelledby="title desc">
+<title id="title">Hopper sparse cluster：producer重叠下一块；四个consumer共同释放旧槽</title><desc id="desc">一种合法示意时序，不按比例。C0/C1是CTA；B0/B1/B2是64-token计算块；消费者窄条为WGMMA未完成窗口。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1800" height="1240" fill="white" stroke="white" stroke-width="1"/>
+<path d="M1081,215 V1065" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Hopper sparse cluster：producer重叠下一块；四个consumer共同释放旧槽</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">一种合法示意时序，不按比例。C0/C1是CTA；B0/B1/B2是64-token计算块；消费者窄条为WGMMA未完成窗口。</text>
+<path d="M280,118 L1755,118" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1755,118 1747,113 1747,123" fill="#174EA6"/>
+<text x="1755" y="149" font-size="18" fill="#5D687A" font-weight="400" text-anchor="end">先后关系 →；非测量，不按比例</text>
+<text x="40" y="207" font-size="20" fill="#172033" font-weight="700" text-anchor="start">C0 producer WG2</text>
+<path d="M280,228 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="347" font-size="20" fill="#172033" font-weight="700" text-anchor="start">C1 producer WG2</text>
+<path d="M280,368 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="507" font-size="20" fill="#172033" font-weight="700" text-anchor="start">C0 consumer WG0</text>
+<path d="M280,528 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="667" font-size="20" fill="#172033" font-weight="700" text-anchor="start">C0 consumer WG1</text>
+<path d="M280,688 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="827" font-size="20" fill="#172033" font-weight="700" text-anchor="start">C1 consumer WG0</text>
+<path d="M280,848 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="987" font-size="20" fill="#172033" font-weight="700" text-anchor="start">C1 consumer WG1</text>
+<path d="M280,1008 H1755" stroke="#CBD3DE" fill="none"/>
+<rect x="280" y="180" width="178" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="369.0" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather+dequant B0</text>
+<rect x="333.4" y="228" width="169.1" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="417.95000000000005" y="247.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">DSM→peer B0</text>
+<rect x="458" y="180" width="178" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="547.0" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather+dequant B1</text>
+<rect x="511.4" y="228" width="195.79999999999998" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="609.3" y="247.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">DSM→peer B1</text>
+<rect x="636" y="180" width="445" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="858.5" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">等 slot0 avail：必须收到4次释放</text>
+<rect x="1081" y="180" width="178" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1170.0" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather+dequant B2</text>
+<rect x="1134.4" y="228" width="195.8000000000001" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1232.3" y="247.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">DSM→peer B2</text>
+<rect x="280" y="320" width="178" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="369.0" y="345.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather+dequant B0</text>
+<rect x="333.4" y="368" width="169.1" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="417.95000000000005" y="387.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">DSM→peer B0</text>
+<rect x="458" y="320" width="178" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="547.0" y="345.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather+dequant B1</text>
+<rect x="511.4" y="368" width="195.79999999999998" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="609.3" y="387.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">DSM→peer B1</text>
+<rect x="636" y="320" width="445" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="858.5" y="345.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">等 slot0 avail：必须收到4次释放</text>
+<rect x="1081" y="320" width="178" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1170.0" y="345.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather+dequant B2</text>
+<rect x="1134.4" y="368" width="195.8000000000001" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1232.3" y="387.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">DSM→peer B2</text>
+<path d="M547,476 V522" stroke="#174EA6" stroke-width="2"/>
+<text x="552" y="497" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">QK0↑</text>
+<rect x="547" y="528" width="178" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="636.0" y="547.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK0 在途</text>
+<rect x="725" y="480" width="89" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="769.5" y="505.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM0/P0</text>
+<path d="M814,476 V522" stroke="#174EA6" stroke-width="2"/>
+<text x="819" y="497" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">PV0L↑</text>
+<rect x="814" y="528" width="133.5" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="880.75" y="547.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV0L</text>
+<path d="M947.5,476 V522" stroke="#174EA6" stroke-width="2"/>
+<text x="952.5" y="497" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">release0 / QK1↑</text>
+<rect x="947.5" y="528" width="178.0" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1036.5" y="547.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK1</text>
+<rect x="1170" y="480" width="89" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1214.5" y="505.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM1/P1</text>
+<path d="M1259,476 V522" stroke="#174EA6" stroke-width="2"/>
+<text x="1264" y="497" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">PV1L↑</text>
+<rect x="1259" y="528" width="178" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1348.0" y="547.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV1L</text>
+<path d="M582.5999999999999,796 V842" stroke="#174EA6" stroke-width="2"/>
+<text x="587.5999999999999" y="817" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">QK0↑</text>
+<rect x="582.5999999999999" y="848" width="178.00000000000003" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="671.6" y="867.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK0 在途</text>
+<rect x="760.6" y="800" width="89.0" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="805.1" y="825.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM0/P0</text>
+<path d="M849.6,796 V842" stroke="#174EA6" stroke-width="2"/>
+<text x="854.6" y="817" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">PV0L↑</text>
+<rect x="849.6" y="848" width="133.5" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="916.35" y="867.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV0L</text>
+<path d="M983.1,796 V842" stroke="#174EA6" stroke-width="2"/>
+<text x="988.1" y="817" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">release0 / QK1↑</text>
+<rect x="983.1" y="848" width="178.0" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1072.1" y="867.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK1</text>
+<rect x="1205.6" y="800" width="89.0" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1250.1" y="825.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">SM1/P1</text>
+<path d="M1294.6,796 V842" stroke="#174EA6" stroke-width="2"/>
+<text x="1299.6" y="817" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">PV1L↑</text>
+<rect x="1294.6" y="848" width="178.0" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1383.6000000000001" y="867.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV1L</text>
+<rect x="280" y="640" width="534" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="547.0" y="665.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">等本CTA P0 + scale0</text>
+<path d="M814,636 V682" stroke="#174EA6" stroke-width="2"/>
+<text x="819" y="657" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">scale O / PV0R↑</text>
+<rect x="814" y="688" width="222.5" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="925.25" y="707.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV0R 在途</text>
+<path d="M1036.5,636 V682" stroke="#174EA6" stroke-width="2"/>
+<text x="1041.5" y="657" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">release0 / P-free</text>
+<rect x="1303.5" y="640" width="115.70000000000006" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1361.3500000000001" y="665.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">取P1/scale</text>
+<rect x="1419.2" y="688" width="195.79999999999993" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1517.1000000000001" y="707.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV1R 在途</text>
+<rect x="280" y="960" width="569.6" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="564.8" y="985.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">等本CTA P0 + scale0</text>
+<path d="M849.6,956 V1002" stroke="#174EA6" stroke-width="2"/>
+<text x="854.6" y="977" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">scale O / PV0R↑</text>
+<rect x="849.6" y="1008" width="231.39999999999998" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="965.3000000000001" y="1027.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV0R 在途</text>
+<path d="M1081,956 V1002" stroke="#174EA6" stroke-width="2"/>
+<text x="1086" y="977" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">release0 / P-free</text>
+<rect x="1303.5" y="960" width="115.70000000000006" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1361.3500000000001" y="985.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">取P1/scale</text>
+<rect x="1419.2" y="1008" width="195.79999999999993" height="27" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1517.1000000000001" y="1027.5" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV1R 在途</text>
+<text x="1089" y="1103" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">slot0：4个consumer都完成PV，B2才可覆盖</text>
+<text x="40" y="1150" font-size="20" fill="#172033" font-weight="400" text-anchor="start">K-ready = local_ready(128 arrivals) + remote_ready(36KiB)；K-available = C0.WG0/1 + C1.WG0/1。</text>
+<text x="40" y="1195" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">P-free仅在本CTA内握手：WG0可先算下一块QK；写下一份shared P/scale前必须等WG1释放。</text>
+</svg>

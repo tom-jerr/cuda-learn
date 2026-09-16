@@ -7,60 +7,55 @@ struct Node {
   unordered_map<char, pair<string, Node *>> map;
 };
 
+int lcp(const string &edge, const string &tokens, int pos) {
+  int len = 0;
+  while (len < edge.size() && pos + len < tokens.size() &&
+         edge[len] == tokens[pos + len])
+    len++;
+  return len;
+}
+
 class RadixTree {
   Node *root;
-  static size_t commonPrefixLength(const string &edge, const string &tokens,
-                                   size_t pos) {
-    size_t len = 0;
-
-    while (len < edge.size() && pos + len < tokens.size() &&
-           edge[len] == tokens[pos + len]) {
-      ++len;
-    }
-
-    return len;
-  }
-
   RadixTree() : root(new Node()) {}
-  void insert(string tokens) {
-    char ch = tokens[0];
 
-    int pos = 0;
-    int n = tokens.size();
+  void insert(string tokens) {
     Node *cur = root;
-    while (pos < n) {
-      auto it = root->map.find(ch);
-      if (it == root->map.end()) {
-        Node *newNode = new Node();
-        root->map[0] = {tokens, newNode};
+    int pos = 0;
+    while (pos < tokens.size()) {
+      auto it = cur->map.find(tokens[pos]);
+      // no prefix
+      if (it == cur->map.end()) {
+        cur->map[tokens[pos]] = {tokens, new Node()};
         return;
       }
-      string edge = it->second.first;
-      Node *child = it->second.second;
-      int common = commonPrefixLength(edge, tokens, pos);
-      if (common == edge.size()) {
-        pos += common;
+
+      string prefix = cur->map[tokens[0]].first;
+      Node *child = cur->map[tokens[0]].second;
+      int len = lcp(prefix, tokens, pos);
+      // all prefix, next node
+      if (len == prefix.size()) {
+        pos += len;
         cur = child;
         continue;
       }
-      // match some
-      string commonPrefix = edge.substr(0, common);
-      string oldSuffix = edge.substr(common);
+      // some prefix
+      string common = prefix.substr(pos, len);
+      string old = prefix.substr(len);
       Node *middle = new Node();
-      it->second = {commonPrefix, middle};
-      middle->map[oldSuffix[0]] = {oldSuffix, child};
-      pos += common;
-
-      if (pos == n) {
+      cur->map[common[0]] = {common, middle};
+      middle->map[old[0]] = {old, child};
+      pos += len;
+      if (pos == tokens.size()) {
         middle->end = true;
         return;
+      } else {
+        string newtoken = tokens.substr(pos);
+        Node *newNode = new Node();
+        newNode->end = true;
+        middle->map[newtoken[0]] = {newtoken, newNode};
+        return;
       }
-
-      string newSuffix = tokens.substr(pos);
-      Node *newNode = new Node();
-      newNode->end = true;
-      middle->map[newSuffix[0]] = {newSuffix, newNode};
-      return;
     }
     cur->end = true;
   }
@@ -71,7 +66,7 @@ class RadixTree {
     int pos = 0;
     int n = tokens.size();
 
-    while (pos < tokens.size()) {
+    while (pos < n) {
       auto it = cur->map.find(tokens[pos]);
 
       // 没有对应首字符的边，停止

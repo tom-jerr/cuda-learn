@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="960" viewBox="0 0 1200 960" role="img" aria-labelledby="title desc">
+<title id="title">WGMMA accumulator：沿输出列扩展，每跨8列增加4槽</title><desc id="desc">图中“槽”是当前线程的逻辑元素编号，不是机器寄存器编号；128线程协作一个m64 tile。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="960" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">WGMMA accumulator：沿输出列扩展，每跨8列增加4槽</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">图中“槽”是当前线程的逻辑元素编号，不是机器寄存器编号；128线程协作一个m64 tile。</text>
+<text x="40" y="132" font-size="23" fill="#172033" font-weight="700" text-anchor="start">固定一个线程：它负责两行，每行每个8列分组中有2个相邻值</text>
+<rect x="40" y="160" width="235" height="51" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="192.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">该线程持有的行</text>
+<rect x="275" y="160" width="220" height="51" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="287" y="192.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">第0个8列分组</text>
+<rect x="495" y="160" width="220" height="51" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="507" y="192.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">第1个8列分组</text>
+<rect x="715" y="160" width="220" height="51" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="727" y="192.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">第2个8列分组</text>
+<rect x="935" y="160" width="225" height="51" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="192.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">第3个8列分组</text>
+<rect x="40" y="211" width="235" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="243.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">本线程的上行</text>
+<rect x="275" y="211" width="220" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="287" y="243.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">槽 0,1</text>
+<rect x="495" y="211" width="220" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="507" y="243.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">槽 4,5</text>
+<rect x="715" y="211" width="220" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="727" y="243.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">槽 8,9</text>
+<rect x="935" y="211" width="225" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="243.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">槽 12,13</text>
+<rect x="40" y="262" width="235" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="294.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">相隔8行的下行</text>
+<rect x="275" y="262" width="220" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="287" y="294.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">槽 2,3</text>
+<rect x="495" y="262" width="220" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="507" y="294.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">槽 6,7</text>
+<rect x="715" y="262" width="220" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="727" y="294.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">槽 10,11</text>
+<rect x="935" y="262" width="225" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="294.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">槽 14,15</text>
+<text x="40" y="357" font-size="25" fill="#174EA6" font-weight="700" text-anchor="start">shape ((2,2,N/8),1,1)；stride ((1,2,4),0,0)</text>
+<rect x="40" y="391" width="280" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="422.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">结果 tile（单 WG）</text>
+<rect x="320" y="391" width="250" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="422.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">列方向分组</text>
+<rect x="570" y="391" width="270" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="582" y="422.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">每线程元素数</text>
+<rect x="840" y="391" width="320" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="852" y="422.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">局部形状</text>
+<rect x="40" y="439" width="280" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="470.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">FA3 score 64×224</text>
+<rect x="320" y="439" width="250" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="470.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">28 个8列分组</text>
+<rect x="570" y="439" width="270" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="582" y="470.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2×2×28 = 112</text>
+<rect x="840" y="439" width="320" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="852" y="470.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">((2,2,28),1,1)</text>
+<rect x="40" y="487" width="280" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="518.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">FA3 output 64×128</text>
+<rect x="320" y="487" width="250" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="518.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">16 个8列分组</text>
+<rect x="570" y="487" width="270" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="582" y="518.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2×2×16 = 64</text>
+<rect x="840" y="487" width="320" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="852" y="518.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">((2,2,16),1,1)</text>
+<rect x="40" y="535" width="280" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="566.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">MLA score 64×64</text>
+<rect x="320" y="535" width="250" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="566.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8 个8列分组</text>
+<rect x="570" y="535" width="270" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="582" y="566.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2×2×8 = 32</text>
+<rect x="840" y="535" width="320" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="852" y="566.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">((2,2,8),1,1)</text>
+<rect x="40" y="583" width="280" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="614.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">MLA output 64×256</text>
+<rect x="320" y="583" width="250" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="332" y="614.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">32 个8列分组</text>
+<rect x="570" y="583" width="270" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="582" y="614.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2×2×32 = 128</text>
+<rect x="840" y="583" width="320" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="852" y="614.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">((2,2,32),1,1)</text>
+<text x="40" y="693" font-size="23" fill="#172033" font-weight="700" text-anchor="start">P 从“前一个 GEMM 的输出”变成“后一个 GEMM 的 A 输入”</text>
+<rect x="40" y="720" width="535" height="153" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="750" font-size="21" fill="#172033" font-weight="700" text-anchor="start">FA3：FP8 的 k32 包</text>
+<text x="56" y="780" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每线程16个 FP8 × 7段 = 112个</text>
+<text x="56" y="809" font-size="18" fill="#172033" font-weight="400" text-anchor="start">((4,2,2),1,7)：k32 步长16槽</text>
+<text x="56" y="838" font-size="18" fill="#172033" font-weight="400" text-anchor="start">配套 permute 是实际交换；view 只改索引</text>
+<rect x="625" y="720" width="535" height="153" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="641" y="750" font-size="21" fill="#172033" font-weight="700" text-anchor="start">FlashMLA：BF16 的 k16 包</text>
+<text x="641" y="780" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每线程8个 BF16 × 4段 = 32个</text>
+<text x="641" y="809" font-size="18" fill="#172033" font-weight="400" text-anchor="start">((2,2,2),1,4)：k16 步长8槽</text>
+<text x="641" y="838" font-size="18" fill="#172033" font-weight="400" text-anchor="start">本地 P 用 RS；共享给另一 WG 用 STSM</text>
+<text x="40" y="923" font-size="21" fill="#172033" font-weight="700" text-anchor="start">原 score 的一段8列 → 4槽；凑成k16 → 8槽；凑成k32 → 16槽。</text>
+</svg>

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="960" viewBox="0 0 1200 960" role="img" aria-labelledby="title desc">
+<title id="title">Dense：wait&lt;N&gt; 留住较新的 QK，让旧 V 缓冲先释放</title><desc id="desc">按源码发射顺序画事件；横轴为先后关系，方框宽度不代表时钟或执行时间。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="960" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Dense：wait&lt;N&gt; 留住较新的 QK，让旧 V 缓冲先释放</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">按源码发射顺序画事件；横轴为先后关系，方框宽度不代表时钟或执行时间。</text>
+<text x="40" y="132" font-size="23" fill="#172033" font-weight="700" text-anchor="start">WG0：同一个 WGMMA group 队列</text>
+<rect x="40" y="160" width="210" height="96" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="189" font-size="21" fill="#172033" font-weight="700" text-anchor="start">① PV1L</text>
+<text x="55" y="219" font-size="18" fill="#172033" font-weight="400" text-anchor="start">旧 V1L 仍在读</text>
+<path d="M252,207 L263,207" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="263,207 255,202 255,212" fill="#174EA6"/>
+<rect x="264" y="160" width="210" height="96" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="279" y="189" font-size="21" fill="#172033" font-weight="700" text-anchor="start">② QK2[0]</text>
+<text x="279" y="219" font-size="18" fill="#172033" font-weight="400" text-anchor="start">commit group</text>
+<path d="M476,207 L487,207" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="487,207 479,202 479,212" fill="#174EA6"/>
+<rect x="488" y="160" width="210" height="96" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="503" y="189" font-size="21" fill="#172033" font-weight="700" text-anchor="start">③ QK2[1]</text>
+<text x="503" y="219" font-size="18" fill="#172033" font-weight="400" text-anchor="start">commit group</text>
+<path d="M700,207 L711,207" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="711,207 703,202 703,212" fill="#174EA6"/>
+<rect x="712" y="160" width="210" height="96" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="727" y="189" font-size="21" fill="#172033" font-weight="700" text-anchor="start">④ QK2[2]</text>
+<text x="727" y="219" font-size="18" fill="#172033" font-weight="400" text-anchor="start">commit group</text>
+<path d="M924,207 L935,207" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="935,207 927,202 927,212" fill="#174EA6"/>
+<rect x="936" y="160" width="210" height="96" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="951" y="189" font-size="21" fill="#172033" font-weight="700" text-anchor="start">⑤ QK2[3]</text>
+<text x="951" y="219" font-size="18" fill="#172033" font-weight="400" text-anchor="start">commit group</text>
+<path d="M40,285 L1150,285" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1150,285 1142,280 1142,290" fill="#174EA6"/>
+<text x="40" y="327" font-size="22" fill="#172033" font-weight="700" text-anchor="start">⑥ wait&lt;4&gt;：最多保留4个较新 group 未完成 → 更早的 PV1L 必须完成</text>
+<rect x="40" y="353" width="540" height="120" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="382" font-size="21" fill="#172033" font-weight="700" text-anchor="start">旧 V1L 被释放</text>
+<text x="55" y="412" font-size="18" fill="#172033" font-weight="400" text-anchor="start">TMA 开始写入 K3 的左4条带</text>
+<text x="55" y="441" font-size="18" fill="#172033" font-weight="400" text-anchor="start">该槽位：V1L → K3 features 0..255</text>
+<rect x="620" y="353" width="540" height="120" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="635" y="382" font-size="21" fill="#172033" font-weight="700" text-anchor="start">较新的 QK2 可仍在执行</text>
+<text x="635" y="412" font-size="18" fill="#172033" font-weight="400" text-anchor="start">继续等待/发射 QK2 的后5条带</text>
+<text x="635" y="441" font-size="18" fill="#172033" font-weight="400" text-anchor="start">最后 wait&lt;0&gt;，才能对 rP2 做 softmax</text>
+<text x="40" y="527" font-size="23" fill="#172033" font-weight="700" text-anchor="start">WG1：把两个 PV 的完成点拆开，分别释放右半缓冲</text>
+<rect x="40" y="553" width="135" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="583.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">顺序</text>
+<rect x="175" y="553" width="450" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="187" y="583.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">WGMMA / wait</text>
+<rect x="625" y="553" width="535" height="47" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="583.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">允许开始的 TMA</text>
+<rect x="40" y="600" width="135" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="630.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">①</text>
+<rect x="175" y="600" width="450" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="187" y="630.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">发射 PV1R，然后发射 PV0R</text>
+<rect x="625" y="600" width="535" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="630.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">此时不能据“已发射”就覆盖输入</text>
+<rect x="40" y="647" width="135" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="677.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">②</text>
+<rect x="175" y="647" width="450" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="187" y="677.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">wait&lt;1&gt;：PV1R 完成</text>
+<rect x="625" y="647" width="535" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="677.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">K3 → K1 槽位的右半 + RoPE</text>
+<rect x="40" y="694" width="135" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="724.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">③</text>
+<rect x="175" y="694" width="450" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="187" y="724.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">wait&lt;0&gt;：PV0R 也完成</text>
+<rect x="625" y="694" width="535" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="724.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">K2 → K0 槽位的右半 + RoPE</text>
+<rect x="40" y="741" width="135" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="771.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">④</text>
+<rect x="175" y="741" width="450" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="187" y="771.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">QK3 按 4,5,6,7,8,0,1,2,3 发射</text>
+<rect x="625" y="741" width="535" height="47" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="771.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">逐条带等待各自 TMA barrier</text>
+<text x="40" y="835" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">一个64-feature QK条带：4条 k16 WGMMA → 1个 commit group。</text>
+<text x="40" y="881" font-size="20" fill="#172033" font-weight="400" text-anchor="start">wait&lt;4&gt; 数的是提交组，不是4条WGMMA；它也不保证这4组一定仍未完成。</text>
+<text x="40" y="924" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">“Issued” named barrier 与“输入不再被读”的完成条件不同，不能互换。</text>
+</svg>

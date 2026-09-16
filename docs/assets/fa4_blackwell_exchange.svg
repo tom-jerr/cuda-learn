@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1110" viewBox="0 0 1200 1110" role="img" aria-labelledby="title desc">
+<title id="title">Backward 2-CTA：把 dS 从“各持半个归约”变成“各持半组输出行”</title><desc id="desc">query tile =128；每 CTA 原有128个KV tokens；cluster 合计256个KV tokens；dS 为 BF16。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1110" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Backward 2-CTA：把 dS 从“各持半个归约”变成“各持半组输出行”</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">query tile =128；每 CTA 原有128个KV tokens；cluster 合计256个KV tokens；dS 为 BF16。</text>
+<text x="40" y="130" font-size="21" fill="#172033" font-weight="700" text-anchor="start">计算所得：dSᵀ 按 KV 所有权分布；下面统一画成 dS[query, KV]</text>
+<text x="425" y="177" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">KV 0..127（CTA 0）</text>
+<text x="945" y="177" font-size="21" fill="#172033" font-weight="400" text-anchor="middle">KV 128..255（CTA 1）</text>
+<text x="40" y="246" font-size="19" fill="#172033" font-weight="400" text-anchor="start">q0..63</text>
+<rect x="180" y="199" width="490" height="84" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="425" y="233" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">A：留在 CTA 0</text>
+<text x="425" y="265" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">64 query ×128 KV =16 KiB</text>
+<rect x="700" y="199" width="490" height="84" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="945" y="233" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">B：CTA 1 → CTA 0</text>
+<text x="945" y="265" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">64 query ×128 KV =16 KiB</text>
+<text x="40" y="348" font-size="19" fill="#172033" font-weight="400" text-anchor="start">q64..127</text>
+<rect x="180" y="301" width="490" height="84" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="425" y="335" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">C：CTA 0 → CTA 1</text>
+<text x="425" y="367" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">64 query ×128 KV =16 KiB</text>
+<rect x="700" y="301" width="490" height="84" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="945" y="335" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">D：留在 CTA 1</text>
+<text x="945" y="367" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">64 query ×128 KV =16 KiB</text>
+<path d="M575,422 L325,422" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="325,422 333,417 333,427" fill="#174EA6"/>
+<text x="450" y="454" font-size="20" fill="#174EA6" font-weight="400" text-anchor="middle">B 向左；补齐 CTA 0 的 KV</text>
+<path d="M685,422 L935,422" stroke="#995600" stroke-width="2" fill="none"/>
+<polygon points="935,422 927,417 927,427" fill="#995600"/>
+<text x="810" y="454" font-size="20" fill="#995600" font-weight="400" text-anchor="middle">C 向右；补齐 CTA 1 的 KV</text>
+<text x="40" y="515" font-size="23" fill="#172033" font-weight="700" text-anchor="start">交换后：每个 CTA 的 dS 包含完整256个KV归约元素</text>
+<rect x="40" y="543" width="1120" height="101" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="572" font-size="21" fill="#172033" font-weight="700" text-anchor="start">CTA 0：q0..63；dS[64,256] = [ A | B ]</text>
+<text x="55" y="602" font-size="18" fill="#172033" font-weight="400" text-anchor="start">联合 dQ = dS[128,256] × K[256,128]；本 CTA 得到64×128的输出行</text>
+<rect x="40" y="669" width="1120" height="101" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="698" font-size="21" fill="#172033" font-weight="700" text-anchor="start">CTA 1：q64..127；dS[64,256] = [ C | D ]</text>
+<text x="55" y="728" font-size="18" fill="#172033" font-weight="400" text-anchor="start">联合 dQ = dS[128,256] × K[256,128]；本 CTA 得到64×128的输出行</text>
+<text x="40" y="843" font-size="21" fill="#172033" font-weight="700" text-anchor="start">每方向只交换16 KiB：copy 发起者是 compute 的 tidx=0；relay warp 等接收完成。</text>
+<text x="40" y="889" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">两边 relay 各向 leader arrive 一次 → leader 等2次到达 → 才发射 dQ UMMA。</text>
+<text x="40" y="935" font-size="20" fill="#172033" font-weight="400" text-anchor="start">K 的 dQ view 也要覆盖全部256 KV，按 feature 分给两 CTA；源码另有 Kt 加载路径。</text>
+<text x="40" y="981" font-size="20" fill="#172033" font-weight="400" text-anchor="start">dQ 的256个KV贡献在联合 MMA 内完成；其他 KV clusters 的贡献仍需 global reduction。</text>
+<text x="40" y="1027" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">相对两个独立128-KV tiles，各自写完整128行 dQ，配对后每 CTA 只写64行：payload 减半。</text>
+</svg>

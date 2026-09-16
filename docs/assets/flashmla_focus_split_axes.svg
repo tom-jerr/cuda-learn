@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 1200 1000" role="img" aria-labelledby="title desc">
+<title id="title">三种“切半”：输出列拼接、序列求和、head拼接</title><desc id="desc">统一使用同一max基准下的P；Õ表示尚未除以行分母的输出。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1000" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">三种“切半”：输出列拼接、序列求和、head拼接</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">统一使用同一max基准下的P；Õ表示尚未除以行分母的输出。</text>
+<rect x="40" y="115" width="1120" height="102" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="144" font-size="21" fill="#172033" font-weight="700" text-anchor="start">① 输出列切半：P 完全相同；没有切开 token 归约</text>
+<text x="55" y="174" font-size="18" fill="#172033" font-weight="400" text-anchor="start">P[64,N] × [ V_L[N,256] | V_R[N,256] ] = [ Õ_L[64,256] | Õ_R[64,256] ]</text>
+<text x="40" y="263" font-size="22" fill="#172033" font-weight="700" text-anchor="start">把序列再切成两个 token blocks，可以看成一个2×2的乘积网格：</text>
+<rect x="40" y="294" width="270" height="67" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="334.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">同一个输出的贡献</text>
+<rect x="310" y="294" width="425" height="67" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="322" y="334.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">输出 features 0..255</text>
+<rect x="735" y="294" width="425" height="67" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="747" y="334.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">输出 features 256..511</text>
+<rect x="40" y="361" width="270" height="67" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="401.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">token block 0</text>
+<rect x="310" y="361" width="425" height="67" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="322" y="401.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">P0 × V0L</text>
+<rect x="735" y="361" width="425" height="67" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="747" y="401.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">P0 × V0R</text>
+<rect x="40" y="428" width="270" height="67" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="468.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">token block 1</text>
+<rect x="310" y="428" width="425" height="67" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="322" y="468.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">P1 × V1L</text>
+<rect x="735" y="428" width="425" height="67" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="747" y="468.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">P1 × V1R</text>
+<path d="M481,506 L481,554" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="481,554 476,546 486,546" fill="#174EA6"/>
+<path d="M906,506 L906,554" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="906,554 901,546 911,546" fill="#174EA6"/>
+<text x="481" y="588" font-size="21" fill="#174EA6" font-weight="700" text-anchor="middle">沿 token 方向相加 → Õ_L</text>
+<text x="906" y="588" font-size="21" fill="#995600" font-weight="700" text-anchor="middle">沿 token 方向相加 → Õ_R</text>
+<rect x="310" y="625" width="425" height="70" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<rect x="735" y="625" width="425" height="70" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="523" y="668" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">O_L = Õ_L / l</text>
+<text x="948" y="668" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">O_R = Õ_R / l</text>
+<text x="40" y="735" font-size="23" fill="#172033" font-weight="700" text-anchor="start">列方向拼接 → O[64,512]；两边的 l 必须相同。</text>
+<rect x="40" y="766" width="1120" height="94" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="795" font-size="21" fill="#172033" font-weight="700" text-anchor="start">② 序列 split：局部归一化输出不能直接相加</text>
+<text x="55" y="825" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每段得到 O_s、LSE_s；按 exp(LSE_s − LSE_total) 加权相加。</text>
+<rect x="40" y="883" width="1120" height="84" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="912" font-size="21" fill="#172033" font-weight="700" text-anchor="start">③ Cluster 的 head 切半：CTA0 heads0..63；CTA1 heads64..127</text>
+<text x="55" y="942" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每个head各有自己的softmax；最终沿head维拼接，不跨CTA做softmax归约。</text>
+</svg>

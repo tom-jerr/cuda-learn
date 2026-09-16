@@ -1,0 +1,223 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1020" viewBox="0 0 1200 1020" role="img" aria-labelledby="title desc">
+<title id="title">MMA：一个 warp 的 8 个 tile 与每 lane 的 32 个累加器</title><desc id="desc">MMA atom：A[16×16] × B[16×8] → C[16×8]；每个 kk 对同一份 accum 追加累加。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}</style>
+<rect x="0" y="0" width="1200" height="1020" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="46" font-size="29" fill="#172033" font-weight="700" text-anchor="start">MMA：一个 warp 的 8 个 tile 与每 lane 的 32 个累加器</text>
+<text x="40" y="80" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">MMA atom：A[16×16] × B[16×8] → C[16×8]；每个 kk 对同一份 accum 追加累加。</text>
+<text x="40" y="126" font-size="21" fill="#172033" font-weight="700" text-anchor="start">① warp 的 C[32×32]：mi 外层、ni 内层</text>
+<rect x="40" y="153" width="134" height="95" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="107" y="181" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">#0  16×8</text>
+<text x="107" y="210" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">mi=0, ni=0</text>
+<text x="107" y="235" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">accum[0][0]</text>
+<rect x="174" y="153" width="134" height="95" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="241" y="181" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">#1  16×8</text>
+<text x="241" y="210" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">mi=0, ni=1</text>
+<text x="241" y="235" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">accum[0][1]</text>
+<rect x="308" y="153" width="134" height="95" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="375" y="181" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">#2  16×8</text>
+<text x="375" y="210" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">mi=0, ni=2</text>
+<text x="375" y="235" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">accum[0][2]</text>
+<rect x="442" y="153" width="134" height="95" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="509" y="181" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">#3  16×8</text>
+<text x="509" y="210" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">mi=0, ni=3</text>
+<text x="509" y="235" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">accum[0][3]</text>
+<rect x="40" y="248" width="134" height="95" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="107" y="276" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">#4  16×8</text>
+<text x="107" y="305" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">mi=1, ni=0</text>
+<text x="107" y="330" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">accum[1][0]</text>
+<rect x="174" y="248" width="134" height="95" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="241" y="276" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">#5  16×8</text>
+<text x="241" y="305" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">mi=1, ni=1</text>
+<text x="241" y="330" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">accum[1][1]</text>
+<rect x="308" y="248" width="134" height="95" fill="#DEF1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="375" y="276" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">#6  16×8</text>
+<text x="375" y="305" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">mi=1, ni=2</text>
+<text x="375" y="330" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">accum[1][2]</text>
+<rect x="442" y="248" width="134" height="95" fill="#EEE4F7" stroke="#CBD3DE" stroke-width="1"/>
+<text x="509" y="276" font-size="18" fill="#172033" font-weight="700" text-anchor="middle">#7  16×8</text>
+<text x="509" y="305" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">mi=1, ni=3</text>
+<text x="509" y="330" font-size="15" fill="#172033" font-weight="400" text-anchor="middle">accum[1][3]</text>
+<text x="625" y="126" font-size="21" fill="#172033" font-weight="700" text-anchor="start">② fragment 复用与线程私有数组</text>
+<text x="625" y="168" font-size="19" fill="#172033" font-weight="400" text-anchor="start">a_frag[mi] 被 ni=0..3 的4次 MMA 复用。</text>
+<text x="625" y="207" font-size="19" fill="#172033" font-weight="400" text-anchor="start">b_frag[ni] 被 mi=0..1 的2次 MMA 复用。</text>
+<text x="625" y="246" font-size="19" fill="#172033" font-weight="400" text-anchor="start">每 lane：a_frag[2][4] = 8 个32-bit槽位</text>
+<text x="625" y="285" font-size="19" fill="#172033" font-weight="400" text-anchor="start">每 lane：b_frag[4][2] = 8 个32-bit槽位</text>
+<text x="625" y="324" font-size="19" fill="#172033" font-weight="400" text-anchor="start">每 lane：accum[2][4][4] = 32 个FP32槽位</text>
+<text x="40" y="397" font-size="21" fill="#172033" font-weight="700" text-anchor="start">③ 一个 16×8 C tile 的完整分布（4个连续lane共同覆盖一行）</text>
+<text x="135.5" y="432" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">N 0,1</text>
+<text x="246.5" y="432" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">N 2,3</text>
+<text x="357.5" y="432" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">N 4,5</text>
+<text x="468.5" y="432" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">N 6,7</text>
+<text x="68" y="462" font-size="15" fill="#172033" font-weight="400" text-anchor="end">0</text>
+<rect x="80" y="444" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="462" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L0: d0,d1</text>
+<rect x="191" y="444" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="462" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L1: d0,d1</text>
+<rect x="302" y="444" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="462" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L2: d0,d1</text>
+<rect x="413" y="444" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="462" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L3: d0,d1</text>
+<text x="68" y="488" font-size="15" fill="#172033" font-weight="400" text-anchor="end">1</text>
+<rect x="80" y="470" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="488" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L4: d0,d1</text>
+<rect x="191" y="470" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="488" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L5: d0,d1</text>
+<rect x="302" y="470" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="488" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L6: d0,d1</text>
+<rect x="413" y="470" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="488" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L7: d0,d1</text>
+<text x="68" y="514" font-size="15" fill="#172033" font-weight="400" text-anchor="end">2</text>
+<rect x="80" y="496" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="514" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L8: d0,d1</text>
+<rect x="191" y="496" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="514" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L9: d0,d1</text>
+<rect x="302" y="496" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="514" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L10: d0,d1</text>
+<rect x="413" y="496" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="514" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L11: d0,d1</text>
+<text x="68" y="540" font-size="15" fill="#172033" font-weight="400" text-anchor="end">3</text>
+<rect x="80" y="522" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="540" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L12: d0,d1</text>
+<rect x="191" y="522" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="540" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L13: d0,d1</text>
+<rect x="302" y="522" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="540" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L14: d0,d1</text>
+<rect x="413" y="522" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="540" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L15: d0,d1</text>
+<text x="68" y="566" font-size="15" fill="#172033" font-weight="400" text-anchor="end">4</text>
+<rect x="80" y="548" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="566" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L16: d0,d1</text>
+<rect x="191" y="548" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="566" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L17: d0,d1</text>
+<rect x="302" y="548" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="566" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L18: d0,d1</text>
+<rect x="413" y="548" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="566" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L19: d0,d1</text>
+<text x="68" y="592" font-size="15" fill="#172033" font-weight="400" text-anchor="end">5</text>
+<rect x="80" y="574" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="592" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L20: d0,d1</text>
+<rect x="191" y="574" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="592" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L21: d0,d1</text>
+<rect x="302" y="574" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="592" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L22: d0,d1</text>
+<rect x="413" y="574" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="592" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L23: d0,d1</text>
+<text x="68" y="618" font-size="15" fill="#172033" font-weight="400" text-anchor="end">6</text>
+<rect x="80" y="600" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="618" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L24: d0,d1</text>
+<rect x="191" y="600" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="618" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L25: d0,d1</text>
+<rect x="302" y="600" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="618" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L26: d0,d1</text>
+<rect x="413" y="600" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="618" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L27: d0,d1</text>
+<text x="68" y="644" font-size="15" fill="#172033" font-weight="400" text-anchor="end">7</text>
+<rect x="80" y="626" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="644" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L28: d0,d1</text>
+<rect x="191" y="626" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="644" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L29: d0,d1</text>
+<rect x="302" y="626" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="644" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L30: d0,d1</text>
+<rect x="413" y="626" width="111" height="26" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="644" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L31: d0,d1</text>
+<text x="68" y="670" font-size="15" fill="#172033" font-weight="400" text-anchor="end">8</text>
+<rect x="80" y="652" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="670" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L0: d2,d3</text>
+<rect x="191" y="652" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="670" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L1: d2,d3</text>
+<rect x="302" y="652" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="670" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L2: d2,d3</text>
+<rect x="413" y="652" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="670" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L3: d2,d3</text>
+<text x="68" y="696" font-size="15" fill="#172033" font-weight="400" text-anchor="end">9</text>
+<rect x="80" y="678" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="696" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L4: d2,d3</text>
+<rect x="191" y="678" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="696" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L5: d2,d3</text>
+<rect x="302" y="678" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="696" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L6: d2,d3</text>
+<rect x="413" y="678" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="696" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L7: d2,d3</text>
+<text x="68" y="722" font-size="15" fill="#172033" font-weight="400" text-anchor="end">10</text>
+<rect x="80" y="704" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="722" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L8: d2,d3</text>
+<rect x="191" y="704" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="722" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L9: d2,d3</text>
+<rect x="302" y="704" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="722" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L10: d2,d3</text>
+<rect x="413" y="704" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="722" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L11: d2,d3</text>
+<text x="68" y="748" font-size="15" fill="#172033" font-weight="400" text-anchor="end">11</text>
+<rect x="80" y="730" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="748" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L12: d2,d3</text>
+<rect x="191" y="730" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="748" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L13: d2,d3</text>
+<rect x="302" y="730" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="748" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L14: d2,d3</text>
+<rect x="413" y="730" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="748" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L15: d2,d3</text>
+<text x="68" y="774" font-size="15" fill="#172033" font-weight="400" text-anchor="end">12</text>
+<rect x="80" y="756" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="774" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L16: d2,d3</text>
+<rect x="191" y="756" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="774" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L17: d2,d3</text>
+<rect x="302" y="756" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="774" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L18: d2,d3</text>
+<rect x="413" y="756" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="774" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L19: d2,d3</text>
+<text x="68" y="800" font-size="15" fill="#172033" font-weight="400" text-anchor="end">13</text>
+<rect x="80" y="782" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="800" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L20: d2,d3</text>
+<rect x="191" y="782" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="800" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L21: d2,d3</text>
+<rect x="302" y="782" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="800" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L22: d2,d3</text>
+<rect x="413" y="782" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="800" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L23: d2,d3</text>
+<text x="68" y="826" font-size="15" fill="#172033" font-weight="400" text-anchor="end">14</text>
+<rect x="80" y="808" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="826" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L24: d2,d3</text>
+<rect x="191" y="808" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="826" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L25: d2,d3</text>
+<rect x="302" y="808" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="826" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L26: d2,d3</text>
+<rect x="413" y="808" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="826" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L27: d2,d3</text>
+<text x="68" y="852" font-size="15" fill="#172033" font-weight="400" text-anchor="end">15</text>
+<rect x="80" y="834" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="135.5" y="852" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L28: d2,d3</text>
+<rect x="191" y="834" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="246.5" y="852" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L29: d2,d3</text>
+<rect x="302" y="834" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="357.5" y="852" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L30: d2,d3</text>
+<rect x="413" y="834" width="111" height="26" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="468.5" y="852" font-size="14" fill="#172033" font-weight="400" text-anchor="middle">L31: d2,d3</text>
+<text x="625" y="456" font-size="20" fill="#172033" font-weight="700" text-anchor="start">令 M0=32×warp_m+16×mi</text>
+<text x="625" y="489" font-size="20" fill="#172033" font-weight="700" text-anchor="start">令 N0=32×warp_n+8×ni</text>
+<rect x="625" y="513" width="115" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="540.0" font-size="17" fill="#172033" font-weight="700" text-anchor="start">FP32 reg</text>
+<rect x="740" y="513" width="420" height="42" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="752" y="540.0" font-size="17" fill="#172033" font-weight="700" text-anchor="start">对应 C 的 block 内坐标</text>
+<rect x="625" y="555" width="115" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="582.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">d[0]</text>
+<rect x="740" y="555" width="420" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="752" y="582.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">(M0+g, N0+2t)</text>
+<rect x="625" y="597" width="115" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="624.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">d[1]</text>
+<rect x="740" y="597" width="420" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="752" y="624.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">(M0+g, N0+2t+1)</text>
+<rect x="625" y="639" width="115" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="666.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">d[2]</text>
+<rect x="740" y="639" width="420" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="752" y="666.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">(M0+g+8, N0+2t)</text>
+<rect x="625" y="681" width="115" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="637" y="708.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">d[3]</text>
+<rect x="740" y="681" width="420" height="42" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="752" y="708.0" font-size="17" fill="#172033" font-weight="400" text-anchor="start">(M0+g+8, N0+2t+1)</text>
+<text x="625" y="765" font-size="20" fill="#174EA6" font-weight="700" text-anchor="start">g=lane/4；t=lane%4</text>
+<text x="625" y="804" font-size="18" fill="#172033" font-weight="400" text-anchor="start">加 block_m / block_n 后就是 HBM 坐标。</text>
+<text x="625" y="843" font-size="18" fill="#172033" font-weight="400" text-anchor="start">d[0..3] 即 accum[mi][ni][0..3]。</text>
+<text x="40" y="909" font-size="20" fill="#174EA6" font-weight="700" text-anchor="start">32 lanes × 4 FP32 = 128 个值 = 一个16×8 tile；再 ×8 个tile = warp 的32×32 C。</text>
+<text x="40" y="951" font-size="20" fill="#172033" font-weight="700" text-anchor="start">寄存器属于 lane：同名 accum[0][0][0] 在32个lane中有32份独立的值。</text>
+<text x="40" y="990" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">图中是逻辑槽位；物理 R 编号、实际寄存器用量与 spill 需查看编译器输出。MMA 由整个 warp 协作。</text>
+</svg>

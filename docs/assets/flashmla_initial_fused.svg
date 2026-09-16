@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="890" viewBox="0 0 1200 890" role="img" aria-labelledby="title desc">
+<title id="title">Q 的 token × head 融合，以及两次 GEMM 的维度</title><desc id="desc">首版 BF16 dense decode；这里 h_kv=1，s_q=2，h_q=128，d_k=576，d_v=512。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="890" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Q 的 token × head 融合，以及两次 GEMM 的维度</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">首版 BF16 dense decode；这里 h_kv=1，s_q=2，h_q=128，d_k=576，d_v=512。</text>
+<rect x="40" y="115" width="500" height="128" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="144" font-size="21" fill="#172033" font-weight="700" text-anchor="start">原始 Q：shape=(2,128,576)</text>
+<text x="55" y="174" font-size="18" fill="#172033" font-weight="400" text-anchor="start">stride=(73728,576,1) BF16 elements</text>
+<text x="55" y="203" font-size="18" fill="#172033" font-weight="400" text-anchor="start">地址：q×73728 + h×576 + f</text>
+<path d="M550,178 L625,178" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="625,178 617,173 617,183" fill="#174EA6"/>
+<rect x="640" y="115" width="520" height="128" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="655" y="144" font-size="21" fill="#172033" font-weight="700" text-anchor="start">融合后 Q：shape=(256,576)</text>
+<text x="655" y="174" font-size="18" fill="#172033" font-weight="400" text-anchor="start">m=q×128+h；stride=(576,1)</text>
+<text x="655" y="203" font-size="18" fill="#172033" font-weight="400" text-anchor="start">地址：m×576+f；此例 reshape 无搬运</text>
+<text x="40" y="290" font-size="22" fill="#172033" font-weight="700" text-anchor="start">融合后的 M 向下：先遍历 head，再进入下一个 query token。</text>
+<rect x="100" y="325" width="410" height="58" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="115" y="361" font-size="19" fill="#172033" font-weight="400" text-anchor="start">M 0..63  =  q0, h0..63</text>
+<text x="580" y="361" font-size="21" fill="#172033" font-weight="400" text-anchor="start">CTA m_block=0：64×576 的 Q tile</text>
+<rect x="100" y="389" width="410" height="58" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="115" y="425" font-size="19" fill="#172033" font-weight="400" text-anchor="start">M 64..127  =  q0, h64..127</text>
+<text x="580" y="425" font-size="21" fill="#172033" font-weight="400" text-anchor="start">CTA m_block=1：64×576 的 Q tile</text>
+<rect x="100" y="453" width="410" height="58" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="115" y="489" font-size="19" fill="#172033" font-weight="400" text-anchor="start">M 128..191  =  q1, h0..63</text>
+<text x="580" y="489" font-size="21" fill="#172033" font-weight="400" text-anchor="start">CTA m_block=2：64×576 的 Q tile</text>
+<rect x="100" y="517" width="410" height="58" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="115" y="553" font-size="19" fill="#172033" font-weight="400" text-anchor="start">M 192..255  =  q1, h64..127</text>
+<text x="580" y="553" font-size="21" fill="#172033" font-weight="400" text-anchor="start">CTA m_block=3：64×576 的 Q tile</text>
+<path d="M67,333 L67,566" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="67,566 62,558 72,558" fill="#174EA6"/>
+<text x="40" y="610" font-size="22" fill="#172033" font-weight="700" text-anchor="start">固定一个 CTA：同一份 KV 被它的 64 个 Q 行共同使用。</text>
+<rect x="40" y="633" width="535" height="123" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="662" font-size="21" fill="#172033" font-weight="700" text-anchor="start">QK：归约维是 feature</text>
+<text x="55" y="692" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Q[64,576] × K[64,576]ᵀ → S[64,64]</text>
+<text x="55" y="721" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WGMMA m64n64k16：576/16=36 次</text>
+<rect x="605" y="633" width="555" height="123" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="620" y="662" font-size="21" fill="#172033" font-weight="700" text-anchor="start">PV：归约维是 token</text>
+<text x="620" y="692" font-size="18" fill="#172033" font-weight="400" text-anchor="start">P[64,64] × V[64,512] → O[64,512]</text>
+<text x="620" y="721" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2 个 WG 各输出64×256，各4次 k16</text>
+<text x="40" y="804" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">M 超过64会增加 CTA 数；并非单 CTA 的 M 随 h_q×s_q 无限扩大。</text>
+<text x="40" y="844" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">跨 M tile 的 KV 复用还依赖 L2；reshape 本身不能保证每份 KV 只从 HBM 读取一次。</text>
+</svg>

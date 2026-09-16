@@ -37,6 +37,17 @@ def _contig_fp16(t):
     return t.contiguous() if not t.is_contiguous() else t
 
 
+def _inplace_cache_fp16(t, name):
+    """Validate an in-place FP16 cache without silently copying its storage."""
+    if not t.is_cuda:
+        raise TypeError(f"{name} must be a CUDA tensor, got {t.device}")
+    if t.dtype != torch.float16:
+        raise TypeError(f"{name} must be float16, got {t.dtype}")
+    if not t.is_contiguous():
+        raise ValueError(f"{name} must be contiguous because it is updated in place")
+    return t
+
+
 def _contig_i32(t):
     if not t.is_cuda:
         raise TypeError(f"cuda_learn ops require CUDA tensors, got {t.device}")
@@ -144,6 +155,21 @@ def gemm_mma(a, b):
     return c
 
 
+def gemm_cutlass_ampere(a, b):
+    """BF16 row-major GEMM using CUTLASS's SM80 multistage Tensor Core path."""
+    a, b = _contig_bf16(a), _contig_bf16(b)
+    if a.ndim != 2 or b.ndim != 2:
+        raise ValueError("gemm_cutlass_ampere expects two matrices")
+    if a.shape[1] != b.shape[0]:
+        raise ValueError("gemm_cutlass_ampere reduction dimensions must match")
+    if a.shape[1] % 8 or b.shape[1] % 8:
+        raise ValueError(
+            "gemm_cutlass_ampere requires K and N to be multiples of 8")
+    c = torch.empty(a.shape[0], b.shape[1], device=a.device, dtype=a.dtype)
+    call("cuda_learn.gemm_cutlass_ampere", a, b, c)
+    return c
+
+
 def gemm_mma_l2(a, b, swizzle_n=8):
     """BF16 MMA GEMM with an N-cohort CTA raster for L2 locality."""
     if swizzle_n not in (2, 4, 8):
@@ -220,6 +246,70 @@ def flash_attn_multistage(q, k, v, causal=False):
     return out
 
 
+def flash_attn_cutlass3(q, k, v, causal=False):
+    """CUTLASS 3.x CuTe FA2: FP16 [B,H,N,64], N divisible by 64."""
+    q, k, v = _contig_fp16(q), _contig_fp16(k), _contig_fp16(v)
+    if q.ndim != 4 or q.shape[-1] != 64:
+        raise ValueError(
+            f"flash_attn_cutlass3 expects q shaped [B,H,N,64], got {q.shape}")
+    if k.shape != q.shape or v.shape != q.shape:
+        raise ValueError(
+            "flash_attn_cutlass3 expects q, k and v to have identical shapes")
+    if q.shape[2] == 0 or q.shape[2] % 64:
+        raise ValueError(
+            "flash_attn_cutlass3 sequence length must be a positive multiple of 64")
+    out = torch.empty_like(q)
+    call("cuda_learn.flash_attn_cutlass3", q, k, v, out,
+         int(bool(causal)))
+    return out
+
+
+def flash_attn_multistage_kvcache(
+        q, k_cache, v_cache, cache_seqlens, k=None, v=None, causal=True):
+    """Attend to a continuous KV cache and optionally append current K/V.
+
+    Layouts use this repository's head-major convention:
+      q/out: [B,Hq,Q,64], cache: [B,Hkv,capacity,64], lengths: int32 [B].
+    Q must be in [1,64]. Cache-only mode supports GQA; fused append currently
+    requires Hq == Hkv and k/v shaped [B,Hkv,Q,64]. ``cache_seqlens`` contains
+    lengths before append and is deliberately not incremented by this call.
+    """
+    q = _contig_fp16(q)
+    k_cache = _inplace_cache_fp16(k_cache, "k_cache")
+    v_cache = _inplace_cache_fp16(v_cache, "v_cache")
+    cache_seqlens = _contig_i32(cache_seqlens)
+    if q.ndim != 4 or q.shape[-1] != 64 or not 1 <= q.shape[2] <= 64:
+        raise ValueError(
+            f"expected q [B,Hq,Q,64] with 1<=Q<=64, got {q.shape}")
+    if k_cache.ndim != 4 or k_cache.shape[-1] != 64:
+        raise ValueError(
+            f"expected k_cache [B,Hkv,capacity,64], got {k_cache.shape}")
+    if v_cache.shape != k_cache.shape:
+        raise ValueError("k_cache and v_cache must have identical shapes")
+    if k_cache.shape[0] != q.shape[0] or q.shape[1] % k_cache.shape[1]:
+        raise ValueError("cache batch must match q and Hq must be divisible by Hkv")
+    if cache_seqlens.shape != (q.shape[0],):
+        raise ValueError("cache_seqlens must be int32 [B]")
+    if (k is None) != (v is None):
+        raise ValueError("k and v must either both be provided or both be None")
+
+    out = torch.empty_like(q)
+    if k is None:
+        call("cuda_learn.flash_attn_multistage_kvcache", q, k_cache,
+             v_cache, cache_seqlens, out, int(bool(causal)))
+    else:
+        k, v = _contig_fp16(k), _contig_fp16(v)
+        expected = (q.shape[0], k_cache.shape[1], q.shape[2], 64)
+        if k.shape != expected or v.shape != expected:
+            raise ValueError(f"k/v must have shape {expected}")
+        if q.shape[1] != k_cache.shape[1]:
+            raise ValueError("fused append currently requires Hq == Hkv")
+        call("cuda_learn.flash_attn_multistage_kvcache_append", q,
+             k_cache, v_cache, cache_seqlens, k, v, out,
+             int(bool(causal)))
+    return out
+
+
 def flash_attn3_hopper(q, k, v, causal=False):
     """Raw-PTX Hopper FA3 reproduction (BF16, forward, [B,H,N,64])."""
     q, k, v = _contig_bf16(q), _contig_bf16(k), _contig_bf16(v)
@@ -236,6 +326,60 @@ def flash_attn3_hopper(q, k, v, causal=False):
     out = torch.empty_like(q)
     call("cuda_learn.flash_attn3_hopper", q, k, v, out, int(bool(causal)))
     return out
+
+
+def _mla_decode(q, kv_cache, block_table, cache_seqlens, softmax_scale,
+                name):
+    """Fixed-shape DeepSeek-V3 MLA decode used by the native CUDA examples.
+
+    q: [B, 128, 576] BF16
+    kv_cache: [num_pages, 64, 576] BF16; columns [:512] are also V
+    block_table: [B, max_pages] int32
+    cache_seqlens: [B] int32
+    """
+    q = _contig_bf16(q)
+    kv_cache = _contig_bf16(kv_cache)
+    block_table = _contig_i32(block_table)
+    cache_seqlens = _contig_i32(cache_seqlens)
+    if q.ndim != 3 or q.shape[1:] != (128, 576):
+        raise ValueError(f"MLA q must have shape [B,128,576], got {q.shape}")
+    if kv_cache.ndim != 3 or kv_cache.shape[1:] != (64, 576):
+        raise ValueError(
+            "MLA kv_cache must have shape [num_pages,64,576], got "
+            f"{kv_cache.shape}")
+    if block_table.ndim != 2 or block_table.shape[0] != q.shape[0]:
+        raise ValueError("MLA block_table must have shape [B,max_pages]")
+    if cache_seqlens.shape != (q.shape[0],):
+        raise ValueError("MLA cache_seqlens must have shape [B]")
+    if len({q.device, kv_cache.device, block_table.device,
+            cache_seqlens.device}) != 1:
+        raise ValueError("all MLA tensors must be on the same CUDA device")
+    if softmax_scale is None:
+        softmax_scale = 1.0 / math.sqrt(576)
+    softmax_scale = float(softmax_scale)
+    if not math.isfinite(softmax_scale) or softmax_scale <= 0:
+        raise ValueError("softmax_scale must be finite and positive")
+    out = torch.empty(q.shape[0], 128, 512, device=q.device,
+                      dtype=q.dtype)
+    lse = torch.empty(q.shape[0], 128, device=q.device,
+                      dtype=torch.float32)
+    call(name, q, kv_cache, block_table, cache_seqlens, out, lse,
+         softmax_scale)
+    return out, lse
+
+
+def mla_decode_native(q, kv_cache, block_table, cache_seqlens,
+                      softmax_scale=None):
+    """One-query-head-per-CTA CUDA-core MLA decoding baseline."""
+    return _mla_decode(q, kv_cache, block_table, cache_seqlens,
+                       softmax_scale, "cuda_learn.mla_decode_native")
+
+
+def mla_decode_optimized(q, kv_cache, block_table, cache_seqlens,
+                         softmax_scale=None):
+    """Eight-head/CTA MLA decode with cp.async page sharing and online softmax."""
+    return _mla_decode(q, kv_cache, block_table, cache_seqlens,
+                       softmax_scale, "cuda_learn.mla_decode_optimized")
 
 
 def rope_neox(q, k, cos_cache, sin_cache, position_ids):

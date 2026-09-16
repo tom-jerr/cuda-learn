@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 1200 1000" role="img" aria-labelledby="title desc">
+<title id="title">Blackwell head64：把 feature 对折，做两份部分 QK</title><desc id="desc">V32 NoPE 的512维示意；方框编号是64-feature条带，不是token block编号。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1000" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Blackwell head64：把 feature 对折，做两份部分 QK</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">V32 NoPE 的512维示意；方框编号是64-feature条带，不是token block编号。</text>
+<text x="40" y="133" font-size="23" fill="#172033" font-weight="700" text-anchor="start">① 普通逻辑视图：64行 ×512 features</text>
+<rect x="40" y="158" width="140" height="63" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="110" y="197" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">0</text>
+<rect x="180" y="158" width="140" height="63" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="250" y="197" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">1</text>
+<rect x="320" y="158" width="140" height="63" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390" y="197" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">2</text>
+<rect x="460" y="158" width="140" height="63" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="530" y="197" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">3</text>
+<rect x="600" y="158" width="140" height="63" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="670" y="197" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">4</text>
+<rect x="740" y="158" width="140" height="63" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="810" y="197" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">5</text>
+<rect x="880" y="158" width="140" height="63" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="950" y="197" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">6</text>
+<rect x="1020" y="158" width="140" height="63" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1090" y="197" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">7</text>
+<text x="40" y="263" font-size="23" fill="#172033" font-weight="700" text-anchor="start">② 将相邻两个64-feature条带上下叠放：128行 ×256 features</text>
+<rect x="40" y="288" width="140" height="68" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="110" y="331" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">0</text>
+<rect x="180" y="288" width="140" height="68" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="250" y="331" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">2</text>
+<rect x="320" y="288" width="140" height="68" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390" y="331" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">4</text>
+<rect x="460" y="288" width="140" height="68" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="530" y="331" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">6</text>
+<rect x="40" y="356" width="140" height="68" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="110" y="399" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">1</text>
+<rect x="180" y="356" width="140" height="68" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="250" y="399" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">3</text>
+<rect x="320" y="356" width="140" height="68" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="390" y="399" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">5</text>
+<rect x="460" y="356" width="140" height="68" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="530" y="399" font-size="23" fill="#172033" font-weight="400" text-anchor="middle">7</text>
+<rect x="655" y="288" width="505" height="136" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="670" y="317" font-size="21" fill="#172033" font-weight="700" text-anchor="start">同一批数据，重解释为两份归约</text>
+<text x="670" y="347" font-size="18" fill="#172033" font-weight="400" text-anchor="start">上半：features组 0,2,4,6</text>
+<text x="670" y="376" font-size="18" fill="#172033" font-weight="400" text-anchor="start">下半：features组 1,3,5,7</text>
+<text x="670" y="405" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Q到TMEM；K留在shared</text>
+<text x="40" y="468" font-size="23" fill="#172033" font-weight="700" text-anchor="start">③ 两份 partial scores：S_even 与 S_odd；相加后才做 softmax</text>
+<rect x="40" y="493" width="540" height="108" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="522" font-size="21" fill="#172033" font-weight="700" text-anchor="start">S_even = Q_even × K_evenᵀ</text>
+<text x="55" y="552" font-size="18" fill="#172033" font-weight="400" text-anchor="start">64 query heads ×64 selected tokens</text>
+<rect x="620" y="493" width="540" height="108" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="635" y="522" font-size="21" fill="#172033" font-weight="700" text-anchor="start">S_odd = Q_odd × K_oddᵀ</text>
+<text x="635" y="552" font-size="18" fill="#172033" font-weight="400" text-anchor="start">64 query heads ×64 selected tokens</text>
+<path d="M310,606 L310,653" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="310,653 305,645 315,645" fill="#174EA6"/>
+<path d="M890,606 L890,653" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="890,653 885,645 895,645" fill="#174EA6"/>
+<text x="600" y="679" font-size="24" fill="#174EA6" font-weight="700" text-anchor="middle">S = S_even + S_odd → mask → softmax → P</text>
+<rect x="40" y="720" width="300" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="751.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">softmax前的有效64×64 S</text>
+<rect x="340" y="720" width="390" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="352" y="751.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">selected tokens 0..31</text>
+<rect x="730" y="720" width="430" height="48" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="742" y="751.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">selected tokens 32..63</text>
+<rect x="40" y="768" width="300" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="799.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">heads 0..31</text>
+<rect x="340" y="768" width="390" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="352" y="799.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Warp0</text>
+<rect x="730" y="768" width="430" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="742" y="799.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Warp2</text>
+<rect x="40" y="816" width="300" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="847.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">heads 32..63</text>
+<rect x="340" y="816" width="390" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="352" y="847.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Warp1</text>
+<rect x="730" y="816" width="430" height="48" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="742" y="847.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Warp3</text>
+<text x="40" y="910" font-size="20" fill="#172033" font-weight="400" text-anchor="start">Warp0↔Warp2、Warp1↔Warp3 交换 partial scores，并求和；随后交换行max与L。</text>
+<text x="40" y="954" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">模板中 B_TOPK*2=128 表达 dual GEMM；实际仍只选择64 tokens，不是多读一倍KV。</text>
+</svg>

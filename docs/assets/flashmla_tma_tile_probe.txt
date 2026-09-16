@@ -1,0 +1,3 @@
+target Layout (64,64):(576,1) -> Sw<3,4,3> o smem_ptr[16b](unset) o ((_8,_8),(_64,_1)):((_64,_512),(_1,_0))
+target Shape (64,64)          -> Sw<3,4,3> o smem_ptr[16b](unset) o ((_8,_8),(_64,_1)):((_64,_512),(_1,_0))
+PASS: types identical; target stride 576 is ignored; physical offsets match 64x64 SW128.

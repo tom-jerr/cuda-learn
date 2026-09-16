@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="950" viewBox="0 0 1200 950" role="img" aria-labelledby="title desc">
+<title id="title">序列维 Stream-K：先串接请求，再按带开销的预算分区</title><desc id="desc">可复算的首版调度例：8 SM，2 个 M tiles，1 KV head → 4 partitions → grid=(2,1,4)。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="950" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">序列维 Stream-K：先串接请求，再按带开销的预算分区</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">可复算的首版调度例：8 SM，2 个 M tiles，1 KV head → 4 partitions → grid=(2,1,4)。</text>
+<rect x="40" y="112" width="1120" height="125" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="141" font-size="21" fill="#172033" font-weight="700" text-anchor="start">每请求块数 A=2，B=3，C=40，D=7；每块64 tokens</text>
+<text x="55" y="171" font-size="18" fill="#172033" font-weight="400" text-anchor="start">fixed_overhead=5；total=(2+3+40+7)+4×5=72</text>
+<text x="55" y="200" font-size="18" fill="#172033" font-weight="400" text-anchor="start">payload=ceil(72/4)+5=23；每新的一段请求额外扣5</text>
+<text x="40" y="284" font-size="22" fill="#172033" font-weight="700" text-anchor="start">序列方向 →；分割点仅落在64-token块边界。</text>
+<rect x="40" y="305" width="100" height="54" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="90.0" y="340" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">A:2</text>
+<rect x="140" y="305" width="110" height="54" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="195.0" y="340" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">B:3</text>
+<rect x="250" y="305" width="660" height="54" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="580.0" y="340" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">C:40</text>
+<rect x="910" y="305" width="250" height="54" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1035.0" y="340" font-size="22" fill="#172033" font-weight="400" text-anchor="middle">D:7</text>
+<path d="M40,380 L1150,380" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1150,380 1142,375 1142,385" fill="#174EA6"/>
+<rect x="40" y="414" width="155" height="51" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="446.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">partition</text>
+<rect x="195" y="414" width="515" height="51" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="207" y="446.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">工作区间（右端不含）</text>
+<rect x="710" y="414" width="160" height="51" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="446.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">真实块数</text>
+<rect x="870" y="414" width="290" height="51" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="882" y="446.5" font-size="18" fill="#172033" font-weight="700" text-anchor="start">估计成本</text>
+<rect x="40" y="465" width="155" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="497.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">p0</text>
+<rect x="195" y="465" width="515" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="207" y="497.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">A[0,2) + B[0,3) + C[0,3)</text>
+<rect x="710" y="465" width="160" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="497.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8</text>
+<rect x="870" y="465" width="290" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="882" y="497.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8 + 3×5 = 23</text>
+<rect x="40" y="516" width="155" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="548.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">p1</text>
+<rect x="195" y="516" width="515" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="207" y="548.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">C[3,21)</text>
+<rect x="710" y="516" width="160" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="548.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">18</text>
+<rect x="870" y="516" width="290" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="882" y="548.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">18 + 5 = 23</text>
+<rect x="40" y="567" width="155" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="599.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">p2</text>
+<rect x="195" y="567" width="515" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="207" y="599.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">C[21,39)</text>
+<rect x="710" y="567" width="160" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="599.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">18</text>
+<rect x="870" y="567" width="290" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="882" y="599.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">18 + 5 = 23</text>
+<rect x="40" y="618" width="155" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="650.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">p3</text>
+<rect x="195" y="618" width="515" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="207" y="650.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">C[39,40) + D[0,7)</text>
+<rect x="710" y="618" width="160" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="722" y="650.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8</text>
+<rect x="870" y="618" width="290" height="51" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="882" y="650.5" font-size="18" fill="#172033" font-weight="400" text-anchor="start">8 + 2×5 = 18</text>
+<text x="40" y="714" font-size="21" fill="#172033" font-weight="700" text-anchor="start">A、B、D：no-split，直接写 O；C：4份 partial O/LSE，随后 combine。</text>
+<text x="40" y="756" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">num_splits 是前缀和：[0,1,2,6,7]；C 的4份结果位于 slots [2,6)。</text>
+<rect x="40" y="785" width="1120" height="119" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="814" font-size="21" fill="#172033" font-weight="700" text-anchor="start">一个 partition 对每个 m_block 都有一个 CTA</text>
+<text x="55" y="844" font-size="18" fill="#172033" font-weight="400" text-anchor="start">p0 对应两个 CTA，分别计算 heads 0..63 与64..127；其他分区同理。</text>
+<text x="55" y="873" font-size="18" fill="#172033" font-weight="400" text-anchor="start">CTA 不与 SM 编号绑定；小工作量、取整、尾块和估算误差仍可能造成空闲。</text>
+</svg>

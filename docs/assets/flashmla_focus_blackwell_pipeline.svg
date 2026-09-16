@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1180" viewBox="0 0 1800 1180" role="img" aria-labelledby="title desc">
+<title id="title">Blackwell head64：索引、双TMA流、反量化、TC与softmax</title><desc id="desc">满足源码依赖的一种示意时序；非测量、不按比例。TC灰条是异步在途窗口；R=RoPE，N=NoPE。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1800" height="1180" fill="white" stroke="white" stroke-width="1"/>
+<path d="M1222.0,748 V485" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M893,748 V380" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M799,523 V275" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Blackwell head64：索引、双TMA流、反量化、TC与softmax</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">满足源码依赖的一种示意时序；非测量、不按比例。TC灰条是异步在途窗口；R=RoPE，N=NoPE。</text>
+<path d="M235,115 L1755,115" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1755,115 1747,110 1747,120" fill="#174EA6"/>
+<text x="1755" y="146" font-size="18" fill="#5D687A" font-weight="400" text-anchor="end">先后关系 →；非测量，不按比例</text>
+<text x="40" y="207" font-size="20" fill="#172033" font-weight="700" text-anchor="start">warp7 索引/scale</text>
+<path d="M235,228 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="302" font-size="20" fill="#172033" font-weight="700" text-anchor="start">warp5 TMA NoPE</text>
+<path d="M235,323 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="407" font-size="20" fill="#172033" font-weight="700" text-anchor="start">warp6 TMA RoPE</text>
+<path d="M235,428 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="512" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG2 反量化</text>
+<path d="M235,533 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="632" font-size="20" fill="#172033" font-weight="700" text-anchor="start">warp4 MMA发射</text>
+<path d="M235,653 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="737" font-size="20" fill="#172033" font-weight="700" text-anchor="start">TC 在途</text>
+<path d="M235,758 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="852" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG0 softmax</text>
+<path d="M235,873 H1755" stroke="#CBD3DE" fill="none"/>
+<rect x="235" y="180" width="94" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="282.0" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">idx0</text>
+<rect x="329" y="180" width="94" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="376.0" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">idx1</text>
+<rect x="423" y="180" width="94" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="470.0" y="205.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">idx2</text>
+<rect x="329" y="275" width="188" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="423.0" y="300.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather N0 →raw0</text>
+<rect x="517" y="275" width="188" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="611.0" y="300.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather N1 →raw1</text>
+<rect x="799" y="275" width="188" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="893.0" y="300.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather N2 →raw0</text>
+<rect x="329" y="380" width="94" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="376.0" y="405.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather R0</text>
+<rect x="423" y="380" width="94" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="470.0" y="405.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather R1</text>
+<rect x="893" y="380" width="141.0" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="963.5" y="405.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">gather R2</text>
+<rect x="517" y="485" width="282" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="658.0" y="510.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">dequant N0 →BF16 slot0</text>
+<rect x="799" y="485" width="282" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="940.0" y="510.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">dequant N1 →BF16 slot1</text>
+<rect x="1222.0" y="485" width="282.0" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1363.0" y="510.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">dequant N2 →BF16 slot0</text>
+<path d="M423,601 V647" stroke="#174EA6" stroke-width="2"/>
+<text x="428" y="622" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">QK0-R↑</text>
+<path d="M799,601 V647" stroke="#174EA6" stroke-width="2"/>
+<text x="804" y="622" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">QK0-N↑</text>
+<path d="M1034.0,601 V647" stroke="#174EA6" stroke-width="2"/>
+<text x="1039.0" y="622" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">PV0↑</text>
+<path d="M1222.0,601 V647" stroke="#174EA6" stroke-width="2"/>
+<text x="1227.0" y="622" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">QK1-R↑</text>
+<path d="M1316.0,601 V647" stroke="#174EA6" stroke-width="2"/>
+<text x="1321.0" y="622" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">QK1-N↑</text>
+<path d="M1551,601 V647" stroke="#174EA6" stroke-width="2"/>
+<text x="1556" y="622" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">PV1↑</text>
+<rect x="423" y="710" width="94" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="470.0" y="735.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK0-R</text>
+<rect x="799" y="710" width="94" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="846.0" y="735.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK0-N</text>
+<rect x="1034.0" y="710" width="188.0" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1128.0" y="735.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV0</text>
+<rect x="1222.0" y="710" width="188.0" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1316.0" y="735.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">QK1 R+N</text>
+<rect x="1551" y="710" width="169.20000000000007" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1635.6000000000001" y="735.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">PV1</text>
+<rect x="893" y="825" width="141.0" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="963.5" y="850.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">合并/SM0/P0</text>
+<rect x="1410.0" y="825" width="141.0" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1480.5" y="850.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">合并/SM1/P1</text>
+<text x="40" y="945" font-size="22" fill="#172033" font-weight="700" text-anchor="start">三种释放点不同：raw0在反量化完成后释放；R0在QK0完成后释放；BF16 N0要等PV0完成。</text>
+<text x="40" y="993" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">所以N2可以先被TMA装入raw0，仍须等PV0结束才能反量化并覆盖BF16 slot0。</text>
+<text x="40" y="1041" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">索引有4槽、raw/dequant KV有2槽；本图只展开3个索引块。Q的TMA→TMEM prologue未画。</text>
+<text x="40" y="1089" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">MMA warp按源码顺序等待P-ready后发射PV，再进入下一块QK；不把QK1提前画到PV0之前。</text>
+<text x="40" y="1137" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">V32的RoPE不属于V；MODEL1的RoPE也参与PV，因而其覆写门槛必须改为PV完成。</text>
+</svg>

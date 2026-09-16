@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1120" viewBox="0 0 1800 1120" role="img" aria-labelledby="title desc">
+<title id="title">Backward：5 个 MMA 穿插 P / dS 计算，DSM 交换后再做 dQ</title><desc id="desc">BF16 D128、2-CTA 稳态片段；j是query tile遍历序号；横轴仅表示合法先后和可重叠窗口。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1800" height="1120" fill="white" stroke="white" stroke-width="1"/>
+<path d="M1580.0,631 V696" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M1335,405 V797" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M985,405 V475" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<path d="M460,405 V475" stroke="#174EA6" stroke-dasharray="4 4" fill="none"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Backward：5 个 MMA 穿插 P / dS 计算，DSM 交换后再做 dQ</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">BF16 D128、2-CTA 稳态片段；j是query tile遍历序号；横轴仅表示合法先后和可重叠窗口。</text>
+<path d="M285,120 L1755,120" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1755,120 1747,115 1747,125" fill="#174EA6"/>
+<text x="1755" y="151" font-size="18" fill="#5D687A" font-weight="400" text-anchor="end">先后关系 →；非测量，不按比例</text>
+<text x="40" y="203" font-size="20" fill="#172033" font-weight="700" text-anchor="start">warp13 Load</text>
+<path d="M285,224 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="302" font-size="20" fill="#172033" font-weight="700" text-anchor="start">warp12 MMA issue</text>
+<path d="M285,323 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="394" font-size="20" fill="#172033" font-weight="700" text-anchor="start">Tensor Core 在途</text>
+<path d="M285,415 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="502" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG1+WG2 compute</text>
+<path d="M285,523 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="620" font-size="20" fill="#172033" font-weight="700" text-anchor="start">DSM copy 在途</text>
+<path d="M285,641 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="723" font-size="20" fill="#172033" font-weight="700" text-anchor="start">warp14 relay</text>
+<path d="M285,744 H1755" stroke="#CBD3DE" fill="none"/>
+<text x="40" y="824" font-size="20" fill="#172033" font-weight="700" text-anchor="start">WG0 dQ reduce</text>
+<path d="M285,845 H1755" stroke="#CBD3DE" fill="none"/>
+<rect x="285" y="176" width="489.99999999999994" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="530.0" y="201.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">预取下一个 Q / dO / stats</text>
+<path d="M285,271 V317" stroke="#174EA6" stroke-width="2"/>
+<text x="290" y="292" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">Sᵀ j+1</text>
+<rect x="285" y="367" width="175" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="372.5" y="392.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">Sᵀ j+1</text>
+<path d="M460,271 V317" stroke="#174EA6" stroke-width="2"/>
+<text x="465" y="292" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">dK j</text>
+<rect x="460" y="367" width="350" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="635.0" y="392.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">dK j</text>
+<path d="M810,271 V317" stroke="#174EA6" stroke-width="2"/>
+<text x="815" y="292" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">dPᵀ j+1</text>
+<rect x="810" y="367" width="175" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="897.5" y="392.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">dPᵀ j+1</text>
+<path d="M985,271 V317" stroke="#174EA6" stroke-width="2"/>
+<text x="990" y="292" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">dQ j</text>
+<rect x="985" y="367" width="350" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1160.0" y="392.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">dQ j</text>
+<path d="M1335,271 V317" stroke="#174EA6" stroke-width="2"/>
+<text x="1340" y="292" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">dV j+1</text>
+<rect x="1335" y="367" width="350" height="38" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1510.0" y="392.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">dV j+1</text>
+<rect x="460" y="475" width="420.0" height="38" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="670.0" y="500.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">P j+1 → TMEM</text>
+<rect x="985" y="475" width="385.00000000000006" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1177.5" y="500.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">计算 dS；等 dQ 后写回</text>
+<path d="M1370.0,471 V517" stroke="#174EA6" stroke-width="2"/>
+<text x="1375.0" y="548" font-size="16" fill="#174EA6" font-weight="400" text-anchor="start">发起双向 copy</text>
+<rect x="1370.0" y="593" width="210.00000000000003" height="38" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1475.0000000000002" y="618.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">dS j+1 → peer</text>
+<path d="M1580.0,692 V738" stroke="#174EA6" stroke-width="2"/>
+<text x="1745" y="720" font-size="17" fill="#174EA6" font-weight="400" text-anchor="end">双 CTA 到达 → 下轮 dQ 可用</text>
+<rect x="1335" y="797" width="350" height="38" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1510.0" y="822.0" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">dQ j → shared → global add</text>
+<text x="40" y="917" font-size="21" fill="#172033" font-weight="700" text-anchor="start">片段起点前：dS j 已由上一轮生成并启动交换；dQ j 仍须等待本地 dS 与双方 relay。</text>
+<text x="40" y="963" font-size="22" fill="#174EA6" font-weight="400" text-anchor="start">P j+1 与 dK j 重叠；dS j+1 与 dQ j 重叠；dQ 的搬出 / global add 与后续 MMA 重叠。</text>
+<text x="40" y="1009" font-size="21" fill="#172033" font-weight="400" text-anchor="start">S/P 和 dP/dS 共用 TMEM；D128 的 dQ 还复用 S 区后半段，所以必须严格遵守读完后覆写。</text>
+<text x="40" y="1055" font-size="20" fill="#5D687A" font-weight="400" text-anchor="start">Prologue：Sᵀ0 → dPᵀ0 → dV0；Epilogue：最后 dK / dQ，排空 dQ reduction，输出 dK / dV。</text>
+</svg>

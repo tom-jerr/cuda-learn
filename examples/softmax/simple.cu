@@ -1,3 +1,4 @@
+#include <__clang_cuda_builtin_vars.h>
 #include <cfloat>
 #include <cuda_runtime.h>
 #include <iostream>
@@ -28,9 +29,9 @@ __device__ __forceinline__ float block_reduce_sum(float *shared, float val) {
   __syncthreads();
 
   if (wid == 0) {
-    val = (threadIdx.x < blockDim.x / 32) ? shared[lane] : 0.0f;
+    val = (lane < blockDim.x / 32) ? shared[lane] : 0.0f;
     val = warp_reduce_sum(val);
-    if (threadIdx.x == 0)
+    if (lane == 0)
       shared[0] = val; // 第二阶段结果写回 shared[0]
   }
   __syncthreads();
@@ -51,9 +52,9 @@ __device__ __forceinline__ float block_reduce_max(float *shared, float val) {
   __syncthreads();
 
   if (wid == 0) {
-    val = (threadIdx.x < blockDim.x / 32) ? shared[lane] : -FLT_MAX;
+    val = (lane < blockDim.x / 32) ? shared[lane] : -FLT_MAX;
     val = warp_reduce_max(val);
-    if (threadIdx.x == 0)
+    if (lane == 0)
       shared[0] = val; // 第二阶段结果写回 shared[0]
   }
   __syncthreads();

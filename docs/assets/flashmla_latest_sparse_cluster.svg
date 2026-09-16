@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1070" viewBox="0 0 1200 1070" role="img" aria-labelledby="title desc">
+<title id="title">Hopper sparse FP8：两 CTA 分摊加载，交换 BF16 KV</title><desc id="desc">V32，128 query heads，cluster=2；一个计算块含64个被选中的 token。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1070" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">Hopper sparse FP8：两 CTA 分摊加载，交换 BF16 KV</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">V32，128 query heads，cluster=2；一个计算块含64个被选中的 token。</text>
+<rect x="40" y="115" width="510" height="117" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="144" font-size="21" fill="#172033" font-weight="700" text-anchor="start">CTA0：Q heads 0..63</text>
+<text x="55" y="174" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG2 gather + dequant：selected rows 0..31</text>
+<text x="55" y="203" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每CTA 384线程：WG0、WG1、WG2</text>
+<rect x="40" y="278" width="510" height="116" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="307" font-size="21" fill="#172033" font-weight="700" text-anchor="start">自己的 shared K：完整64×576 BF16</text>
+<text x="55" y="337" font-size="18" fill="#172033" font-weight="400" text-anchor="start">32行本地产生，32行由对端写入</text>
+<text x="55" y="366" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每个CTA仍占72 KiB；两槽共144 KiB</text>
+<rect x="40" y="485" width="510" height="117" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="514" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG0 / WG1 计算各自的64个 heads</text>
+<text x="55" y="544" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG0：QK + softmax + PV 左256维</text>
+<text x="55" y="573" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG1：接收 P/scale，PV 右256维</text>
+<path d="M290,237 L290,273" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="290,273 285,265 295,265" fill="#174EA6"/>
+<path d="M290,399 L290,480" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="290,480 285,472 295,472" fill="#174EA6"/>
+<rect x="650" y="115" width="510" height="117" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="665" y="144" font-size="21" fill="#172033" font-weight="700" text-anchor="start">CTA1：Q heads 64..127</text>
+<text x="665" y="174" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG2 gather + dequant：selected rows 32..63</text>
+<text x="665" y="203" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每CTA 384线程：WG0、WG1、WG2</text>
+<rect x="650" y="278" width="510" height="116" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="665" y="307" font-size="21" fill="#172033" font-weight="700" text-anchor="start">自己的 shared K：完整64×576 BF16</text>
+<text x="665" y="337" font-size="18" fill="#172033" font-weight="400" text-anchor="start">32行本地产生，32行由对端写入</text>
+<text x="665" y="366" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每个CTA仍占72 KiB；两槽共144 KiB</text>
+<rect x="650" y="485" width="510" height="117" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="665" y="514" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WG0 / WG1 计算各自的64个 heads</text>
+<text x="665" y="544" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG0：QK + softmax + PV 左256维</text>
+<text x="665" y="573" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG1：接收 P/scale，PV 右256维</text>
+<path d="M900,237 L900,273" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="900,273 895,265 905,265" fill="#174EA6"/>
+<path d="M900,399 L900,480" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="900,480 895,472 905,472" fill="#174EA6"/>
+<path d="M552,317 L647,317" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="647,317 639,312 639,322" fill="#174EA6"/>
+<path d="M648,356 L553,356" stroke="#995600" stroke-width="2" fill="none"/>
+<polygon points="553,356 561,351 561,361" fill="#995600"/>
+<text x="600" y="427" font-size="19" fill="#174EA6" font-weight="400" text-anchor="middle">每方向 32×576×2 = 36 KiB；st.async 写 DSM</text>
+<text x="40" y="652" font-size="23" fill="#172033" font-weight="700" text-anchor="start">一个缓冲槽的生命周期（两槽交替复用）</text>
+<rect x="40" y="678" width="220" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="708.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">阶段</text>
+<rect x="260" y="678" width="460" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="708.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">等待 / 发布事件</text>
+<rect x="720" y="678" width="440" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="732" y="708.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">被证明的事实</text>
+<rect x="40" y="724" width="220" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="754.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">① 可覆盖</text>
+<rect x="260" y="724" width="460" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="754.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">两CTA的4个consumer WG全部释放</text>
+<rect x="720" y="724" width="440" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="732" y="754.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">上一轮 QK/PV 不再读取此槽</text>
+<rect x="40" y="770" width="220" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="800.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">② 写入</text>
+<rect x="260" y="770" width="460" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="800.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">本地普通写 + 对端 st.async</text>
+<rect x="720" y="770" width="440" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="732" y="800.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每producer只处理半个计算块</text>
+<rect x="40" y="816" width="220" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="846.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">③ 数据就绪</text>
+<rect x="260" y="816" width="460" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="846.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">local_ready 与 remote_ready 都完成</text>
+<rect x="720" y="816" width="440" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="732" y="846.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">本地32行与远端32行均已可读</text>
+<rect x="40" y="862" width="220" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="892.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">④ 消费</text>
+<rect x="260" y="862" width="460" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="892.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG0 QK→P；两个WG各算半个PV</text>
+<rect x="720" y="862" width="440" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="732" y="892.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">两个CTA使用同一批KV，处理不同heads</text>
+<rect x="40" y="908" width="220" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="938.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">⑤ 释放</text>
+<rect x="260" y="908" width="460" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="938.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">各consumer在自己的PV完成后通知</text>
+<rect x="720" y="908" width="440" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="732" y="938.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">下一轮回到①；不是仅等QK完成</text>
+<text x="40" y="999" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">省下的是重复 gather 与反量化；MMA 仍覆盖全部128 heads，shared KV 仍每CTA一份。</text>
+<text x="40" y="1040" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">64 heads → cluster=1：一个producer WG分两轮处理64 tokens，不需要DSM交换。</text>
+</svg>

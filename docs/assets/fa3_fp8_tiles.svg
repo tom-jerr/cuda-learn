@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 1200 1000" role="img" aria-labelledby="title desc">
+<title id="title">FA3 FP8：先确定两个 GEMM 的 tile</title><desc id="desc">固定 D=Dv=128、V 行优先：CTA 的 M=128，N=224；两个 consumer WG，每组128线程。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1000" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">FA3 FP8：先确定两个 GEMM 的 tile</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">固定 D=Dv=128、V 行优先：CTA 的 M=128，N=224；两个 consumer WG，每组128线程。</text>
+<rect x="40" y="112" width="325" height="158" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="142" font-size="21" fill="#172033" font-weight="700" text-anchor="start">Q：128 query × 128 D</text>
+<text x="56" y="172" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG0：query 0..63</text>
+<text x="56" y="201" font-size="18" fill="#172033" font-weight="400" text-anchor="start">WG1：query 64..127</text>
+<text x="56" y="230" font-size="18" fill="#172033" font-weight="400" text-anchor="start">FP8；TMA → shared</text>
+<rect x="420" y="112" width="325" height="158" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="436" y="142" font-size="21" fill="#172033" font-weight="700" text-anchor="start">K：224 token × 128 D</text>
+<text x="436" y="172" font-size="18" fill="#172033" font-weight="400" text-anchor="start">两个 WG 复用同一个 K tile</text>
+<text x="436" y="201" font-size="18" fill="#172033" font-weight="400" text-anchor="start">D 方向分成 4 段 k32</text>
+<text x="436" y="230" font-size="18" fill="#172033" font-weight="400" text-anchor="start">FP8；TMA → shared</text>
+<rect x="800" y="112" width="360" height="158" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="816" y="142" font-size="21" fill="#172033" font-weight="700" text-anchor="start">score：128 query × 224 token</text>
+<text x="816" y="172" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每 WG：64×224</text>
+<text x="816" y="201" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每线程：112 个 FP32</text>
+<text x="816" y="230" font-size="18" fill="#172033" font-weight="400" text-anchor="start">QK：每 WG 发出 4 次 WGMMA</text>
+<text x="391" y="200" font-size="32" fill="#172033" font-weight="400" text-anchor="middle">×</text>
+<path d="M745,191 L790,191" fill="none" stroke="#172033" stroke-width="2"/>
+<polygon points="790,191 781,186 781,196" fill="#172033"/>
+<text x="40" y="322" font-size="23" fill="#172033" font-weight="700" text-anchor="start">V 的逻辑轴始终是 (Dv, token)；搬运前后改变的是物理排列</text>
+<rect x="40" y="348" width="520" height="162" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="56" y="378" font-size="21" fill="#172033" font-weight="700" text-anchor="start">TMA 落地的 Vt：沿 Dv 连续</text>
+<text x="56" y="408" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每个 token 的 128 FP8：一条128-byte行</text>
+<text x="56" y="437" font-size="18" fill="#172033" font-weight="400" text-anchor="start">(Dv,token,stage) = (128,224,2)</text>
+<text x="56" y="466" font-size="18" fill="#172033" font-weight="400" text-anchor="start">MN-major；SW128</text>
+<rect x="640" y="348" width="520" height="162" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="656" y="378" font-size="21" fill="#172033" font-weight="700" text-anchor="start">WGMMA 使用的 V：沿 token 分块连续</text>
+<text x="656" y="408" font-size="18" fill="#172033" font-weight="400" text-anchor="start">沿 token 切成 7 个32列小块</text>
+<text x="656" y="437" font-size="18" fill="#172033" font-weight="400" text-anchor="start">(Dv,token,stage) = (128,224,2)</text>
+<text x="656" y="466" font-size="18" fill="#172033" font-weight="400" text-anchor="start">K-major；SW32；包含配套置换</text>
+<path d="M560,429 L630,429" fill="none" stroke="#172033" stroke-width="2"/>
+<polygon points="630,429 621,424 621,434" fill="#172033"/>
+<text x="40" y="550" font-size="21" fill="#172033" font-weight="700" text-anchor="start">真实转置：LDSM.T → 寄存器 byte_perm → STSM；单改 stride 不会移动字节。</text>
+<text x="40" y="597" font-size="22" fill="#172033" font-weight="700" text-anchor="start">把 V 分成 64 Dv × 32 token 的小块：2 × 7 = 14 块</text>
+<text x="272" y="637" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">token 0</text>
+<rect x="210" y="650" width="125" height="51" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="681" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<rect x="210" y="709" width="125" height="51" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="272" y="740" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<text x="407" y="637" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">token 32</text>
+<rect x="345" y="650" width="125" height="51" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="407" y="681" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<rect x="345" y="709" width="125" height="51" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="407" y="740" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<text x="542" y="637" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">token 64</text>
+<rect x="480" y="650" width="125" height="51" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="542" y="681" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<rect x="480" y="709" width="125" height="51" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="542" y="740" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<text x="677" y="637" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">token 96</text>
+<rect x="615" y="650" width="125" height="51" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="677" y="681" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<rect x="615" y="709" width="125" height="51" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="677" y="740" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<text x="812" y="637" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">token 128</text>
+<rect x="750" y="650" width="125" height="51" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="812" y="681" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<rect x="750" y="709" width="125" height="51" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="812" y="740" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<text x="947" y="637" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">token 160</text>
+<rect x="885" y="650" width="125" height="51" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="681" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<rect x="885" y="709" width="125" height="51" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="947" y="740" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<text x="1082" y="637" font-size="16" fill="#172033" font-weight="400" text-anchor="middle">token 192</text>
+<rect x="1020" y="650" width="125" height="51" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1082" y="681" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<rect x="1020" y="709" width="125" height="51" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1082" y="740" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">64×32</text>
+<text x="40" y="681" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Dv 0..63</text>
+<text x="40" y="740" font-size="18" fill="#172033" font-weight="400" text-anchor="start">Dv 64..127</text>
+<text x="40" y="817" font-size="21" fill="#172033" font-weight="400" text-anchor="start">每小块 2048 bytes ÷ 128线程 = 16 bytes/thread；两块一批，共7批。</text>
+<text x="40" y="859" font-size="21" fill="#172033" font-weight="400" text-anchor="start">copy view：16个值 × 2个Dv位置 × 7个token位置 × 2个stage</text>
+<text x="40" y="907" font-size="22" fill="#174EA6" font-weight="700" text-anchor="start">PV：每 WG 的 P(64×224) × V(224×128) → O(64×128)</text>
+<text x="40" y="952" font-size="20" fill="#172033" font-weight="400" text-anchor="start">P 在寄存器、V 在 shared；224 / k32 = 7 次 WGMMA，64个 FP32/thread 输出。</text>
+</svg>

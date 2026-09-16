@@ -4,6 +4,14 @@
 NVCC ?= nvcc
 NVCCFLAGS ?= -std=c++17 -O2 -arch=sm_89
 CLUSTER_NVCCFLAGS ?= -std=c++17 -O2 -arch=sm_90
+HOPPER_NVCCFLAGS ?= -std=c++17 -O2 -arch=sm_90
+HOPPER_WGMMA_NVCCFLAGS ?= -std=c++17 -O3 \
+        -gencode arch=compute_90a,code=sm_90a
+# Basic mbarrier arrival works on SM80+; transaction accounting needs SM90.
+MBARRIER_NVCCFLAGS ?= -std=c++17 -O2 \
+        -gencode arch=compute_80,code=sm_80 \
+        -gencode arch=compute_90,code=sm_90 \
+        -gencode arch=compute_90,code=compute_90
 CUTLASS_DIR ?= $(abspath ../third_party/cutlass)
 
 BINS := vector_add/simple \
@@ -57,20 +65,31 @@ cute_gemm/simple: cute_gemm/simple.cu
 	  { echo "set CUTLASS_DIR=/path/to/NVIDIA/cutlass"; exit 1; }
 	$(NVCC) $(NVCCFLAGS) -I$(CUTLASS_DIR)/include $< -o $@
 
-cute_fa2/simple: cute_fa2/simple.cu
+# MXFP4 -> FP8 register conversion feeding an RS WGMMA.  The "a" target is
+# mandatory because WGMMA instructions use architecture-specific SM90 features.
+hopper_mxfp4_moe/main: hopper_mxfp4_moe/main.cu
 	@test -f "$(CUTLASS_DIR)/include/cute/tensor.hpp" || \
 	  { echo "set CUTLASS_DIR=/path/to/NVIDIA/cutlass"; exit 1; }
-	$(NVCC) $(NVCCFLAGS) -I$(CUTLASS_DIR)/include $< -o $@
+	$(NVCC) $(HOPPER_WGMMA_NVCCFLAGS) -I$(CUTLASS_DIR)/include $< -o $@
 
-cute_fa2/fa2_4096: cute_fa2/fa2_4096.cu
-	@test -f "$(CUTLASS_DIR)/include/cute/tensor.hpp" || \
-	  { echo "set CUTLASS_DIR=/path/to/NVIDIA/cutlass"; exit 1; }
-	$(NVCC) $(NVCCFLAGS) -I$(CUTLASS_DIR)/include $< -o $@
+# Standalone PTX/TMA lessons; no CUTLASS needed. Kept out of the SM89 default all.
+mbarrier/main: mbarrier/main.cu mbarrier/primitives.cuh
+	$(NVCC) $(MBARRIER_NVCCFLAGS) $< -o $@
+
+tma_desc/main: tma_desc/main.cu tma_desc/config.cuh
+	$(NVCC) $(NVCCFLAGS) $< -lcuda -o $@
+
+tma_desc/tma_copy: tma_desc/tma_copy.cu tma_desc/config.cuh mbarrier/primitives.cuh
+	$(NVCC) $(HOPPER_NVCCFLAGS) $< -lcuda -o $@
+
+hopper-basics: mbarrier/main tma_desc/main tma_desc/tma_copy
 
 clean:
 	rm -f $(BINS) histogram/cluster cuda_stream/non_blocking \
 		custom_all_reduce/pdl_staged_pull \
 		custom_all_reduce/vmm_multicast_reduce cute_gemm/simple
 	rm -f cute_fa2/simple cute_fa2/fa2_4096
+	rm -f mbarrier/main tma_desc/main tma_desc/tma_copy
+	rm -f hopper_mxfp4_moe/main
 
-.PHONY: all clean
+.PHONY: all clean hopper-basics

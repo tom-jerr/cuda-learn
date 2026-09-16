@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1210" viewBox="0 0 1200 1210" role="img" aria-labelledby="title desc">
+<title id="title">TMA 排布与 TMEM 复用：先看 tile，再读 stride</title><desc id="desc">BF16 D128，2-CTA。shared layout 来自本地 CuTe-DSL 4.4.2 编译期探针；无 GPU kernel 执行。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1210" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">TMA 排布与 TMEM 复用：先看 tile，再读 stride</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">BF16 D128，2-CTA。shared layout 来自本地 CuTe-DSL 4.4.2 编译期探针；无 GPU kernel 执行。</text>
+<text x="40" y="128" font-size="22" fill="#172033" font-weight="700" text-anchor="start">K：每 CTA 64 tokens ×128 features；分成两个64×64条带</text>
+<rect x="220" y="151" width="430" height="65" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="435" y="179" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">features 0..63</text>
+<text x="435" y="204" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">条带起点 0 BF16</text>
+<rect x="650" y="151" width="430" height="65" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="865" y="179" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">features 64..127</text>
+<text x="865" y="204" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">条带起点 4096 BF16</text>
+<path d="M435,237 L865,237" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="865,237 857,232 857,242" fill="#174EA6"/>
+<text x="650" y="266" font-size="20" fill="#174EA6" font-weight="400" text-anchor="middle">右移64 features：跨64×64 → +4096</text>
+<rect x="40" y="297" width="150" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="327.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">K 的 mode</text>
+<rect x="190" y="297" width="560" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="202" y="327.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">shape = ((64,16),1,(4,2),6)</text>
+<rect x="750" y="297" width="410" height="46" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="762" y="327.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">stride = ((64,1),0,(16,4096),8192)</text>
+<rect x="40" y="343" width="150" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="373.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">atom 内</text>
+<rect x="190" y="343" width="560" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="202" y="373.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">64 token rows；16 feature values</text>
+<rect x="750" y="343" width="410" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="762" y="373.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">下移1 token +64；右移1 feature +1</text>
+<rect x="40" y="389" width="150" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="419.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">atom 外</text>
+<rect x="190" y="389" width="560" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="202" y="419.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4个K16片组成64宽；再排2个条带</text>
+<rect x="750" y="389" width="410" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="762" y="419.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">右移16 features +16；换条带 +4096</text>
+<rect x="40" y="435" width="150" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="465.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">ring stage</text>
+<rect x="190" y="435" width="560" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="202" y="465.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">6个槽；每槽64×128 BF16</text>
+<rect x="750" y="435" width="410" height="46" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="762" y="465.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">换槽 +8192 values =16 KiB</text>
+<text x="40" y="511" font-size="20" fill="#172033" font-weight="700" text-anchor="start">V 的 MMA view 是 (feature, token)：连续64 features；沿 token 接8个16-token片。</text>
+<text x="40" y="552" font-size="22" fill="#172033" font-weight="400" text-anchor="start" class="mono">V shape = ((64,16),1,8,6)</text>
+<text x="40" y="594" font-size="22" fill="#172033" font-weight="400" text-anchor="start" class="mono">V stride = ((1,64),0,1024,8192)</text>
+<text x="40" y="635" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">向下16 tokens：跨16×64 → +1024；换 stage 仍 +8192 BF16。</text>
+<text x="40" y="681" font-size="20" fill="#172033" font-weight="400" text-anchor="start">两者均叠加 SW128：物理 byte 地址 a′ = a XOR ((a &amp; 0x380) &gt;&gt; 3)。</text>
+<text x="40" y="720" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">上面的 stride 是 XOR 之前的 element layout；swizzle 不改变哪个 CTA 拥有哪些数据。</text>
+<text x="40" y="786" font-size="23" fill="#172033" font-weight="700" text-anchor="start">每 CTA 的 TMEM：128 datapaths ×512 columns ×4B =256 KiB</text>
+<rect x="150.0" y="817" width="236.8" height="62" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="268.4" y="854" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">S0 FP32</text>
+<text x="150.0" y="806" font-size="16" fill="#172033" font-weight="400" text-anchor="start">0</text>
+<rect x="386.8" y="817" width="236.8" height="62" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="505.20000000000005" y="854" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">S1 FP32</text>
+<text x="386.8" y="806" font-size="16" fill="#172033" font-weight="400" text-anchor="start">128</text>
+<rect x="623.6" y="817" width="236.8" height="62" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="742.0" y="854" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">O0 FP32</text>
+<text x="623.6" y="806" font-size="16" fill="#172033" font-weight="400" text-anchor="start">256</text>
+<rect x="860.4000000000001" y="817" width="236.8" height="62" fill="#E1F1E8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="978.8000000000001" y="854" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">O1 FP32</text>
+<text x="860.4000000000001" y="806" font-size="16" fill="#172033" font-weight="400" text-anchor="start">384</text>
+<text x="1097.2" y="806" font-size="16" fill="#172033" font-weight="400" text-anchor="end">512</text>
+<rect x="268.4" y="907" width="118.4" height="58" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="327.6" y="941" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">P0 BF16</text>
+<path d="M327.6,882 L327.6,902" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="327.6,902 322.6,894 332.6,894" fill="#174EA6"/>
+<rect x="505.20000000000005" y="907" width="118.4" height="58" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="564.4000000000001" y="941" font-size="17" fill="#172033" font-weight="400" text-anchor="middle">P1 BF16</text>
+<path d="M564.4000000000001,882 L564.4000000000001,902" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="564.4000000000001,902 559.4000000000001,894 569.4000000000001,894" fill="#174EA6"/>
+<text x="40" y="1008" font-size="21" fill="#172033" font-weight="700" text-anchor="start">P 的128个BF16值只占64个32-bit列，因此覆盖对应 S 区的后半段。</text>
+<text x="40" y="1055" font-size="20" fill="#172033" font-weight="400" text-anchor="start">必须先读完 S，才可覆盖成 P；PV 消费完 P 后，下一轮 QK 才可覆盖同一 S 区。</text>
+<text x="40" y="1102" font-size="21" fill="#174EA6" font-weight="400" text-anchor="start">Q/K/V：global → TMA → swizzled SMEM → SS/TS MMA；P 不经过 shared。</text>
+<text x="40" y="1149" font-size="19" fill="#5D687A" font-weight="400" text-anchor="start">普通 attention 的 K、V 是不同数据；共用 SMEM ring 是时间复用，不是 MLA 的 K=V 前缀复用。</text>
+</svg>

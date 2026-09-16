@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1120" viewBox="0 0 1200 1120" role="img" aria-labelledby="title desc">
+<title id="title">新版 TMA：整页加载后，按有效长度清零 shared V</title><desc id="desc">固定 c2067be 的 BF16 dense decode；L=130，尾页起点128，valid=2。行高为示意。</desc>
+<style>text{font-family:Arial,"Droid Sans Fallback","Noto Sans CJK SC",sans-serif}.mono{font-family:"DejaVu Sans Mono","Droid Sans Fallback",monospace}</style>
+<rect x="0" y="0" width="1200" height="1120" fill="white" stroke="white" stroke-width="1"/>
+<text x="40" y="45" font-size="29" fill="#172033" font-weight="700" text-anchor="start">新版 TMA：整页加载后，按有效长度清零 shared V</text>
+<text x="40" y="79" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">固定 c2067be 的 BF16 dense decode；L=130，尾页起点128，valid=2。行高为示意。</text>
+<text x="40" y="123" font-size="22" fill="#172033" font-weight="700" text-anchor="start">一页 K：64 tokens × 576 features；9 次 TMA，每次 64×64 BF16 = 8192 B。</text>
+<text x="194.0" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=0</text>
+<rect x="140" y="197" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="194.0" y="232.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="140" y="253" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="194.0" y="288.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="140" y="309" width="108" height="112" fill="#fae5e5" stroke="#CBD3DE" stroke-width="1"/>
+<text x="194.0" y="372.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">NaN?</text>
+<text x="302.0" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=1</text>
+<rect x="248" y="197" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="302.0" y="232.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="248" y="253" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="302.0" y="288.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="248" y="309" width="108" height="112" fill="#fae5e5" stroke="#CBD3DE" stroke-width="1"/>
+<text x="302.0" y="372.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">NaN?</text>
+<text x="410.0" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=2</text>
+<rect x="356" y="197" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="410.0" y="232.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="356" y="253" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="410.0" y="288.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="356" y="309" width="108" height="112" fill="#fae5e5" stroke="#CBD3DE" stroke-width="1"/>
+<text x="410.0" y="372.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">NaN?</text>
+<text x="518.0" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=3</text>
+<rect x="464" y="197" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="518.0" y="232.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="464" y="253" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="518.0" y="288.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="464" y="309" width="108" height="112" fill="#fae5e5" stroke="#CBD3DE" stroke-width="1"/>
+<text x="518.0" y="372.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">NaN?</text>
+<text x="626.0" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=4</text>
+<rect x="572" y="197" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="626.0" y="232.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="572" y="253" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="626.0" y="288.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="572" y="309" width="108" height="112" fill="#fae5e5" stroke="#CBD3DE" stroke-width="1"/>
+<text x="626.0" y="372.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">NaN?</text>
+<text x="734.0" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=5</text>
+<rect x="680" y="197" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="734.0" y="232.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="680" y="253" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="734.0" y="288.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="680" y="309" width="108" height="112" fill="#fae5e5" stroke="#CBD3DE" stroke-width="1"/>
+<text x="734.0" y="372.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">NaN?</text>
+<text x="842.0" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=6</text>
+<rect x="788" y="197" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="842.0" y="232.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="788" y="253" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="842.0" y="288.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="788" y="309" width="108" height="112" fill="#fae5e5" stroke="#CBD3DE" stroke-width="1"/>
+<text x="842.0" y="372.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">NaN?</text>
+<text x="950.0" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=7</text>
+<rect x="896" y="197" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="950.0" y="232.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="896" y="253" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="950.0" y="288.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="896" y="309" width="108" height="112" fill="#fae5e5" stroke="#CBD3DE" stroke-width="1"/>
+<text x="950.0" y="372.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">NaN?</text>
+<text x="1058.0" y="170" font-size="18" fill="#172033" font-weight="400" text-anchor="middle">j=8</text>
+<rect x="1004" y="197" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1058.0" y="232.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="1004" y="253" width="108" height="56" fill="#DCE8FF" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1058.0" y="288.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">有效</text>
+<rect x="1004" y="309" width="108" height="112" fill="#fae5e5" stroke="#CBD3DE" stroke-width="1"/>
+<text x="1058.0" y="372.0" font-size="19" fill="#172033" font-weight="400" text-anchor="middle">NaN?</text>
+<text x="125" y="232" font-size="18" fill="#172033" font-weight="400" text-anchor="end">r=0</text>
+<text x="125" y="288" font-size="18" fill="#172033" font-weight="400" text-anchor="end">r=1</text>
+<text x="125" y="365" font-size="18" fill="#172033" font-weight="400" text-anchor="end">r=2..63</text>
+<text x="140" y="449" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">f=0..255：WG0 清零</text>
+<text x="572" y="449" font-size="20" fill="#174EA6" font-weight="400" text-anchor="start">f=256..511：WG1 清零</text>
+<text x="1058" y="449" font-size="20" fill="#172033" font-weight="400" text-anchor="middle">RoPE</text>
+<path d="M140,473 L1003,473" stroke="#174EA6" stroke-width="2" fill="none"/>
+<polygon points="1003,473 995,468 995,478" fill="#174EA6"/>
+<text x="140" y="508" font-size="21" fill="#172033" font-weight="400" text-anchor="start">只清红色区域的前8条带；RoPE 不参与 PV，不需要为 PV 清零。</text>
+<text x="40" y="553" font-size="22" fill="#9e3030" font-weight="700" text-anchor="start">物理页64行都在 descriptor 范围内；TMA 不认识每个请求的 L=130。</text>
+<rect x="40" y="577" width="1120" height="141" fill="#FCE9C8" stroke="#CBD3DE" stroke-width="1"/>
+<text x="55" y="606" font-size="21" fill="#172033" font-weight="700" text-anchor="start">fill_oob_V：每个 WG 把自己的256维 V 重解释成 int64 包</text>
+<text x="55" y="636" font-size="18" fill="#172033" font-weight="400" text-anchor="start">256 BF16 / 4 = 64 个包；128线程分两组，每轮覆盖两条token行。</text>
+<text x="55" y="665" font-size="18" fill="#172033" font-weight="400" text-anchor="start">u=0..127：p=u%64；r=valid+u/64+2a；a 向下递增，直到 r≥64。</text>
+<text x="55" y="694" font-size="18" fill="#172033" font-weight="400" text-anchor="start">每次写0覆盖4个相邻BF16；在这个例子中，每线程执行31次8-byte写。</text>
+<rect x="40" y="742" width="265" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="771.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">WG 内线程 u</text>
+<rect x="305" y="742" width="285" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="317" y="771.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">feature 包 p</text>
+<rect x="590" y="742" width="285" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="602" y="771.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">首轮清零 token r</text>
+<rect x="875" y="742" width="285" height="44" fill="#F7F9FC" stroke="#CBD3DE" stroke-width="1"/>
+<text x="887" y="771.0" font-size="18" fill="#172033" font-weight="700" text-anchor="start">下一轮：向下 +2</text>
+<rect x="40" y="786" width="265" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="815.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0..63</text>
+<rect x="305" y="786" width="285" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="317" y="815.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0..63，各4 BF16</text>
+<rect x="590" y="786" width="285" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="602" y="815.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">2</text>
+<rect x="875" y="786" width="285" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="887" y="815.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">4, 6, …, 62</text>
+<rect x="40" y="830" width="265" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="52" y="859.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">64..127</text>
+<rect x="305" y="830" width="285" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="317" y="859.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">0..63，各4 BF16</text>
+<rect x="590" y="830" width="285" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="602" y="859.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">3</text>
+<rect x="875" y="830" width="285" height="44" fill="white" stroke="#CBD3DE" stroke-width="1"/>
+<text x="887" y="859.0" font-size="18" fill="#172033" font-weight="400" text-anchor="start">5, 7, …, 63</text>
+<text x="40" y="914" font-size="21" fill="#172033" font-weight="700" text-anchor="start">int64 底层 layout：((16,4),(8,8)):((1,1024),(16,128))。</text>
+<text x="40" y="953" font-size="20" fill="#172033" font-weight="400" text-anchor="start">完整包地址：E(r,p)=1024⌊p/16⌋+16r+((p mod16) XOR 2(r mod8))。</text>
+<text x="40" y="990" font-size="20" fill="#172033" font-weight="400" text-anchor="start">相对本WG半块基址，单位为int64；对应BF16地址 W(r,4p)=4E(r,p)。</text>
+<text x="40" y="1042" font-size="22" fill="#174EA6" font-weight="700" text-anchor="start">TMA完成且相关QK读完 → 写零 → proxy fence / WG协作 → PV读取</text>
+<text x="40" y="1084" font-size="18" fill="#5D687A" font-weight="400" text-anchor="start">S 中覆盖 mask 解决概率；V 中覆盖0解决 0×NaN。有效输入中的NaN不在清理范围内。</text>
+</svg>
