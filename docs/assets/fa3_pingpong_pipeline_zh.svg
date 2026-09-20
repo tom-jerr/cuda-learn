@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+<title id="title">FA3 跨 Warpgroup Pingpong 调度与组内两阶段流水线</title>
+<desc id="desc">两个 consumer Warpgroup 通过 turn mbarrier 交替发射 WGMMA；每个组内部让 Softmax 与异步 PV WGMMA 重叠。</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#18212B"/></marker>
+  <marker id="blue-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#246BCE"/></marker>
+  <style>text { font-family: "Droid Sans Fallback", "Noto Sans CJK SC", "Microsoft YaHei", "PingFang SC", Arial, sans-serif; }</style>
+</defs>
+<rect x="0" y="0" width="1600" height="900" rx="0" fill="#FBFCFE" stroke="none" stroke-width="0"/>
+<text x="42" y="54" font-size="30" font-weight="700" fill="#18212B" text-anchor="start">FA3：跨 Warpgroup Pingpong 调度</text>
+<text x="42" y="84" font-size="16" font-weight="400" fill="#667085" text-anchor="start">示意时序（非等比例）｜1 个 producer WG + 2 个 consumer WG</text>
+<text x="42" y="132" font-size="21" font-weight="700" fill="#18212B" text-anchor="start">A  跨 Warpgroup：turn[2] mbarrier 控制 WGMMA 发射权</text>
+<text x="52" y="194" font-size="17" font-weight="650" fill="#18212B" text-anchor="start">Consumer WG 0</text>
+<text x="52" y="314" font-size="17" font-weight="650" fill="#18212B" text-anchor="start">Consumer WG 1</text>
+<line x1="220" y1="248" x2="1510" y2="248" stroke="#18212B" stroke-width="1.2" marker-end="url(#arrow)"/>
+<text x="1530" y="254" font-size="15" font-weight="500" fill="#667085" text-anchor="start">时间</text>
+<line x1="220" y1="368" x2="1510" y2="368" stroke="#18212B" stroke-width="1.2" marker-end="url(#arrow)"/>
+<text x="1530" y="374" font-size="15" font-weight="500" fill="#667085" text-anchor="start">时间</text>
+<rect x="220" y="158" width="150" height="58" rx="5" fill="#F6D58F" stroke="#18212B" stroke-width="1.4"/>
+<text x="295.0" y="182" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">QK(n+1)</text>
+<text x="295.0" y="204" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">WGMMA commit</text>
+<rect x="370" y="278" width="150" height="58" rx="5" fill="#F6D58F" stroke="#18212B" stroke-width="1.4"/>
+<text x="445.0" y="302" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">QK(n+1)</text>
+<text x="445.0" y="324" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">WGMMA commit</text>
+<rect x="520" y="158" width="150" height="58" rx="5" fill="#CFC4E6" stroke="#18212B" stroke-width="1.4"/>
+<text x="595.0" y="182" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">PV(n)</text>
+<text x="595.0" y="204" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">WGMMA commit</text>
+<rect x="670" y="278" width="150" height="58" rx="5" fill="#CFC4E6" stroke="#18212B" stroke-width="1.4"/>
+<text x="745.0" y="302" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">PV(n)</text>
+<text x="745.0" y="324" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">WGMMA commit</text>
+<rect x="670" y="158" width="68" height="58" rx="5" fill="#F2F4F7" stroke="#18212B" stroke-width="1.4"/>
+<text x="704.0" y="182" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">等待</text>
+<text x="704.0" y="204" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">&lt;1&gt;</text>
+<rect x="738" y="158" width="205" height="58" rx="5" fill="#DCEBFA" stroke="#18212B" stroke-width="1.4"/>
+<text x="840.5" y="182" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">Softmax(n+1)</text>
+<text x="840.5" y="204" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">CUDA Core / SFU</text>
+<rect x="943" y="158" width="68" height="58" rx="5" fill="#F2F4F7" stroke="#18212B" stroke-width="1.4"/>
+<text x="977.0" y="182" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">等待</text>
+<text x="977.0" y="204" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">&lt;0&gt;</text>
+<rect x="820" y="278" width="68" height="58" rx="5" fill="#F2F4F7" stroke="#18212B" stroke-width="1.4"/>
+<text x="854.0" y="302" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">等待</text>
+<text x="854.0" y="324" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">&lt;1&gt;</text>
+<rect x="888" y="278" width="205" height="58" rx="5" fill="#DCEBFA" stroke="#18212B" stroke-width="1.4"/>
+<text x="990.5" y="302" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">Softmax(n+1)</text>
+<text x="990.5" y="324" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">CUDA Core / SFU</text>
+<rect x="1093" y="278" width="68" height="58" rx="5" fill="#F2F4F7" stroke="#18212B" stroke-width="1.4"/>
+<text x="1127.0" y="302" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">等待</text>
+<text x="1127.0" y="324" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">&lt;0&gt;</text>
+<rect x="1011" y="158" width="155" height="58" rx="5" fill="#F6D58F" stroke="#18212B" stroke-width="1.4"/>
+<text x="1088.5" y="182" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">QK(n+2)</text>
+<text x="1088.5" y="204" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">下一轮发射</text>
+<rect x="1161" y="278" width="155" height="58" rx="5" fill="#F6D58F" stroke="#18212B" stroke-width="1.4"/>
+<text x="1238.5" y="302" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">QK(n+2)</text>
+<text x="1238.5" y="324" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">下一轮发射</text>
+<rect x="520" y="216" width="491" height="27" rx="0" fill="#4B5563" stroke="#4B5563" stroke-width="0"/>
+<text x="765" y="235" font-size="14" font-weight="600" fill="white" text-anchor="middle">PV(n) 在 Tensor Core 中异步执行</text>
+<rect x="670" y="336" width="491" height="27" rx="0" fill="#4B5563" stroke="#4B5563" stroke-width="0"/>
+<text x="915" y="355" font-size="14" font-weight="600" fill="white" text-anchor="middle">PV(n) 在 Tensor Core 中异步执行</text>
+<line x1="370" y1="145" x2="370" y2="378" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="520" y1="145" x2="520" y2="378" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="670" y1="145" x2="670" y2="378" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="820" y1="145" x2="820" y2="378" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="1011" y1="145" x2="1011" y2="378" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="1161" y1="145" x2="1161" y2="378" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="6 6"/>
+<text x="610" y="145" font-size="16" font-weight="650" fill="#246BCE" text-anchor="middle">token：WG0.QK → WG1.QK → WG0.PV → WG1.PV → …</text>
+<path d="M 1310 195 L 1215 210 L 1030 210" fill="none" stroke="#246BCE" stroke-width="1.6" marker-end="url(#blue-arrow)"/>
+<text x="1325" y="177" font-size="14" font-weight="650" fill="#246BCE" text-anchor="start">WG1 做 Softmax 时</text>
+<text x="1325" y="198" font-size="14" font-weight="650" fill="#246BCE" text-anchor="start">WG0 已可进入下一轮</text>
+<line x1="42" y1="410" x2="1558" y2="410" stroke="#CBD5E1" stroke-width="1"/>
+<text x="42" y="458" font-size="21" font-weight="700" fill="#18212B" text-anchor="start">B  单个 Consumer 内：older QK + younger PV 的两级异步流水</text>
+<text x="52" y="526" font-size="17" font-weight="650" fill="#18212B" text-anchor="start">Consumer WG k</text>
+<line x1="220" y1="594" x2="1510" y2="594" stroke="#18212B" stroke-width="1.2" marker-end="url(#arrow)"/>
+<text x="1530" y="600" font-size="15" font-weight="500" fill="#667085" text-anchor="start">时间</text>
+<rect x="220" y="490" width="190" height="58" rx="5" fill="#F6D58F" stroke="#18212B" stroke-width="1.4"/>
+<text x="315.0" y="514" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">QK(next)</text>
+<text x="315.0" y="536" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">older WGMMA group</text>
+<rect x="410" y="490" width="190" height="58" rx="5" fill="#CFC4E6" stroke="#18212B" stroke-width="1.4"/>
+<text x="505.0" y="514" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">PV(cur)</text>
+<text x="505.0" y="536" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">younger WGMMA group</text>
+<rect x="600" y="490" width="110" height="58" rx="5" fill="#F2F4F7" stroke="#18212B" stroke-width="1.4"/>
+<text x="655.0" y="514" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">等待</text>
+<text x="655.0" y="536" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">wait_group&lt;1&gt;</text>
+<rect x="710" y="490" width="270" height="58" rx="5" fill="#DCEBFA" stroke="#18212B" stroke-width="1.4"/>
+<text x="845.0" y="514" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">Softmax(next)</text>
+<text x="845.0" y="536" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">scores 可见 · exp2</text>
+<rect x="980" y="490" width="110" height="58" rx="5" fill="#F2F4F7" stroke="#18212B" stroke-width="1.4"/>
+<text x="1035.0" y="514" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">等待</text>
+<text x="1035.0" y="536" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">wait_group&lt;0&gt;</text>
+<rect x="1090" y="490" width="180" height="58" rx="5" fill="#E5F0FF" stroke="#246BCE" stroke-width="1.4"/>
+<text x="1180.0" y="514" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">stage_empty</text>
+<text x="1180.0" y="536" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">mbarrier arrive</text>
+<rect x="1270" y="490" width="180" height="58" rx="5" fill="white" stroke="#18212B" stroke-width="1.4"/>
+<text x="1360.0" y="514" font-size="18" font-weight="650" fill="#18212B" text-anchor="middle">缩放 O</text>
+<text x="1360.0" y="536" font-size="13" font-weight="400" fill="#667085" text-anchor="middle">× alpha(next)</text>
+<rect x="410" y="548" width="680" height="34" rx="0" fill="#4B5563" stroke="#4B5563" stroke-width="0"/>
+<text x="750" y="571" font-size="15" font-weight="650" fill="white" text-anchor="middle">PV(cur) 仍可在 Tensor Core 中飞行</text>
+<line x1="600" y1="475" x2="600" y2="605" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="1090" y1="475" x2="1090" y2="605" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="6 6"/>
+<line x1="615" y1="470" x2="1075" y2="470" stroke="#246BCE" stroke-width="1.5"/>
+<path d="M 615 470 L 627 464 M 615 470 L 627 476" fill="none" stroke="#246BCE" stroke-width="1.5"/>
+<path d="M 1075 470 L 1063 464 M 1075 470 L 1063 476" fill="none" stroke="#246BCE" stroke-width="1.5"/>
+<text x="845" y="461" font-size="15" font-weight="650" fill="#246BCE" text-anchor="middle">Softmax 与 younger PV 的异步执行区间重叠</text>
+<text x="42" y="660" font-size="20" font-weight="700" fill="#18212B" text-anchor="start">源码对应关系</text>
+<rect x="42" y="667" width="1516" height="36" rx="3" fill="white" stroke="#CBD5E1" stroke-width="0.8"/>
+<text x="62" y="692" font-size="15" font-weight="650" fill="#18212B" text-anchor="start">发射令牌</text>
+<text x="250" y="692" font-size="15" font-weight="600" fill="#246BCE" text-anchor="start">pingpong_before / pingpong_after</text>
+<text x="610" y="692" font-size="15" font-weight="400" fill="#18212B" text-anchor="start">turn[2]：只串行化两个 consumer 的 WGMMA commit 顺序</text>
+<rect x="42" y="710" width="1516" height="36" rx="3" fill="#F7F9FC" stroke="#CBD5E1" stroke-width="0.8"/>
+<text x="62" y="735" font-size="15" font-weight="650" fill="#18212B" text-anchor="start">分数就绪</text>
+<text x="250" y="735" font-size="15" font-weight="600" fill="#246BCE" text-anchor="start">wgmma_wait_group&lt;1&gt;</text>
+<text x="610" y="735" font-size="15" font-weight="400" fill="#18212B" text-anchor="start">等待 older QK；允许 younger PV 继续 in-flight</text>
+<rect x="42" y="753" width="1516" height="36" rx="3" fill="white" stroke="#CBD5E1" stroke-width="0.8"/>
+<text x="62" y="778" font-size="15" font-weight="650" fill="#18212B" text-anchor="start">完全完成</text>
+<text x="250" y="778" font-size="15" font-weight="600" fill="#246BCE" text-anchor="start">wgmma_wait_group&lt;0&gt;</text>
+<text x="610" y="778" font-size="15" font-weight="400" fill="#18212B" text-anchor="start">Softmax 后等待 PV 完成，再释放当前 KV stage</text>
+<rect x="42" y="796" width="1516" height="36" rx="3" fill="#F7F9FC" stroke="#CBD5E1" stroke-width="0.8"/>
+<text x="62" y="821" font-size="15" font-weight="650" fill="#18212B" text-anchor="start">双缓冲复用</text>
+<text x="250" y="821" font-size="15" font-weight="600" fill="#246BCE" text-anchor="start">stage_empty[2]</text>
+<text x="610" y="821" font-size="15" font-weight="400" fill="#18212B" text-anchor="start">两个 consumer 都 arrive 后，producer 才能覆盖 K/V stage</text>
+</svg>

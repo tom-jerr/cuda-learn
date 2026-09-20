@@ -22,9 +22,11 @@ BINS := vector_add/simple \
         dotproduct/simple \
         gemm/simple \
         fusion/silu_and_mul \
+        flash_attn/fa2_interview \
         flash_attn/ldmatrix_x4_mapping \
         flash_attn/multistage_swizzle \
         softmax/simple \
+        softmax/online_softmax \
         sgemv_k32/simple \
         topk/simple \
         prefix_sum/simple \

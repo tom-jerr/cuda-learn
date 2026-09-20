@@ -16,8 +16,10 @@ cmake_install.cmake
 /examples/cuda_allocator/import_export_pool
 /examples/cuda_allocator/minimal_allocator
 /examples/cuda_graph/fork_join
+/examples/flash_attn/fa2_interview
 /examples/fusion/silu_and_mul
 /examples/*/simple
+/examples/softmax/online_softmax
 /examples/mbarrier/main
 /examples/tma_desc/main
 /examples/tma_desc/tma_copy
