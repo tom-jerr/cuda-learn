@@ -22,6 +22,7 @@ BINS := vector_add/simple \
         dotproduct/simple \
         gemm/simple \
         fusion/silu_and_mul \
+        swiglu/simple \
         flash_attn/fa2_interview \
         flash_attn/ldmatrix_x4_mapping \
         flash_attn/multistage_swizzle \
@@ -49,6 +50,10 @@ all: $(BINS)
 # target separate from `all` (the repository's default GPU is sm_89).
 histogram/cluster: histogram/cluster.cu
 	$(NVCC) $(CLUSTER_NVCCFLAGS) $< -o $@
+
+# Privatization / replication / warp-aggregation study for the same kernel.
+histogram/optimized: histogram/optimized.cu
+	$(NVCC) $(NVCCFLAGS) $< -o $@
 
 # Make the default-stream behavior in this teaching example explicit.
 cuda_stream/non_blocking: cuda_stream/non_blocking.cu
@@ -87,7 +92,8 @@ tma_desc/tma_copy: tma_desc/tma_copy.cu tma_desc/config.cuh mbarrier/primitives.
 hopper-basics: mbarrier/main tma_desc/main tma_desc/tma_copy
 
 clean:
-	rm -f $(BINS) histogram/cluster cuda_stream/non_blocking \
+	rm -f $(BINS) histogram/cluster histogram/optimized \
+		cuda_stream/non_blocking \
 		custom_all_reduce/pdl_staged_pull \
 		custom_all_reduce/vmm_multicast_reduce cute_gemm/simple
 	rm -f cute_fa2/simple cute_fa2/fa2_4096
